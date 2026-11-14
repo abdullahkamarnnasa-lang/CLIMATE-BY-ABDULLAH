@@ -1,0 +1,4575 @@
+<!DOCTYPE html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Climate | By Abdullah</title>
+     <!-- Font Awesome -->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+     <!-- Bootstrap -->
+     <link rel="stylesheet" href="bootstrap.css">
+     <!-- Your CSS -->
+     <link rel="stylesheet" href="mysheet.css">
+     <!-- Bootstrap JS -->
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+         crossorigin="anonymous"></script>
+     <!-- Chart.js -->
+     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+     <style>
+         html {
+             scroll-behavior: smooth;
+         }
+         body {
+             background: #f4f8fb;
+             color: #15202b;
+             transition: background 0.3s, color 0.3s;
+         }
+         body.dark-mode {
+             background: #08131c;
+             color: #e9f4f8;
+         }
+         body.dark-mode .light-card,
+         body.dark-mode .info-card,
+         body.dark-mode .climate-section,
+         body.dark-mode .calculator-box,
+         body.dark-mode .dashboard-card {
+             background: #10232f !important;
+             color: #e9f4f8;
+             border-color: #234352;
+         }
+         body.dark-mode .text-muted {
+             color: #aac0c9 !important;
+         }
+         .topbar {
+             position: sticky;
+             top: 0;
+             z-index: 9999;
+             background: rgba(10, 25, 35, 0.96);
+             backdrop-filter: blur(10px);
+         }
+         .nav-brand {
+             color: white;
+             font-weight: 800;
+             letter-spacing: 1px;
+             text-decoration: none;
+             font-size: 22px;
+         }
+         .nav-brand:hover {
+             color: #66e0a3;
+             text-decoration: none;
+         }
+         .hero {
+             min-height: 620px;
+             background:
+                 linear-gradient(rgba(0, 16, 25, 0.52), rgba(0, 16, 25, 0.72)),
+                 url("baa.webp") center/cover;
+             display: flex;
+             align-items: center;
+             color: white;
+         }
+         .hero-content {
+             max-width: 850px;
+             padding: 70px 25px;
+         }
+         .hero-title {
+             font-size: clamp(44px, 7vw, 82px);
+             font-weight: 900;
+             line-height: 0.95;
+         }
+         .hero-title span {
+             color: #70e39e;
+         }
+         .hero-text {
+             font-size: 20px;
+             line-height: 1.8;
+             color: #e6f5f1;
+         }
+         .glass {
+             background: rgba(255, 255, 255, 0.12);
+             border: 1px solid rgba(255, 255, 255, 0.25);
+             border-radius: 18px;
+             padding: 20px;
+             backdrop-filter: blur(12px);
+         }
+         .section-title {
+             font-weight: 800;
+             margin-bottom: 10px;
+         }
+         .section-subtitle {
+             color: #667780;
+             line-height: 1.7;
+         }
+         .dark-mode .section-subtitle {
+             color: #abc0c8;
+         }
+         .dashboard-card,
+         .info-card,
+         .light-card,
+         .calculator-box {
+             background: white;
+             border-radius: 18px;
+             border: 1px solid #dce8ed;
+             box-shadow: 0 10px 30px rgba(20, 50, 70, 0.08);
+             transition: transform .25s, box-shadow .25s;
+         }
+         .dashboard-card:hover,
+         .info-card:hover,
+         .light-card:hover {
+             transform: translateY(-5px);
+             box-shadow: 0 16px 38px rgba(20, 50, 70, 0.14);
+         }
+         .metric {
+             font-size: 36px;
+             font-weight: 900;
+             color: #087a58;
+         }
+         .metric-label {
+             color: #657882;
+             font-size: 14px;
+             text-transform: uppercase;
+             letter-spacing: 1px;
+         }
+         .pulse {
+             width: 10px;
+             height: 10px;
+             display: inline-block;
+             border-radius: 50%;
+             background: #30c878;
+             box-shadow: 0 0 0 rgba(48, 200, 120, .6);
+             animation: pulse 1.8s infinite;
+         }
+         @keyframes pulse {
+             0% {
+                 box-shadow: 0 0 0 0 rgba(48, 200, 120, .6);
+             }
+             70% {
+                 box-shadow: 0 0 0 12px rgba(48, 200, 120, 0);
+             }
+             100% {
+                 box-shadow: 0 0 0 0 rgba(48, 200, 120, 0);
+             }
+         }
+         .climate-btn {
+             cursor: pointer;
+             padding: 14px;
+             border-radius: 14px;
+             transition: .2s;
+         }
+         .climate-btn:hover {
+             background: #0b7556;
+             color: white;
+         }
+         .climate-section {
+             background: white;
+             border-radius: 20px;
+             padding: 28px;
+             border: 1px solid #dde8ed;
+         }
+         .news-card img {
+             height: 220px;
+             object-fit: cover;
+             width: 100%;
+         }
+         .chart-box {
+             position: relative;
+             height: 320px;
+         }
+         @media (max-width: 600px) {
+             .map-search-row .btn {
+                 width: 100%;
+             }
+         }
+         .result-pill {
+             display: inline-block;
+             padding: 8px 14px;
+             border-radius: 999px;
+             background: #e7f8ef;
+             color: #087a58;
+             font-weight: 800;
+         }
+         .big-result {
+             font-size: 34px;
+             font-weight: 900;
+         }
+         .footer {
+             background: #071119;
+             color: #dceaf0;
+         }
+         .source-link {
+             color: #087a58;
+             font-weight: 700;
+         }
+         .source-link:hover {
+             color: #05573f;
+         }
+         .back-top {
+             position: fixed;
+             bottom: 22px;
+             right: 22px;
+             width: 50px;
+             height: 50px;
+             border-radius: 50%;
+             border: none;
+             background: #087a58;
+             color: white;
+             display: none;
+             z-index: 5000;
+             box-shadow: 0 8px 25px rgba(0, 0, 0, .25);
+         }
+         .search-result {
+             cursor: pointer;
+         }
+         .badge-soft {
+             border-radius: 999px;
+             padding: 7px 11px;
+             background: #eaf7f3;
+             color: #087a58;
+             font-weight: 700;
+         }
+         .impact-meter {
+             height: 14px;
+             background: #dfe8ed;
+             border-radius: 999px;
+             overflow: hidden;
+         }
+         .impact-meter span {
+             display: block;
+             height: 100%;
+             background: linear-gradient(90deg, #53c878, #efb22f, #e45c4a);
+             border-radius: inherit;
+             width: 0%;
+             transition: width .6s ease;
+         }
+         .small-note {
+             font-size: 13px;
+             color: #71828a;
+         }
+         @media (max-width: 768px) {
+             .hero {
+                 min-height: 540px;
+             }
+         }
+         /* ================= ADVANCED CLIMATE LAB ================= */
+         .advanced-lab{
+             background:linear-gradient(135deg,#071c17,#0b3025);
+             color:white;
+             position:relative;
+             overflow:hidden;
+         }
+         .advanced-lab:before{
+             content:"";
+             position:absolute;
+             width:420px;height:420px;
+             border-radius:50%;
+             background:rgba(66,230,165,.08);
+             top:-180px;right:-100px;
+             filter:blur(8px);
+         }
+         .lab-header,.lab-card{position:relative;z-index:1}
+         .lab-header{
+             display:flex;justify-content:space-between;gap:20px;align-items:end;
+         }
+         .lab-kicker{
+             display:inline-block;
+             font-size:12px;font-weight:900;letter-spacing:1.5px;
+             color:#55efb4;margin-bottom:8px;
+         }
+         .lab-live{
+             padding:9px 14px;border:1px solid #2f6654;border-radius:999px;
+             background:rgba(255,255,255,.06);font-size:12px;font-weight:800;
+             white-space:nowrap;
+         }
+         .lab-card{
+             background:rgba(12,35,28,.88);
+             border:1px solid #285447;border-radius:22px;padding:26px;
+             box-shadow:0 18px 50px rgba(0,0,0,.18);
+         }
+         .lab-card-head{display:flex;justify-content:space-between;gap:15px;align-items:start;margin-bottom:22px}
+         .lab-card h3{font-size:22px;margin:0 0 5px;font-weight:850}
+         .lab-card p{color:#a9c2b9;margin:0;line-height:1.6}
+         .scenario-badge{
+             padding:7px 12px;border-radius:999px;background:#173f32;color:#55efb4;
+             font-weight:800;font-size:12px;white-space:nowrap;
+         }
+         .scenario-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+         .scenario-control{
+             background:#092219;border:1px solid #23483c;border-radius:16px;padding:18px;
+         }
+         .scenario-control label{display:flex;justify-content:space-between;gap:10px;font-size:14px;margin-bottom:12px}
+         .scenario-control strong{color:#55efb4}
+         .scenario-control input{width:100%}
+         .range-labels{display:flex;justify-content:space-between;color:#718d82;font-size:11px;margin-top:5px}
+         .lab-actions{display:flex;gap:10px;margin-top:20px}
+         .simulation-output{
+             margin-top:20px;display:flex;align-items:center;gap:18px;
+             padding:18px;border-radius:18px;background:#071a14;border:1px solid #254c40;
+         }
+         .sim-score{font-size:46px;font-weight:950;color:#55efb4;min-width:72px}
+         .pulse-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+         .pulse-stat{
+             padding:17px;border-radius:16px;background:#092219;border:1px solid #23483c;
+             display:flex;flex-direction:column;
+         }
+         .pulse-stat span{color:#9db8ae;font-size:12px;text-transform:uppercase;letter-spacing:.8px}
+         .pulse-stat b{font-size:28px;color:#55efb4;margin-top:4px}
+         .pulse-stat small{color:#718d82}
+         .lab-mini-note,.impact-result{
+             margin-top:18px;padding:16px;border-radius:15px;background:#102c22;border-left:4px solid #42e6a5;
+             color:#b6cbc3;
+         }
+         .action-list{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+         .action-list label{
+             display:flex;align-items:flex-start;gap:10px;padding:14px;border:1px solid #dce8ed;
+             border-radius:14px;cursor:pointer;transition:.2s;background:rgba(255,255,255,.35);
+         }
+         body.dark-mode .action-list label{border-color:#294a57;background:#122934}
+         .action-list label:hover{transform:translateY(-2px)}
+         .action-list input{margin-top:4px;accent-color:#087a58}
+         .action-list input:checked + span{text-decoration:line-through;opacity:.6}
+         body.dark-mode .advanced-lab + section .light-card{background:#10232f!important;color:#e9f4f8}
+         .timeline{position:relative;margin-top:25px}
+         .timeline:before{content:"";position:absolute;left:76px;top:0;bottom:0;width:2px;background:#b9d9ca}
+         .timeline-item{display:grid;grid-template-columns:130px 1fr;gap:28px;position:relative;padding:0 0 28px}
+         .timeline-item > span{
+             font-weight:900;color:#087a58;text-align:right;padding-top:3px;
+         }
+         .timeline-item > div{position:relative}
+         .timeline-item > div:before{
+             content:"";position:absolute;left:-36px;top:6px;width:14px;height:14px;border-radius:50%;
+             background:#087a58;border:3px solid white;box-shadow:0 0 0 2px #087a58;
+         }
+         .timeline-item h4{margin:0 0 5px}
+         .timeline-item p{margin:0;color:#657882}
+         body.dark-mode .timeline-item p{color:#abc0c8}
+         @media(max-width:900px){
+             .scenario-grid,.action-list{grid-template-columns:1fr}
+             .lab-header{align-items:start;flex-direction:column}
+             .timeline:before{left:61px}
+             .timeline-item{grid-template-columns:100px 1fr;gap:22px}
+             .timeline-item > div:before{left:-29px}
+         }
+         @media(max-width:600px){
+             .lab-card{padding:19px}
+             .pulse-grid{grid-template-columns:1fr 1fr}
+             .timeline:before{display:none}
+             .timeline-item{grid-template-columns:1fr;gap:5px;padding-bottom:22px}
+             .timeline-item > span{text-align:left}
+             .timeline-item > div:before{display:none}
+         }
+ </style>
+ 
+<style id="climate-advanced-fixes">
+    :root{
+        --climate-green:#42e6a5;
+        --climate-deep:#061812;
+        --climate-card:#0b211a;
+    }
+    body{overflow-x:hidden;}
+    .topbar{box-shadow:0 8px 30px rgba(0,0,0,.14);}
+    .topbar .nav-link{transition:color .2s,transform .2s;}
+    .topbar .nav-link:hover{transform:translateY(-1px);}
+    .hero{position:relative;isolation:isolate;}
+    .hero::after{
+        content:"";position:absolute;inset:auto 0 0;height:130px;
+        background:linear-gradient(transparent,rgba(7,17,25,.55));
+        pointer-events:none;z-index:-1;
+    }
+    .dashboard-card,.info-card,.light-card,.calculator-box,.lab-card,.pollution-card,.pollution-panel{
+        will-change:transform;
+    }
+    .dashboard-card:focus-within,.info-card:focus-within,.light-card:focus-within{
+        outline:2px solid rgba(66,230,165,.55);
+        outline-offset:3px;
+    }
+    .calculator-cut-flash{animation:cutFlash .9s ease;}
+    .calculator-plant-flash{animation:plantFlash .9s ease;}
+    @keyframes cutFlash{50%{background:#30363b!important;}}
+    @keyframes plantFlash{50%{background:#dff7e9!important;}}
+    .pollution-table tr[hidden]{display:none;}
+    button,.btn,input,select{transition:box-shadow .2s,border-color .2s,transform .2s;}
+    button:focus-visible,.btn:focus-visible,input:focus-visible,select:focus-visible{
+        outline:3px solid rgba(66,230,165,.35);outline-offset:2px;
+    }
+    @media (prefers-reduced-motion:reduce){
+        *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;}
+    }
+    @media (max-width:768px){
+        .hero-title{font-size:clamp(42px,12vw,68px);}
+        .hero-text{font-size:17px;line-height:1.65;}
+        .lab-header{gap:12px;}
+        .pollution-table{min-width:680px;}
+    }
+</style>
+
+
+  
+</head>
+ <body>
+  
+    <div id="readingProgress" aria-hidden="true"></div>
+     <!-- ================= NAVBAR ================= -->
+     <nav class="topbar navbar navbar-expand-lg navbar-dark">
+         <div class="container-fluid px-4">
+             <a class="nav-brand" href="#home">
+                 🌍 CLIMATE <span style="color:#66e0a3;">BY ABDULLAH</span>
+             </a>
+             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                 <span class="navbar-toggler-icon"></span>
+             </button>
+             <div class="collapse navbar-collapse" id="mainNav">
+                 <ul class="navbar-nav ms-auto">
+                     <li class="nav-item">
+                         <a class="nav-link" href="#vital">Vital Signs</a>
+                     </li>
+                     <li class="nav-item">
+                         <a class="nav-link" href="#evidenceArea">Evidence</a>
+                     </li>
+                     <li class="nav-item">
+                         <a class="nav-link" href="#dashboard">Dashboard</a>
+                     </li>
+                     <li class="nav-item">
+                         <a class="nav-link" href="#actionLab">Action Lab</a>
+                      </li>
+                      
+                     <li class="nav-item">
+                         <a class="nav-link" href="#missionCenter">Mission Center</a>
+                     </li>
+                     <li class="nav-item">
+                         <a class="nav-link" href="qna.html">Q/A</a>
+                     </li>
+                     <li class="nav-item ms-lg-2">
+                         <button id="darkModeButton" class="btn btn-outline-light btn-sm" type="button" aria-pressed="false" onclick="toggleDarkMode()">
+                             🌙 Dark Mode
+                         </button>
+                     </li>
+                 </ul>
+             </div>
+         </div>
+     </nav>
+     <!-- ================= HERO ================= -->
+     <section id="home" class="hero">
+         <div class="container">
+             <div class="hero-content">
+                 <div class="glass mb-4">
+                     <span class="pulse"></span>
+                     <span class="ml-2">
+                         Climate information & interactive learning
+                     </span>
+                 </div>
+                 <h1 class="hero-title">
+                     Understand <span>Climate Change.</span>
+                 </h1>
+                 <p class="hero-text mt-4">
+                     Explore greenhouse gases, global temperature,
+                     climate evidence, impacts, solutions, current
+                     vital signs and location-based climate information.
+                 </p>
+                 <div class="mt-4">
+                     <a href="#dashboard" class="btn btn-success btn-lg me-2">
+                         Explore Dashboard
+                     </a>
+                     <a href="ab_space_explorer%20(1).html" target="_blank" rel="noopener noreferrer" class="btn btn-outline-light btn-lg">
+                         🚀 Explore Space
+                     </a>
+                 </div>
+             </div>
+         </div>
+     </section>
+     <!-- ================= POLLUTION DASHBOARD ================= -->
+ <div id="pollutionDashboard">
+ <style>
+ #pollutionDashboard{
+     width:100%;
+     padding:60px 6%;
+     background:linear-gradient(135deg,#061812,#0b2a20);
+     color:white;
+     font-family:Arial,sans-serif;
+ }
+ #pollutionDashboard *{
+     box-sizing:border-box;
+ }
+ .pollution-title{
+     font-size:clamp(32px,5vw,60px);
+     font-weight:800;
+     margin-bottom:12px;
+ }
+ .pollution-title span{
+     color:#42e6a5;
+ }
+ .pollution-intro{
+     max-width:850px;
+     color:#b7cbc3;
+     font-size:17px;
+     line-height:1.7;
+     margin-bottom:35px;
+ }
+ /* STAT CARDS */
+ .pollution-stats{
+     display:grid;
+     grid-template-columns:repeat(4,1fr);
+     gap:18px;
+     margin-bottom:30px;
+ }
+ .pollution-card{
+     background:rgba(17,48,39,.85);
+     border:1px solid #285346;
+     border-radius:20px;
+     padding:24px;
+     transition:.3s;
+ }
+ .pollution-card:hover{
+     transform:translateY(-6px);
+     border-color:#42e6a5;
+ }
+ .pollution-number{
+     font-size:30px;
+     font-weight:bold;
+     color:#42e6a5;
+     margin-bottom:8px;
+ }
+ .pollution-label{
+     color:#b5c7c1;
+     line-height:1.5;
+ }
+ /* PANELS */
+ .pollution-grid{
+     display:grid;
+     grid-template-columns:1fr 1fr;
+     gap:22px;
+     margin-bottom:30px;
+ }
+ .pollution-panel{
+     background:#0b211a;
+     border:1px solid #23483c;
+     border-radius:22px;
+     padding:28px;
+ }
+ .pollution-panel h2{
+     margin:0 0 10px;
+     font-size:25px;
+ }
+ .pollution-panel p{
+     color:#9fb5ac;
+     line-height:1.6;
+ }
+ /* GRAPH */
+ .pollution-chart{
+     height:280px;
+     display:flex;
+     align-items:flex-end;
+     gap:15px;
+     margin-top:25px;
+     border-bottom:1px solid #3b5c52;
+     padding:10px;
+ }
+ .pollution-bar-box{
+     flex:1;
+     height:100%;
+     display:flex;
+     flex-direction:column;
+     align-items:center;
+     justify-content:flex-end;
+ }
+ .pollution-bar-value{
+     font-size:11px;
+     margin-bottom:6px;
+ }
+ .pollution-bar{
+     width:65%;
+     max-width:55px;
+     background:linear-gradient(to top,#18a874,#54efb2);
+     border-radius:8px 8px 0 0;
+     animation:pollutionGrow 1.2s ease;
+ }
+ @keyframes pollutionGrow{
+     from{height:0!important;}
+ }
+ .pollution-year{
+     color:#81968e;
+     font-size:12px;
+     margin-top:8px;
+ }
+ /* BIG NUMBER */
+ .pollution-big{
+     text-align:center;
+     padding:35px 10px;
+ }
+ .pollution-big-number{
+     font-size:65px;
+     font-weight:900;
+     color:#42e6a5;
+ }
+ .pollution-big-text{
+     color:#b2c5bd;
+     font-size:16px;
+ }
+ /* SEARCH */
+ .pollution-table-panel{
+     background:#0b211a;
+     border:1px solid #23483c;
+     border-radius:22px;
+     padding:28px;
+ }
+ .pollution-table-top{
+     display:flex;
+     justify-content:space-between;
+     align-items:center;
+     gap:20px;
+     margin-bottom:20px;
+ }
+ .pollution-search{
+     width:260px;
+     padding:13px 16px;
+     border-radius:12px;
+     border:1px solid #365e51;
+     background:#06140f;
+     color:white;
+     outline:none;
+ }
+ .pollution-search:focus{
+     border-color:#42e6a5;
+ }
+ .pollution-table-wrap{
+     overflow-x:auto;
+ }
+ .pollution-table{
+     width:100%;
+     border-collapse:collapse;
+     min-width:750px;
+ }
+ .pollution-table th{
+     padding:15px;
+     text-align:left;
+     color:#54efb2;
+     background:#112e25;
+ }
+ .pollution-table td{
+     padding:14px 15px;
+     border-top:1px solid #193a30;
+     color:#c3d2cd;
+ }
+ .pollution-table tr:hover td{
+     background:#102b22;
+ }
+ .pollution-rank{
+     color:#42e6a5;
+     font-weight:bold;
+ }
+ .pollution-emission{
+     font-weight:bold;
+     color:white;
+ }
+ .pollution-progress{
+     width:130px;
+     height:7px;
+     background:#1b382f;
+     border-radius:20px;
+     overflow:hidden;
+ }
+ .pollution-progress span{
+     display:block;
+     height:100%;
+     background:#42e6a5;
+     border-radius:20px;
+ }
+ .pollution-note{
+     margin-top:22px;
+     padding:18px;
+     border-left:4px solid #42e6a5;
+     background:#102b22;
+     color:#aebfb9;
+     line-height:1.6;
+     border-radius:10px;
+ }
+ /* MOBILE */
+ @media(max-width:900px){
+     .pollution-stats{
+         grid-template-columns:repeat(2,1fr);
+     }
+     .pollution-grid{
+         grid-template-columns:1fr;
+     }
+ }
+ @media(max-width:600px){
+     #pollutionDashboard{
+         padding:45px 4%;
+     }
+     .pollution-stats{
+         grid-template-columns:1fr;
+     }
+     .pollution-table-top{
+         flex-direction:column;
+         align-items:flex-start;
+     }
+     .pollution-search{
+         width:100%;
+     }
+ }
+ </style>
+ <div class="pollution-title">
+     Global <span>Pollution</span> Dashboard
+ </div>
+ <p class="pollution-intro">
+     Explore how road transportation contributes to carbon emissions
+     and see major carbon-emitting entities tracked by the Carbon Majors
+     dataset.
+ </p>
+ <!-- ================= STATS ================= -->
+ <div class="pollution-stats">
+     <div class="pollution-card">
+         <div class="pollution-number">6+ Gt</div>
+         <div class="pollution-label">
+             Road transport CO₂ emissions in 2024
+         </div>
+     </div>
+     <div class="pollution-card">
+         <div class="pollution-number">60%+</div>
+         <div class="pollution-label">
+             Road emissions from passenger cars and vans
+         </div>
+     </div>
+     <div class="pollution-card">
+         <div class="pollution-number">34.7 Gt</div>
+         <div class="pollution-label">
+             Emissions attributed to active Carbon Majors entities in 2024
+         </div>
+     </div>
+     <div class="pollution-card">
+         <div class="pollution-number">166</div>
+         <div class="pollution-label">
+             Active entities tracked in the 2024 dataset
+         </div>
+     </div>
+ </div>
+ <!-- ================= GRAPHS ================= -->
+ <div class="pollution-grid">
+     <div class="pollution-panel">
+         <h2>🚗 Road Transport CO₂</h2>
+         <p>
+             Road transport emissions have remained a major source of
+             global greenhouse-gas emissions.
+         </p>
+         <div class="pollution-chart">
+             <div class="pollution-bar-box">
+                 <div class="pollution-bar-value">5.6</div>
+                 <div class="pollution-bar" style="height:88%;"></div>
+                 <div class="pollution-year">2015</div>
+             </div>
+             <div class="pollution-bar-box">
+                 <div class="pollution-bar-value">5.8</div>
+                 <div class="pollution-bar" style="height:91%;"></div>
+                 <div class="pollution-year">2017</div>
+             </div>
+             <div class="pollution-bar-box">
+                 <div class="pollution-bar-value">5.9</div>
+                 <div class="pollution-bar" style="height:93%;"></div>
+                 <div class="pollution-year">2019</div>
+             </div>
+             <div class="pollution-bar-box">
+                 <div class="pollution-bar-value">5.4</div>
+                 <div class="pollution-bar" style="height:85%;"></div>
+                 <div class="pollution-year">2021</div>
+             </div>
+             <div class="pollution-bar-box">
+                 <div class="pollution-bar-value">6+</div>
+                 <div class="pollution-bar" style="height:100%;"></div>
+                 <div class="pollution-year">2024</div>
+             </div>
+         </div>
+     </div>
+     <div class="pollution-panel">
+         <h2>🌍 Road Pollution Impact</h2>
+         <div class="pollution-big">
+             <div class="pollution-big-number">6+ Gt</div>
+             <div class="pollution-big-text">
+                 CO₂ from road transport in 2024
+             </div>
+             <br>
+             <div class="pollution-big-number" style="font-size:45px;">
+                 60%+
+             </div>
+             <div class="pollution-big-text">
+                 came from cars and vans
+             </div>
+         </div>
+     </div>
+ </div>
+ <!-- ================= TOP EMITTERS ================= -->
+ <div class="pollution-table-panel">
+     <div class="pollution-table-top">
+         <div>
+             <h2>🏭 Major Carbon-Emitting Entities</h2>
+             <p style="margin-top:8px;color:#9fb5ac;">
+                 Search the emissions ranking below.
+             </p>
+         </div>
+         <input
+             id="pollutionCompanySearch"
+             class="pollution-search"
+             type="text"
+             placeholder="Search company..."
+         >
+     </div>
+     <div class="pollution-table-wrap">
+         <table class="pollution-table" id="pollutionCompanyTable">
+             <thead>
+                 <tr>
+                     <th>Rank</th>
+                     <th>Entity</th>
+                     <th>Emissions</th>
+                     <th>Relative Scale</th>
+                 </tr>
+             </thead>
+             <tbody>
+                 <tr>
+                     <td class="pollution-rank">01</td>
+                     <td>Saudi Aramco</td>
+                     <td class="pollution-emission">1,786 MtCO₂e</td>
+                     <td>
+                         <div class="pollution-progress">
+                             <span style="width:100%"></span>
+                         </div>
+                     </td>
+                 </tr>
+                 <tr>
+                     <td class="pollution-rank">02</td>
+                     <td>Coal India</td>
+                     <td class="pollution-emission">1,684 MtCO₂e</td>
+                     <td>
+                         <div class="pollution-progress">
+                             <span style="width:94%"></span>
+                         </div>
+                     </td>
+                 </tr>
+                 <tr>
+                     <td class="pollution-rank">03</td>
+                     <td>CHN Energy</td>
+                     <td class="pollution-emission">1,679 MtCO₂e</td>
+                     <td>
+                         <div class="pollution-progress">
+                             <span style="width:94%"></span>
+                         </div>
+                     </td>
+                 </tr>
+                 <tr>
+                     <td class="pollution-rank">04</td>
+                     <td>National Iranian Oil Company</td>
+                     <td class="pollution-emission">1,387 MtCO₂e</td>
+                     <td>
+                         <div class="pollution-progress">
+                             <span style="width:78%"></span>
+                         </div>
+                     </td>
+                 </tr>
+                 <tr>
+                     <td class="pollution-rank">05</td>
+                     <td>Gazprom</td>
+                     <td class="pollution-emission">1,293 MtCO₂e</td>
+                     <td>
+                         <div class="pollution-progress">
+                             <span style="width:72%"></span>
+                         </div>
+                     </td>
+                 </tr>
+                 <tr>
+                     <td class="pollution-rank">06</td>
+                     <td>Jinneng Group</td>
+                     <td class="pollution-emission">1,129 MtCO₂e</td>
+                     <td>
+                         <div class="pollution-progress">
+                             <span style="width:63%"></span>
+                         </div>
+                     </td>
+                 </tr>
+                 <tr>
+                     <td class="pollution-rank">07</td>
+                     <td>China National Coal Group</td>
+                     <td class="pollution-emission">732 MtCO₂e</td>
+                     <td>
+                         <div class="pollution-progress">
+                             <span style="width:41%"></span>
+                         </div>
+                     </td>
+                 </tr>
+                 <tr>
+                     <td class="pollution-rank">08</td>
+                     <td>ExxonMobil</td>
+                     <td class="pollution-emission">677 MtCO₂e</td>
+                     <td>
+                         <div class="pollution-progress">
+                             <span style="width:38%"></span>
+                         </div>
+                     </td>
+                 </tr>
+                 <tr>
+                     <td class="pollution-rank">09</td>
+                     <td>ADNOC</td>
+                     <td class="pollution-emission">622 MtCO₂e</td>
+                     <td>
+                         <div class="pollution-progress">
+                             <span style="width:35%"></span>
+                         </div>
+                     </td>
+                 </tr>
+                 <tr>
+                     <td class="pollution-rank">10</td>
+                     <td>Chevron</td>
+                     <td class="pollution-emission">577 MtCO₂e</td>
+                     <td>
+                         <div class="pollution-progress">
+                             <span style="width:32%"></span>
+                         </div>
+                     </td>
+                 </tr>
+             </tbody>
+         </table>
+     </div>
+     <div class="pollution-note">
+         <strong>Important:</strong>
+         This is an emissions-attribution dataset, not simply a ranking
+         of pollution released from company factories. Carbon Majors
+         attributes emissions connected with fossil-fuel and cement
+         production under its methodology.
+     </div>
+ </div>
+ </div>
+ <!-- =============== END POLLUTION DASHBOARD =============== --><br>
+ <!-- LIVE CO2 SINCE YOU OPENED THE PAGE -->
+ <div class="live-co2-card">
+     <div class="live-co2-icon">🌍</div>
+     <div>
+         <div class="live-co2-title">
+             CO₂ Emitted Since You Arrived
+         </div>
+         <div id="liveCO2Counter" class="live-co2-number">
+             0.000 kg
+         </div>
+         <div class="live-co2-status">
+             ● LIVE ESTIMATE
+         </div>
+     </div>
+ </div>
+ <style>
+ .live-co2-card{
+     display:flex;
+     align-items:center;
+     gap:20px;
+     padding:25px;
+     margin:25px 0;
+     border-radius:22px;
+     background:linear-gradient(135deg,#0c2920,#123d30);
+     border:1px solid #2b6955;
+     box-shadow:0 12px 35px rgba(0,0,0,.25);
+ }
+ .live-co2-icon{
+     width:65px;
+     height:65px;
+     display:flex;
+     align-items:center;
+     justify-content:center;
+     border-radius:50%;
+     background:#183f32;
+     font-size:32px;
+ }
+ .live-co2-title{
+     color:#b9cec7;
+     font-size:15px;
+     margin-bottom:5px;
+ }
+ .live-co2-number{
+     color:#43e6a4;
+     font-size:36px;
+     font-weight:800;
+     letter-spacing:1px;
+ }
+ .live-co2-status{
+     color:#57efb2;
+     font-size:11px;
+     font-weight:bold;
+     letter-spacing:1px;
+     margin-top:5px;
+ }
+ @media(max-width:600px){
+     .live-co2-card{
+         padding:18px;
+     }
+     .live-co2-number{
+         font-size:27px;
+     }
+     .live-co2-icon{
+         width:52px;
+         height:52px;
+         font-size:25px;
+     }
+ }
+ </style>
+ <br>
+     <!-- ================= VITAL SIGNS ================= -->
+     <section id="vital" class="container py-5">
+         <div class="text-center mb-5">
+             <h2 class="section-title">🌎 Climate Vital Signs</h2>
+             <p class="section-subtitle">
+                 Key climate indicators displayed in a simple dashboard.
+             </p>
+         </div>
+         <div class="row">
+             <div class="col-lg-4 mb-4">
+                 <div class="dashboard-card p-4 h-100">
+                     <div class="metric">429</div>
+                     <div class="metric-label">
+                         CO₂ Parts Per Million
+                     </div>
+                     <hr>
+                     <p>
+                         Atmospheric carbon dioxide is one of the
+                         major greenhouse gases linked to human-caused
+                         warming.
+                     </p>
+                     <a href="carbon.html" target="_blank" rel="noopener noreferrer" class="source-link">
+                         Explore CO₂ →
+                     </a>
+                 </div>
+             </div>
+             <div class="col-lg-4 mb-4">
+                 <div class="dashboard-card p-4 h-100">
+                     <div class="metric">1.19°C</div>
+                     <div class="metric-label">
+                         2025 NASA global temperature anomaly
+                     </div>
+                     <hr>
+                     <p>
+                         NASA's GISTEMP annual value for 2025 was about
+                         1.19°C above the 1951–1980 average.
+                     </p>
+                     <a href="temp.html" target="_blank" rel="noopener noreferrer" class="source-link">
+                         Explore Temperature →
+                     </a>
+                 </div>
+             </div>
+             <div class="col-lg-4 mb-4">
+                 <div class="dashboard-card p-4 h-100">
+                     <div class="metric">1938</div>
+                     <div class="metric-label">
+                         Methane Parts Per Billion
+                     </div>
+                     <hr>
+                     <p>
+                         Methane is a powerful greenhouse gas. Its
+                         concentration and sources are actively monitored.
+                     </p>
+                     <a href="iner.html.html" target="_blank" rel="noopener noreferrer" class="source-link">
+                         Explore Methane →
+                     </a>
+                 </div>
+             </div>
+         </div>
+     </section>
+     <!-- ================= CLIMATE DASHBOARD ================= -->
+     <section id="dashboard" class="container py-4">
+         <div class="row mb-4">
+             <div class="col-md-7">
+                 <h2 class="section-title">
+                     📊 Interactive Climate Dashboard
+                 </h2>
+                 <p class="section-subtitle">
+                     Compare simplified climate trends and explore what
+                     different temperature increases could mean.
+                 </p>
+             </div>
+             <div class="col-md-5 text-md-right">
+                 <span class="badge-soft">
+                     Page updated: October 16, 2026
+                 </span>
+             </div>
+         </div>
+         <div class="row">
+             <div class="col-lg-7 mb-4">
+                 <div class="light-card p-4">
+                     <h4>Global Temperature Trend (Illustrative)</h4>
+                     <p class="small-note">
+                         Educational chart based on a simplified set of
+                         example anomaly values. Replace with your chosen
+                         official dataset for publication.
+                     </p>
+                     <div class="chart-box">
+                         <canvas id="temperatureChart"></canvas>
+                     </div>
+                 </div>
+             </div>
+             <div class="col-lg-5 mb-4">
+                 <div class="light-card p-4">
+                     <h4>Climate Indicators</h4>
+                     <div class="mb-4 mt-4">
+                         <div class="d-flex justify-content-between">
+                             <span>CO₂</span>
+                             <strong>429 ppm</strong>
+                         </div>
+                         <div class="impact-meter mt-2">
+                             <span style="width:86%"></span>
+                         </div>
+                     </div>
+                     <div class="mb-4">
+                         <div class="d-flex justify-content-between">
+                             <span>Methane</span>
+                             <strong>1938 ppb</strong>
+                         </div>
+                         <div class="impact-meter mt-2">
+                             <span style="width:67%"></span>
+                         </div>
+                     </div>
+                     <div class="mb-4">
+                         <div class="d-flex justify-content-between">
+                             <span>Global temperature anomaly</span>
+                             <strong>+1.19°C</strong>
+                         </div>
+                         <div class="impact-meter mt-2">
+                             <span style="width:72%"></span>
+                         </div>
+                     </div>
+                     <p class="small-note">
+                         The meters are visual aids, not risk scores.
+                     </p>
+                 </div>
+             </div>
+         </div>
+     </section>
+     <!-- ================= NASA INFORMATION ================= -->
+     <section class="container py-5">
+         <div class="light-card p-4 p-md-5">
+             <h2 class="section-title">
+                 🛰️ Why NASA Observes Earth
+             </h2>
+             <p>
+                 NASA uses satellites, aircraft, ground observations and
+                 scientific models to study Earth's atmosphere, oceans,
+                 land, ice and ecosystems.
+             </p>
+             <p>
+                 Long-term observations let scientists compare conditions
+                 across years and decades, helping identify climate trends,
+                 changes in ice, sea level, ocean heat and atmospheric gases.
+             </p>
+             <p class="mb-0">
+                 Climate science combines observations from many independent
+                 systems rather than relying on one measurement.
+             </p>
+         </div>
+     </section>
+     <br>
+     <br>
+     <br>
+     <br>
+     <br>
+     <br>
+     <br>
+     <!-- ================= SEARCHABLE TOPICS ================= -->
+     <section class="container py-4">
+         <div class="row align-items-end">
+             <div class="col-md-8">
+                 <h2 class="section-title">
+                     🔎 Find a Climate Topic
+                 </h2>
+                 <p class="section-subtitle">
+                     Search the topics below to quickly locate information.
+                 </p>
+             </div>
+             <div class="col-md-4">
+                 <input type="text" id="topicSearch" class="form-control" placeholder="Search: ocean, ice, methane..."
+                     oninput="searchTopics()">
+             </div>
+         </div>
+         <div id="topicCards" class="row mt-3">
+             <div class="col-md-4 mb-3 searchable-topic" data-topic="carbon dioxide co2 greenhouse gas">
+                 <div class="info-card p-4 h-100">
+                     <h4>🟢 Carbon Dioxide</h4>
+                     <p>
+                         CO₂ is a long-lived greenhouse gas released by
+                         fossil-fuel use, land-use change and other processes.
+                     </p>
+                 </div>
+             </div>
+             <div class="col-md-4 mb-3 searchable-topic" data-topic="methane ch4 agriculture livestock gas">
+                 <div class="info-card p-4 h-100">
+                     <h4>🔥 Methane</h4>
+                     <p>
+                         Methane has important natural and human sources,
+                         including wetlands, agriculture and fossil-fuel systems.
+                     </p>
+                 </div>
+             </div>
+             <div class="col-md-4 mb-3 searchable-topic" data-topic="ocean warming sea acidification ocean">
+                 <div class="info-card p-4 h-100">
+                     <h4>🌊 Oceans</h4>
+                     <p>
+                         Oceans absorb heat and carbon, and changes in chemistry,
+                         temperature and circulation affect ecosystems.
+                     </p>
+                 </div>
+             </div>
+             <div class="col-md-4 mb-3 searchable-topic" data-topic="ice glaciers arctic antarctica">
+                 <div class="info-card p-4 h-100">
+                     <h4>🧊 Ice</h4>
+                     <p>
+                         Scientists monitor glaciers, ice sheets and sea ice using
+                         satellites, field observations and other techniques.
+                     </p>
+                 </div>
+             </div>
+             <div class="col-md-4 mb-3 searchable-topic" data-topic="heat wave extreme weather temperature">
+                 <div class="info-card p-4 h-100">
+                     <h4>🔥 Extreme Heat</h4>
+                     <p>
+                         A warmer climate changes the odds and characteristics of
+                         many heat extremes.
+                     </p>
+                 </div>
+             </div>
+             <div class="col-md-4 mb-3 searchable-topic" data-topic="forest trees carbon land ecosystem">
+                 <div class="info-card p-4 h-100">
+                     <h4>🌳 Forests</h4>
+                     <p>
+                         Forests exchange carbon with the atmosphere and are
+                         affected by heat, drought, fire, pests and land use.
+                     </p>
+                 </div>
+             </div>
+         </div>
+     </section>
+     <!-- ================= EVIDENCE / CAUSE / EFFECT ================= -->
+     <section id="evidenceArea" class="container py-5">
+         <div class="row text-center mb-4">
+             <div class="col-md-4 mb-2">
+                 <h3 onclick="showSection('evidence')" class="climate-btn">
+                     EVIDENCE
+                 </h3>
+             </div>
+             <div class="col-md-4 mb-2">
+                 <h3 onclick="showSection('cause')" class="climate-btn">
+                     CAUSE
+                 </h3>
+             </div>
+             <div class="col-md-4 mb-2">
+                 <h3 onclick="showSection('effect')" class="climate-btn">
+                     EFFECT
+                 </h3>
+             </div>
+         </div>
+         <div id="evidence" class="climate-section">
+             <div class="row align-items-center">
+                 <div class="col-md-6">
+                     <h2>How Do We Know Climate Change is Real?</h2>
+                     <p>
+                         Earth-orbiting satellites and other observation systems
+                         measure temperature, ice, oceans, land and atmospheric
+                         composition around the world.
+                     </p>
+                     <p>
+                         When these independent records are combined over long
+                         periods, they reveal persistent changes in Earth's climate
+                         system.
+                     </p>
+                 </div>
+                 <div class="col-md-6">
+                     <img src="climate-evidence-image.webp" class="img-fluid rounded" alt="Climate change evidence">
+                 </div>
+             </div>
+         </div>
+         <div id="cause" class="climate-section mt-3" style="display:none;">
+             <div class="row align-items-center">
+                 <div class="col-md-6">
+                     <h2>What is Causing Climate Change?</h2>
+                     <p>
+                         Human activities have increased the concentration of
+                         greenhouse gases in the atmosphere, especially through
+                         fossil-fuel use and changes in land use.
+                     </p>
+                     <p>
+                         Greenhouse gases absorb outgoing infrared radiation,
+                         strengthening the natural greenhouse effect.
+                     </p>
+                 </div>
+                 <div class="col-md-6">
+                     <img src="power-station-374097-1920.jpeg" class="img-fluid rounded" alt="Power station">
+                 </div>
+             </div>
+         </div>
+         <div id="effect" class="climate-section mt-3" style="display:none;">
+             <div class="row align-items-center">
+                 <div class="col-md-6">
+                     <h2>What Are the Effects of Climate Change?</h2>
+                     <p>
+                         Observed effects include warming temperatures, glacier
+                         loss, sea-level rise, changing precipitation patterns
+                         and increasing heat risks in many regions.
+                     </p>
+                     <p>
+                         Impacts vary by location and can affect people, ecosystems,
+                         water resources, agriculture and infrastructure.
+                     </p>
+                 </div>
+                 <div class="col-md-6">
+                     <img src="effectsbannernew-opt%20-%20Copy.jpeg" class="img-fluid rounded"
+                         alt="Effects of climate change">
+                 </div>
+             </div>
+         </div>
+     </section>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ 
+<!-- ================= NASA EARTH INFORMATION JUKEBOX ================= -->
+<style id="earth-jukebox-styles">
+#earthJukebox{background:linear-gradient(135deg,#06131d,#092a2b 55%,#071a28);color:#eefcff;padding:70px 6%;position:relative;overflow:hidden}
+#earthJukebox:before{content:"";position:absolute;width:420px;height:420px;border-radius:50%;background:rgba(66,230,165,.08);right:-130px;top:-170px;filter:blur(8px)}
+.ej-wrap{position:relative;z-index:1;max-width:1250px;margin:auto}.ej-kicker{color:#55efb4;font-size:12px;font-weight:900;letter-spacing:1.6px}
+.ej-title{font-size:clamp(34px,5vw,62px);font-weight:900;margin:8px 0}.ej-subtitle{max-width:900px;color:#b9d0d5;line-height:1.75}
+.ej-grid{display:grid;grid-template-columns:1.35fr .65fr;gap:22px;margin-top:28px}.ej-card{background:rgba(9,29,38,.88);border:1px solid #28505a;border-radius:22px;padding:24px;box-shadow:0 18px 55px rgba(0,0,0,.22)}
+#ejCanvas{width:100%;height:330px;display:block;border-radius:16px;background:#041017;border:1px solid #173841}
+.ej-controls{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}.ej-control{background:#071d25;border:1px solid #234650;border-radius:15px;padding:14px}
+.ej-control label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;color:#cde1e5}.ej-control strong{color:#55efb4}.ej-control input{width:100%;accent-color:#42e6a5}
+.ej-buttons{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}.ej-status{margin-top:15px;padding:14px;border-radius:14px;background:#071a20;border-left:4px solid #42e6a5;color:#b9d0d5}
+.ej-metric{padding:16px;border-radius:15px;background:#071d25;border:1px solid #234650;margin-bottom:12px}.ej-metric b{display:block;font-size:27px;color:#55efb4;margin-top:4px}.ej-metric span{font-size:11px;color:#8faeb5;text-transform:uppercase;letter-spacing:.8px}
+.ej-access{margin-top:20px;padding:18px;border-radius:16px;background:#102d34;border:1px solid #2c5a63}.ej-links a{color:#55efb4;font-weight:800;text-decoration:none}
+@media(max-width:900px){.ej-grid{grid-template-columns:1fr}.ej-controls{grid-template-columns:1fr}}
+</style>
+<section id="earthJukebox">
+<div class="ej-wrap">
+<div class="ej-kicker">🎧 NASA SPACE APPS 2026 • EARTH INFORMATION JUKEBOX</div>
+<h2 class="ej-title">🌍 Hear the Changing Earth</h2>
+<p class="ej-subtitle">Turn Earth-system information into a live audio experience. Change the values below and hear the visualization respond in real time.</p>
+<div class="ej-grid">
+<div class="ej-card">
+<h3>🎼 Earth Data → Sound</h3>
+<p class="small-note" style="color:#9fb7bd">Educational sonification demo: CO₂ controls pitch, temperature controls intensity, and methane controls rhythm. It is not a scientific forecast.</p>
+<canvas id="ejCanvas" aria-label="Earth data sonification visualization"></canvas>
+<div class="ej-controls">
+<div class="ej-control"><label>CO₂ <strong id="ejCo2Value">429 ppm</strong></label><input id="ejCo2" type="range" min="300" max="500" value="429"></div>
+<div class="ej-control"><label>Temperature <strong id="ejTempValue">+1.19°C</strong></label><input id="ejTemp" type="range" min="-1" max="4" step=".01" value="1.19"></div>
+<div class="ej-control"><label>Methane <strong id="ejCh4Value">1938 ppb</strong></label><input id="ejCh4" type="range" min="1500" max="2200" value="1938"></div>
+</div>
+<div class="ej-buttons">
+<button class="btn btn-success" id="ejPlay">▶ Start Earth Jukebox</button>
+<button class="btn btn-outline-light" id="ejPause">⏸ Pause</button>
+<button class="btn btn-outline-info" id="ejReset">↺ Reset</button>
+</div>
+<div class="ej-status" id="ejStatus">🔊 Press Start Earth Jukebox to enable browser audio.</div>
+</div>
+<div class="ej-card">
+<h3>🛰️ Earth Signal Monitor</h3>
+<p style="color:#9fb7bd">A multi-sensory layer for the climate dashboard, inspired directly by the challenge's visual-to-audio concept.</p>
+<div class="ej-metric"><span>Atmospheric CO₂</span><b id="ejCo2Readout">429 ppm</b></div>
+<div class="ej-metric"><span>Temperature anomaly</span><b id="ejTempReadout">+1.19°C</b></div>
+<div class="ej-metric"><span>Atmospheric methane</span><b id="ejCh4Readout">1938 ppb</b></div>
+<div class="ej-metric"><span>Sonification frequency</span><b id="ejFreqReadout">— Hz</b></div>
+<div class="ej-access"><strong>♿ Multi-sensory science</strong><p class="mb-0 mt-2" style="color:#b9d0d5">Sound provides another way to experience changing Earth-system information alongside visual charts.</p></div>
+<div class="ej-links mt-4"><a href="https://www.spaceappschallenge.org/2026/challenges/the-earth-information-jukebox/" target="_blank" rel="noopener">Official NASA Space Apps challenge ↗</a></div>
+</div>
+</div>
+</div>
+</section>
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id),co2=$("ejCo2"),temp=$("ejTemp"),ch4=$("ejCh4"),canvas=$("ejCanvas"),ctx=canvas.getContext("2d");
+let audioCtx=null,osc=null,gain=null,playing=false,lastBeat=0,pulse=0;
+function resize(){const d=window.devicePixelRatio||1,r=canvas.getBoundingClientRect();canvas.width=r.width*d;canvas.height=r.height*d;ctx.setTransform(d,0,0,d,0,0)}
+function vals(){return{co2:+co2.value,temp:+temp.value,ch4:+ch4.value}}
+function freq(v){return 180+(v.co2-300)/200*620}
+function update(){
+ const v=vals(),f=freq(v);
+ $("ejCo2Value").textContent=v.co2+" ppm";$("ejTempValue").textContent=(v.temp>=0?"+":"")+v.temp.toFixed(2)+"°C";$("ejCh4Value").textContent=v.ch4+" ppb";
+ $("ejCo2Readout").textContent=v.co2+" ppm";$("ejTempReadout").textContent=(v.temp>=0?"+":"")+v.temp.toFixed(2)+"°C";$("ejCh4Readout").textContent=v.ch4+" ppb";$("ejFreqReadout").textContent=Math.round(f)+" Hz";
+ if(osc&&audioCtx){osc.frequency.setTargetAtTime(f,audioCtx.currentTime,.03);gain.gain.setTargetAtTime(.012+Math.max(0,v.temp+1)/5*.025,audioCtx.currentTime,.08)}
+}
+function draw(t){
+ const w=canvas.clientWidth,h=canvas.clientHeight,v=vals(),tn=Math.max(0,Math.min(1,(v.temp+1)/5)),cn=(v.co2-300)/200,mn=(v.ch4-1500)/700;
+ ctx.clearRect(0,0,w,h);ctx.fillStyle="#041017";ctx.fillRect(0,0,w,h);
+ const g=ctx.createRadialGradient(w*.5,h*.5,20,w*.5,h*.5,Math.min(w,h)*.5);g.addColorStop(0,"rgba(66,230,165,.22)");g.addColorStop(1,"rgba(66,230,165,0)");ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+ const r=Math.min(w,h)*.20+tn*18,x=w*.5,y=h*.5;ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle="rgba(50,145,190,.65)";ctx.fill();
+ for(let i=0;i<9;i++){let a=t*.00025*(1+i*.08)+i*.7,rr=r+25+i*12+cn*35;ctx.beginPath();ctx.arc(x+Math.cos(a)*rr,y+Math.sin(a)*rr*.55,2+mn*5,0,7);ctx.fillStyle="rgba(85,239,180,"+(.25+i*.06)+")";ctx.fill()}
+ ctx.strokeStyle="rgba(85,239,180,.32)";ctx.lineWidth=2;for(let i=1;i<5;i++){ctx.beginPath();ctx.arc(x,y,r+i*28+Math.sin(t*.001+i)*8,0,7);ctx.stroke()}
+ ctx.textAlign="center";ctx.fillStyle="#dffcff";ctx.font="700 14px Arial";ctx.fillText("EARTH DATA SONIFICATION",x,28);ctx.font="12px Arial";ctx.fillStyle="#9fb7bd";ctx.fillText("CO₂ → pitch  •  temperature → intensity  •  methane → rhythm",x,h-18);
+ if(playing&&t-lastBeat>1000/(2.2+mn*5)){pulse=1;lastBeat=t} pulse*=.92;ctx.beginPath();ctx.arc(x,y,r+12+pulse*18,0,7);ctx.strokeStyle="rgba(85,239,180,"+(.25+pulse*.5)+")";ctx.lineWidth=3;ctx.stroke();
+ requestAnimationFrame(draw)
+}
+async function start(){
+ try{if(!audioCtx){audioCtx=new(window.AudioContext||window.webkitAudioContext)();osc=audioCtx.createOscillator();gain=audioCtx.createGain();osc.type="sine";gain.gain.value=.018;osc.connect(gain);gain.connect(audioCtx.destination);osc.start()}if(audioCtx.state==="suspended")await audioCtx.resume();playing=true;$("ejStatus").textContent="🔊 Earth Jukebox is playing — move the sliders to change the sound.";update()}catch(e){$("ejStatus").textContent="Audio could not start. Click Start again."}}
+function pause(){playing=false;if(audioCtx)audioCtx.suspend();$("ejStatus").textContent="⏸ Paused."}
+function reset(){co2.value=429;temp.value=1.19;ch4.value=1938;update();$("ejStatus").textContent=playing?"🔊 Reset to baseline values.":"🔊 Press Start Earth Jukebox to enable browser audio."}
+[co2,temp,ch4].forEach(e=>e.addEventListener("input",update));$("ejPlay").onclick=start;$("ejPause").onclick=pause;$("ejReset").onclick=reset;window.addEventListener("resize",resize);resize();update();requestAnimationFrame(draw)
+})();
+</script>
+<!-- ================= END NASA EARTH INFORMATION JUKEBOX ================= -->
+
+<!-- ================= ADVANCED CLIMATE ACTION LAB ================= -->
+ <section id="actionLab" class="container-fluid py-5 advanced-lab">
+     <div class="container">
+         <div class="lab-header">
+             <div>
+                 <span class="lab-kicker">⚡ ADVANCED CLIMATE LAB</span>
+                 <h2 class="section-title mb-2">Climate Action Command Center</h2>
+                 <p class="section-subtitle mb-0">
+                     Run simple climate scenarios, track actions and see how your choices change an educational score.
+                 </p>
+             </div>
+             <div class="lab-live"><span class="pulse"></span> LIVE SIMULATION</div>
+         </div>
+         <div class="row g-4 mt-2">
+             <div class="col-xl-8">
+                 <div class="lab-card h-100">
+                     <div class="lab-card-head">
+                         <div>
+                             <h3>🌍 Scenario Simulator</h3>
+                             <p>Adjust the controls and press <b>Run Simulation</b>.</p>
+                         </div>
+                         <span id="scenarioBadge" class="scenario-badge">Baseline</span>
+                     </div>
+                     <div class="scenario-grid">
+                         <div class="scenario-control">
+                             <label>🌡️ Temperature change <strong id="scenarioTempValue">+1.2°C</strong></label>
+                             <input id="scenarioTemp" type="range" min="-1" max="4" step="0.1" value="1.2">
+                             <div class="range-labels"><span>-1°C</span><span>+4°C</span></div>
+                         </div>
+                         <div class="scenario-control">
+                             <label>🌳 Forest protection <strong id="forestValue">50%</strong></label>
+                             <input id="forestSlider" type="range" min="0" max="100" value="50">
+                             <div class="range-labels"><span>0%</span><span>100%</span></div>
+                         </div>
+                         <div class="scenario-control">
+                             <label>⚡ Clean energy <strong id="energyValue">50%</strong></label>
+                             <input id="energySlider" type="range" min="0" max="100" value="50">
+                             <div class="range-labels"><span>0%</span><span>100%</span></div>
+                         </div>
+                         <div class="scenario-control">
+                             <label>🚆 Cleaner transport <strong id="transportValue">50%</strong></label>
+                             <input id="transportSlider" type="range" min="0" max="100" value="50">
+                             <div class="range-labels"><span>0%</span><span>100%</span></div>
+                         </div>
+                     </div>
+                     <div class="lab-actions">
+                         <button class="btn btn-success btn-lg" onclick="runClimateSimulation()">▶ Run Simulation</button>
+                         <button class="btn btn-outline-secondary" onclick="resetAdvancedLab()">Reset</button>
+                     </div>
+                     <div id="simulationOutput" class="simulation-output">
+                         <div class="sim-score">72</div>
+                         <div>
+                             <strong>Baseline climate action score</strong>
+                             <p class="mb-0 small-note">This is an educational simulation, not a scientific forecast.</p>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+             <div class="col-xl-4">
+                 <div class="lab-card h-100">
+                     <div class="lab-card-head">
+                         <div>
+                             <h3>📊 Climate Pulse</h3>
+                             <p>Quick indicators from this page.</p>
+                         </div>
+                     </div>
+                     <div class="pulse-grid">
+                         <div class="pulse-stat">
+                             <span>CO₂</span>
+                             <b data-counter="429">0</b>
+                             <small>ppm</small>
+                         </div>
+                         <div class="pulse-stat">
+                             <span>Temperature</span>
+                             <b data-counter="1.19" data-decimals="2">0</b>
+                             <small>°C anomaly</small>
+                         </div>
+                         <div class="pulse-stat">
+                             <span>Methane</span>
+                             <b data-counter="1938">0</b>
+                             <small>ppb</small>
+                         </div>
+                         <div class="pulse-stat">
+                             <span>Actions</span>
+                             <b id="actionCount">0</b>
+                             <small>completed</small>
+                         </div>
+                     </div>
+                     <div class="lab-mini-note">
+                         <strong>💡 Tip</strong>
+                         <p class="mb-0">Small actions become more meaningful when combined with large-scale changes in energy, transport, buildings and land use.</p>
+                     </div>
+                 </div>
+             </div>
+         </div>
+         <div class="row g-4 mt-1">
+             <div class="col-lg-7">
+                 <div class="lab-card">
+                     <div class="lab-card-head">
+                         <div>
+                             <h3>🌱 Climate Action Checklist</h3>
+                             <p>Your progress is saved in this browser.</p>
+                         </div>
+                         <span id="actionProgressText" class="result-pill">0 / 8</span>
+                     </div>
+                     <div class="action-list" id="actionChecklist">
+                         <label><input type="checkbox" data-action="LED / efficient lighting"> <span>Use efficient lighting</span></label>
+                         <label><input type="checkbox" data-action="Save electricity"> <span>Reduce unnecessary electricity use</span></label>
+                         <label><input type="checkbox" data-action="Public transport"> <span>Choose walking, cycling or public transport when practical</span></label>
+                         <label><input type="checkbox" data-action="Reduce waste"> <span>Reduce, reuse and recycle materials</span></label>
+                         <label><input type="checkbox" data-action="Protect trees"> <span>Protect trees and local green spaces</span></label>
+                         <label><input type="checkbox" data-action="Food waste"> <span>Reduce avoidable food waste</span></label>
+                         <label><input type="checkbox" data-action="Learn climate"> <span>Learn from reliable climate sources</span></label>
+                         <label><input type="checkbox" data-action="Share knowledge"> <span>Share useful climate information responsibly</span></label>
+                     </div>
+                 </div>
+             </div>
+             <div class="col-lg-5">
+                 <div class="lab-card">
+                     <div class="lab-card-head">
+                         <div>
+                             <h3>🧮 Personal Impact Estimator</h3>
+                             <p>Illustrative monthly estimate.</p>
+                         </div>
+                     </div>
+                     <div class="row g-3">
+                         <div class="col-6">
+                             <label class="form-label">Car km / month</label>
+                             <input id="carKm" class="form-control" type="number" min="0" value="300">
+                         </div>
+                         <div class="col-6">
+                             <label class="form-label">Electricity kWh / month</label>
+                             <input id="electricityKwh" class="form-control" type="number" min="0" value="150">
+                         </div>
+                         <div class="col-6">
+                             <label class="form-label">Flights / year</label>
+                             <input id="flightsYear" class="form-control" type="number" min="0" value="0">
+                         </div>
+                         <div class="col-6">
+                             <label class="form-label">Waste kg / month</label>
+                             <input id="wasteKg" class="form-control" type="number" min="0" value="10">
+                         </div>
+                     </div>
+                     <button class="btn btn-dark w-100 mt-3" onclick="calculatePersonalImpact()">Calculate Estimate</button>
+                     <div id="personalImpactResult" class="impact-result mt-3">
+                         Enter values and calculate an illustrative estimate.
+                     </div>
+                     <p class="small-note mt-2 mb-0">
+                         Estimates use simple assumptions for education only; actual emissions depend on location, energy mix, vehicle, travel and waste systems.
+                     </p>
+                 </div>
+             </div>
+         </div>
+     </div>
+ </section>
+ <br>
+
+<br>
+ <!-- ================= CLIMATE TIMELINE ================= -->
+ <section class="container py-5">
+     <div class="light-card p-4 p-md-5">
+         <div class="text-center mb-4">
+             <span class="lab-kicker">📚 LEARN</span>
+             <h2 class="section-title">Climate Change Timeline</h2>
+             <p class="section-subtitle">A simple visual journey through major climate-science milestones.</p>
+         </div>
+         <div class="timeline">
+             <div class="timeline-item">
+                 <span>1824</span>
+                 <div><h4>Greenhouse effect described</h4><p>Scientists began explaining how atmospheric gases can affect Earth's temperature.</p></div>
+             </div>
+             <div class="timeline-item">
+                 <span>1958</span>
+                 <div><h4>Continuous CO₂ measurements</h4><p>Long-term atmospheric CO₂ monitoring became a powerful way to track change.</p></div>
+             </div>
+             <div class="timeline-item">
+                 <span>1970s+</span>
+                 <div><h4>Earth observation expands</h4><p>Satellites increasingly enabled global observations of atmosphere, oceans, land and ice.</p></div>
+             </div>
+             <div class="timeline-item">
+                 <span>Today</span>
+                 <div><h4>Climate science combines many systems</h4><p>Modern research uses observations, models and multiple independent datasets to understand Earth's climate.</p></div>
+             </div>
+         </div>
+     </div>
+ </section>
+ <div class="container">
+     <div class="row g-4">
+         <!-- MARS -->
+         <div class="col-md-4">
+             <div class="card h-100">
+                 <div class="card-body text-center">
+                     <h3>Mars</h3>
+                     <p>Explore the Red Planet.</p>
+                     <a href="mars.html" class="btn btn-danger">
+                         Explore Mars
+                     </a>
+                 </div>
+             </div>
+         </div>
+         <!-- JUPITER -->
+         <div class="col-md-4">
+             <div class="card h-100">
+                 <div class="card-body text-center">
+                     <h3>Jupiter</h3>
+                     <p>Explore the Gas Giant.</p>
+                     <a href="jupiter.html" class="btn btn-warning">
+                         Explore Jupiter
+                     </a>
+                 </div>
+             </div>
+         </div>
+         <!-- URANUS -->
+         <div class="col-md-4">
+             <div class="card h-100">
+                 <div class="card-body text-center">
+                     <h3>Uranus</h3>
+                     <p>Explore the blue-green ice giant.</p>
+                     <a href="uranus.html" class="btn btn-info">
+                         Explore Uranus
+                     </a>
+                 </div>
+             </div>
+         </div>
+               <div class="col-md-4">
+             <div class="card h-100">
+                 <div class="card-body text-center">
+                     <h3>neptune</h3>
+                     <p>Explore the blue-green ice giant.</p>
+                     <a href="neptune.html" class="btn btn-info">
+                         Explore neptune
+                     </a>
+                 </div>
+             </div>
+         </div>
+         <div class="col-md-4">
+             <div class="card h-100">
+                 <div class="card-body text-center">
+                     <h3>SUM</h3>
+                     <p>Explore the SUN giant.</p>
+                     <a href="sun.html" class="btn btn-info">
+                         Explore sun
+                     </a>
+                 </div>
+             </div>
+         </div>
+     </div>
+ </div>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <div class="solar-card">
+     <h2>🌌 Solar System</h2>
+     <p>Explore the Solar System in 3D</p>
+     <a href="3dview.html" class="view-btn">
+         🚀 Click to View 3D of Solar System
+     </a>
+ </div>
+ <style>
+ .solar-card {
+     width: 90%;
+     max-width: 700px;
+     margin: 100px auto;
+     padding: 45px;
+     text-align: center;
+     background: linear-gradient(135deg, #07152e, #101b3d);
+     border-radius: 25px;
+     color: white;
+     box-shadow: 0 0 40px rgba(0, 150, 255, .35);
+ }
+ .solar-card h2 {
+     font-size: 36px;
+     margin-bottom: 10px;
+ }
+ .solar-card p {
+     color: #b9c7e8;
+     font-size: 18px;
+     margin-bottom: 30px;
+ }
+ .view-btn {
+     display: inline-block;
+     padding: 16px 28px;
+     background: #168cff;
+     color: white;
+     text-decoration: none;
+     border-radius: 12px;
+     font-size: 18px;
+     font-weight: bold;
+     transition: .3s;
+ }
+ .view-btn:hover {
+     transform: scale(1.06);
+     box-shadow: 0 0 25px #168cff;
+ }
+ </style>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <div class="solar-card">
+     <h2>🌌 GALAXY System</h2>
+     <p>Explore the GALAXY System in 3D</p>
+     <a href="GALXY.HTML" class="view-btn">
+         🚀 Click to View 3D of GALAXY System
+     </a>
+ </div>
+ <style>
+ .solar-card {
+     width: 90%;
+     max-width: 700px;
+     margin: 100px auto;
+     padding: 45px;
+     text-align: center;
+     background: linear-gradient(135deg, #07152e, #101b3d);
+     border-radius: 25px;
+     color: white;
+     box-shadow: 0 0 40px rgba(0, 150, 255, .35);
+ }
+ .solar-card h2 {
+     font-size: 36px;
+     margin-bottom: 10px;
+ }
+ .solar-card p {
+     color: #b9c7e8;
+     font-size: 18px;
+     margin-bottom: 30px;
+ }
+ .view-btn {
+     display: inline-block;
+     padding: 16px 28px;
+     background: #168cff;
+     color: white;
+     text-decoration: none;
+     border-radius: 12px;
+     font-size: 18px;
+     font-weight: bold;
+     transition: .3s;
+ }
+ .view-btn:hover {
+     transform: scale(1.06);
+     box-shadow: 0 0 25px #168cff;
+ }
+ </style>
+ <h1>☀️ A View of the Sun</h1>
+     <video controls autoplay muted loop>
+         <source src="sunview.mp4" type="video/mp4">
+         Your browser does not support the video.
+     </video>
+     <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <div class="solar-card">
+     <h2>🌌 hubble System</h2>
+     <p>Explore the Solar System in 3D</p>
+     <a href="hubble.html" class="view-btn">
+         🚀 Click to View 3D of hubble
+     </a>
+ </div>
+ <style>
+ .solar-card {
+     width: 90%;
+     max-width: 700px;
+     margin: 100px auto;
+     padding: 45px;
+     text-align: center;
+     background: linear-gradient(135deg, #07152e, #101b3d);
+     border-radius: 25px;
+     color: white;
+     box-shadow: 0 0 40px rgba(0, 150, 255, .35);
+ }
+ .solar-card h2 {
+     font-size: 36px;
+     margin-bottom: 10px;
+ }
+ .solar-card p {
+     color: #b9c7e8;
+     font-size: 18px;
+     margin-bottom: 30px;
+ }
+ .view-btn {
+     display: inline-block;
+     padding: 16px 28px;
+     background: #168cff;
+     color: white;
+     text-decoration: none;
+     border-radius: 12px;
+     font-size: 18px;
+     font-weight: bold;
+     transition: .3s;
+ }
+ .view-btn:hover {
+     transform: scale(1.06);
+     box-shadow: 0 0 25px #168cff;
+ }
+ </style>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <div class="solar-card">
+     <h2>🌌 Solar System</h2>
+     <p>Explore the Solar System in 3D</p>
+     <a href="3dview.html" class="view-btn">
+         🚀 Click to View 3D of Solar System
+     </a>
+ </div>
+ <style>
+ .solar-card {
+     width: 90%;
+     max-width: 700px;
+     margin: 100px auto;
+     padding: 45px;
+     text-align: center;
+     background: linear-gradient(135deg, #07152e, #101b3d);
+     border-radius: 25px;
+     color: white;
+     box-shadow: 0 0 40px rgba(0, 150, 255, .35);
+ }
+ .solar-card h2 {
+     font-size: 36px;
+     margin-bottom: 10px;
+ }
+ .solar-card p {
+     color: #b9c7e8;
+     font-size: 18px;
+     margin-bottom: 30px;
+ }
+ .view-btn {
+     display: inline-block;
+     padding: 16px 28px;
+     background: #168cff;
+     color: white;
+     text-decoration: none;
+     border-radius: 12px;
+     font-size: 18px;
+     font-weight: bold;
+     transition: .3s;
+ }
+ .view-btn:hover {
+     transform: scale(1.06);
+     box-shadow: 0 0 25px #168cff;
+ }
+ </style>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <div class="solar-card">
+     <h2>🌌 astoried System</h2>
+     <p>Explore the Solar System in 3D</p>
+     <a href="ASTORIED.html" class="view-btn">
+         🚀 Click to View 3D of Solar System
+     </a>
+ </div>
+ <style>
+ .solar-card {
+     width: 90%;
+     max-width: 700px;
+     margin: 100px auto;
+     padding: 45px;
+     text-align: center;
+     background: linear-gradient(135deg, #07152e, #101b3d);
+     border-radius: 25px;
+     color: white;
+     box-shadow: 0 0 40px rgba(0, 150, 255, .35);
+ }
+ .solar-card h2 {
+     font-size: 36px;
+     margin-bottom: 10px;
+ }
+ .solar-card p {
+     color: #b9c7e8;
+     font-size: 18px;
+     margin-bottom: 30px;
+ }
+ .view-btn {
+     display: inline-block;
+     padding: 16px 28px;
+     background: #168cff;
+     color: white;
+     text-decoration: none;
+     border-radius: 12px;
+     font-size: 18px;
+     font-weight: bold;
+     transition: .3s;
+ }
+ .view-btn:hover {
+     transform: scale(1.06);
+     box-shadow: 0 0 25px #168cff;
+ }
+ </style>
+ <div class="solar-card">
+     <h2>🌌 astoried System</h2>
+     <p>Explore the Solar System in 3D</p>
+     <a href="ASTORIED.html" class="view-btn">
+         🚀 Click to View 3D of Solar System
+     </a>
+ </div>
+ <style>
+ .solar-card {
+     width: 90%;
+     max-width: 700px;
+     margin: 100px auto;
+     padding: 45px;
+     text-align: center;
+     background: linear-gradient(135deg, #07152e, #101b3d);
+     border-radius: 25px;
+     color: white;
+     box-shadow: 0 0 40px rgba(0, 150, 255, .35);
+ }
+ .solar-card h2 {
+     font-size: 36px;
+     margin-bottom: 10px;
+ }
+ .solar-card p {
+     color: #b9c7e8;
+     font-size: 18px;
+     margin-bottom: 30px;
+ }
+ .view-btn {
+     display: inline-block;
+     padding: 16px 28px;
+     background: #168cff;
+     color: white;
+     text-decoration: none;
+     border-radius: 12px;
+     font-size: 18px;
+     font-weight: bold;
+     transition: .3s;
+ }
+ .view-btn:hover {
+     transform: scale(1.06);
+     box-shadow: 0 0 25px #168cff;
+ }
+ </style>
+ <div style="text-align: center; padding: 50px; background: black;">
+     <a href="game.html"
+        target="_blank"
+        rel="noopener noreferrer"
+        style="
+            display: inline-block;
+            background: #198754;
+            color: white;
+            padding: 15px 30px;
+            font-size: 22px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 10px;
+        ">
+         🎮 Play Open World Game
+     </a>
+ </div>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <style>
+ .solar-card {
+     width: 90%;
+     max-width: 700px;
+     margin: 100px auto;
+     padding: 45px;
+     text-align: center;
+     background: linear-gradient(135deg, #07152e, #101b3d);
+     border-radius: 25px;
+     color: white;
+     box-shadow: 0 0 40px rgba(0, 150, 255, .35);
+ }
+ .solar-card h2 {
+     font-size: 36px;
+     margin-bottom: 10px;
+ }
+ .solar-card p {
+     color: #b9c7e8;
+     font-size: 18px;
+     margin-bottom: 30px;
+ }
+ .view-btn {
+     display: inline-block;
+     padding: 16px 28px;
+     background: #168cff;
+     color: white;
+     text-decoration: none;
+     border-radius: 12px;
+     font-size: 18px;
+     font-weight: bold;
+     transition: .3s;
+ }
+ .view-btn:hover {
+     transform: scale(1.06);
+     box-shadow: 0 0 25px #168cff;
+ }
+ </style>
+ <div class="solar-card">
+     <h2>🌌 astoried System</h2>
+     <p>Explore the Solar System in 3D</p>
+     <a href="ASTORIED.html" class="view-btn">
+         🚀 Click to View 3D of Solar System
+     </a>
+ </div>
+ <style>
+ .solar-card {
+     width: 90%;
+     max-width: 700px;
+     margin: 100px auto;
+     padding: 45px;
+     text-align: center;
+     background: linear-gradient(135deg, #07152e, #101b3d);
+     border-radius: 25px;
+     color: white;
+     box-shadow: 0 0 40px rgba(0, 150, 255, .35);
+ }
+ .solar-card h2 {
+     font-size: 36px;
+     margin-bottom: 10px;
+ }
+ .solar-card p {
+     color: #b9c7e8;
+     font-size: 18px;
+     margin-bottom: 30px;
+ }
+ .view-btn {
+     display: inline-block;
+     padding: 16px 28px;
+     background: #168cff;
+     color: white;
+     text-decoration: none;
+     border-radius: 12px;
+     font-size: 18px;
+     font-weight: bold;
+     transition: .3s;
+ }
+ .view-btn:hover {
+     transform: scale(1.06);
+     box-shadow: 0 0 25px #168cff;
+ }
+ </style>
+ <div style="text-align: center; padding: 50px; background: black;">
+     <a href="game2.html"
+        target="_blank"
+        rel="noopener noreferrer"
+        style="
+            display: inline-block;
+            background: #198754;
+            color: white;
+            padding: 15px 30px;
+            font-size: 22px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 10px;
+        ">
+         🎮 Play Open World Game future
+     </a>
+ </div>
+     <!-- ================= STORIES ================= -->
+     <section class="container py-5">
+         <h2 class="section-title">
+             📰 Latest & Featured Stories
+         </h2>
+         <div class="row mt-3">
+             <div class="col-lg-4 mb-4 news-card">
+                 <div class="info-card overflow-hidden h-100">
+                     <img src="img.jpg" alt="Climate story">
+                     <div class="p-4">
+                         <h4>Climate Observation</h4>
+                         <p>
+                             Explore how Earth-observing systems help scientists
+                             track changes over time.
+                         </p>
+                     </div>
+                 </div>
+                 </div>
+                 <br>
+                 <br>
+                 <br>
+                 <br>
+                 <br>
+                 <div class="col-lg-4 mb-4 news-card">
+                     <div class="info-card overflow-hidden h-100">
+                         <img src="Caribou.jpg" alt="Caribou">
+                         <div class="p-4">
+                             <h4>Climate & Ecosystems</h4>
+                             <p>
+                                 Climate conditions influence habitats, migration,
+                                 vegetation and ecosystem health.
+                             </p>
+                         </div>
+                     </div>
+                 </div>
+                 <div class="col-lg-4 mb-4 news-card">
+                     <div class="info-card overflow-hidden h-100">
+                         <img src="barnesicecapwide_oli2_20260712_th.jpg" alt="Barnes Ice Cap">
+                         <div class="p-4">
+                             <h4>Barnes Ice Cap</h4>
+                             <p>
+                                 Ice observations provide a visual record of changes
+                                 in the cryosphere.
+                             </p>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+     </section>
+     <!-- ================= COMPLETE TREE IMPACT CALCULATOR ================= -->
+ <section class="container py-5">
+     <div class="calculator-box p-4 p-md-5">
+         <div class="row g-4">
+             <!-- ================= LEFT SIDE ================= -->
+             <div class="col-lg-5">
+                 <span class="tree-badge">🌍 CLIMATE CALCULATOR</span>
+                 <h2 class="tree-title">
+                     🌳 Tree Impact Calculator
+                 </h2>
+                 <p class="section-subtitle">
+                     Estimate the environmental impact of planting,
+                     cutting, or burning trees.
+                 </p>
+                 <!-- ACTION -->
+                 <label class="tree-label">
+                     Select an action
+                 </label>
+                 <select id="action" class="form-control tree-input mb-3">
+                     <option value="">
+                         Select an option
+                     </option>
+                     <option value="plant">
+                         🌱 Plant a Tree
+                     </option>
+                     <option value="cut">
+                         🪓 Cut a Tree
+                     </option>
+                     <option value="burn">
+                         🔥 Burn Wood
+                     </option>
+                 </select>
+                 <!-- NUMBER OF TREES -->
+                 <label class="tree-label">
+                     Number of trees
+                 </label>
+                 <input
+                     type="number"
+                     id="trees"
+                     min="1"
+                     max="100000"
+                     class="form-control tree-input mb-3"
+                     placeholder="Enter number of trees"
+                 >
+                 <!-- CALCULATE -->
+                 <button
+                     onclick="calculateTreeImpact()"
+                     class="btn tree-calculate-btn">
+                     Calculate Impact 🌍
+                 </button>
+                 <div class="tree-info">
+                     <strong>⚠️ Educational estimate</strong>
+                     <p>
+                         Actual oxygen production, carbon storage and
+                         emissions vary by species, tree size, age,
+                         moisture, climate and other conditions.
+                     </p>
+                 </div>
+             </div>
+             <!-- ================= RIGHT SIDE ================= -->
+             <div class="col-lg-7">
+                 <div
+                     id="treeResult"
+                     class="tree-result">
+                     <div class="result-placeholder">
+                         <div class="result-icon">
+                             🌳
+                         </div>
+                         <h3>Your Result</h3>
+                         <p>
+                             Select an action and enter the number
+                             of trees to see the estimated impact.
+                         </p>
+                     </div>
+                 </div>
+             </div>
+         </div>
+     </div>
+ </section>
+ <!-- ================= STYLE ================= -->
+ <style>
+ .calculator-box{
+     background:
+         linear-gradient(
+             135deg,
+             #071b14,
+             #0c3327
+         );
+     border:1px solid #245744;
+     border-radius:28px;
+     color:white;
+     box-shadow:
+         0 20px 60px rgba(0,0,0,.25);
+ }
+ .tree-badge{
+     display:inline-block;
+     padding:7px 14px;
+     border-radius:30px;
+     background:#123e31;
+     color:#54e9aa;
+     font-size:12px;
+     font-weight:bold;
+     letter-spacing:1px;
+     margin-bottom:15px;
+ }
+ .tree-title{
+     font-size:clamp(32px,4vw,48px);
+     font-weight:800;
+     margin-bottom:12px;
+ }
+ .section-subtitle{
+     color:#aec4ba;
+     line-height:1.7;
+     margin-bottom:28px;
+ }
+ .tree-label{
+     display:block;
+     color:#d5e5df;
+     font-size:14px;
+     font-weight:bold;
+     margin-bottom:7px;
+ }
+ .tree-input{
+     background:#071a13 !important;
+     color:white !important;
+     border:1px solid #315c4d !important;
+     border-radius:12px !important;
+     padding:13px !important;
+ }
+ .tree-input:focus{
+     border-color:#45e7a5 !important;
+     box-shadow:
+         0 0 0 3px rgba(69,231,165,.12) !important;
+ }
+ .tree-calculate-btn{
+     width:100%;
+     padding:14px;
+     border:none;
+     border-radius:13px;
+     background:
+         linear-gradient(
+             135deg,
+             #18a875,
+             #42e6a5
+         );
+     color:#062117;
+     font-weight:800;
+     font-size:16px;
+     transition:.3s;
+ }
+ .tree-calculate-btn:hover{
+     transform:translateY(-2px);
+     box-shadow:
+         0 10px 25px rgba(66,230,165,.2);
+ }
+ .tree-info{
+     margin-top:20px;
+     padding:15px;
+     border-radius:14px;
+     background:rgba(255,255,255,.04);
+     border-left:3px solid #45e7a5;
+     color:#aebfb8;
+     font-size:13px;
+     line-height:1.6;
+ }
+ .tree-info p{
+     margin:6px 0 0;
+ }
+ /* ================= RESULT ================= */
+ .tree-result{
+     min-height:100%;
+     padding:28px;
+     border-radius:22px;
+     background:
+         radial-gradient(
+             circle at top right,
+             #164b3a,
+             #091e17
+         );
+     border:1px solid #2c604f;
+ }
+ .result-placeholder{
+     height:100%;
+     min-height:360px;
+     display:flex;
+     flex-direction:column;
+     align-items:center;
+     justify-content:center;
+     text-align:center;
+     color:#a9bdb5;
+ }
+ .result-placeholder h3{
+     color:white;
+     margin:15px 0 8px;
+ }
+ .result-placeholder p{
+     max-width:400px;
+     line-height:1.6;
+ }
+ .result-icon{
+     width:80px;
+     height:80px;
+     display:flex;
+     align-items:center;
+     justify-content:center;
+     border-radius:50%;
+     background:#123d30;
+     font-size:38px;
+ }
+ /* ================= RESULT HEADER ================= */
+ .result-header{
+     display:flex;
+     align-items:center;
+     gap:15px;
+     margin-bottom:25px;
+ }
+ .result-header-icon{
+     width:55px;
+     height:55px;
+     display:flex;
+     align-items:center;
+     justify-content:center;
+     border-radius:15px;
+     background:#164a39;
+     font-size:28px;
+ }
+ .result-header h3{
+     margin:0;
+     font-size:24px;
+ }
+ .result-header p{
+     margin:3px 0 0;
+     color:#9db5ab;
+     font-size:13px;
+ }
+ /* ================= RESULT CARDS ================= */
+ .impact-results{
+     display:grid;
+     grid-template-columns:
+         repeat(2,1fr);
+     gap:15px;
+ }
+ .impact-card{
+     padding:20px;
+     border-radius:17px;
+     background:rgba(255,255,255,.045);
+     border:1px solid #24483d;
+ }
+ .impact-icon{
+     font-size:25px;
+     margin-bottom:10px;
+ }
+ .impact-label{
+     color:#9fb6ad;
+     font-size:13px;
+     margin-bottom:7px;
+ }
+ .impact-value{
+     color:#48e8a7;
+     font-size:25px;
+     font-weight:800;
+ }
+ .impact-unit{
+     color:#839c92;
+     font-size:12px;
+ }
+ /* ================= TOTAL ================= */
+ .impact-total{
+     margin-top:18px;
+     padding:20px;
+     border-radius:17px;
+     background:#10382b;
+     border:1px solid #2c6753;
+ }
+ .impact-total-title{
+     color:#9db7ad;
+     font-size:13px;
+     margin-bottom:6px;
+ }
+ .impact-total-number{
+     font-size:32px;
+     font-weight:900;
+     color:#58efb2;
+ }
+ /* ================= WARNING ================= */
+ .impact-warning{
+     margin-top:18px;
+     padding:15px;
+     border-radius:13px;
+     background:rgba(255,190,50,.07);
+     border-left:3px solid #e8bd55;
+     color:#d8c995;
+     font-size:13px;
+     line-height:1.6;
+ }
+ /* ================= MOBILE ================= */
+ @media(max-width:600px){
+     .tree-result{
+         padding:20px;
+     }
+     .impact-results{
+         grid-template-columns:1fr;
+     }
+     .tree-title{
+         font-size:34px;
+     }
+ }
+ </style>
+ 
+ <!-- ============== END TREE CALCULATOR ============== -->
+     <!-- World climate map removed: no external map tiles/services are used. -->
+ <br>
+ <!-- Global emissions map removed: no external map tiles/services are used. -->
+ <br>
+ <!-- =========================================================
+      ADVANCED CLIMATE AI
+      Replace your OLD Climate AI block with this entire block
+ ========================================================= -->
+ <style>
+ #climateAIButton{
+     position:fixed;
+     right:22px;
+     bottom:85px;
+     width:66px;
+     height:66px;
+     border:0;
+     border-radius:50%;
+     background:linear-gradient(135deg,#063f31,#19c98a);
+     color:white;
+     font-size:29px;
+     cursor:pointer;
+     z-index:99999;
+     box-shadow:0 10px 35px rgba(0,0,0,.35);
+     transition:.25s;
+ }
+ #climateAIButton:hover{
+     transform:scale(1.1) rotate(4deg);
+ }
+ #climateAI{
+     position:fixed;
+     right:22px;
+     bottom:160px;
+     width:390px;
+     max-width:calc(100vw - 24px);
+     height:620px;
+     background:#fff;
+     border-radius:24px;
+     overflow:hidden;
+     display:none;
+     flex-direction:column;
+     z-index:99998;
+     box-shadow:0 25px 70px rgba(0,0,0,.35);
+     border:1px solid #d8e7e2;
+ }
+ .ai-header{
+     padding:17px;
+     background:linear-gradient(135deg,#052f26,#087a58,#19c98a);
+     color:white;
+     display:flex;
+     align-items:center;
+     justify-content:space-between;
+ }
+ .ai-title{
+     display:flex;
+     align-items:center;
+     gap:11px;
+ }
+ .ai-avatar{
+     width:45px;
+     height:45px;
+     border-radius:50%;
+     background:rgba(255,255,255,.18);
+     display:flex;
+     align-items:center;
+     justify-content:center;
+     font-size:25px;
+ }
+ .ai-title h4{
+     margin:0;
+     font-weight:800;
+ }
+ .ai-title small{
+     opacity:.85;
+ }
+ .ai-online{
+     color:#b8ffd9;
+     font-size:11px;
+ }
+ .ai-close{
+     border:0;
+     background:transparent;
+     color:white;
+     font-size:28px;
+     cursor:pointer;
+ }
+ #aiMessages{
+     flex:1;
+     padding:17px;
+     overflow-y:auto;
+     background:#f4f8f7;
+     scroll-behavior:smooth;
+ }
+ .ai-message{
+     max-width:88%;
+     padding:12px 14px;
+     margin-bottom:12px;
+     border-radius:17px;
+     line-height:1.55;
+     font-size:14px;
+     animation:aiMessage .2s ease;
+ }
+ @keyframes aiMessage{
+     from{
+         opacity:0;
+         transform:translateY(5px);
+     }
+     to{
+         opacity:1;
+         transform:translateY(0);
+     }
+ }
+ .ai-message.bot{
+     background:white;
+     color:#17242a;
+     border:1px solid #dce8e5;
+     border-bottom-left-radius:5px;
+ }
+ .ai-message.user{
+     margin-left:auto;
+     background:#087a58;
+     color:white;
+     border-bottom-right-radius:5px;
+ }
+ .ai-message strong{
+     font-weight:800;
+ }
+ .ai-category{
+     display:inline-block;
+     padding:4px 8px;
+     margin-bottom:7px;
+     border-radius:20px;
+     background:#e6f7ef;
+     color:#087a58;
+     font-size:10px;
+     font-weight:800;
+ }
+ .ai-quick-title{
+     padding:8px 13px 3px;
+     font-size:11px;
+     font-weight:800;
+     color:#718087;
+     background:white;
+ }
+ .ai-quick{
+     padding:8px 13px 10px;
+     display:flex;
+     gap:7px;
+     overflow-x:auto;
+     background:white;
+     border-top:1px solid #e1ebe8;
+ }
+ .ai-quick::-webkit-scrollbar{
+     height:4px;
+ }
+ .ai-quick button{
+     white-space:nowrap;
+     border:1px solid #b9d9cd;
+     background:#effaf5;
+     color:#087a58;
+     border-radius:999px;
+     padding:7px 11px;
+     cursor:pointer;
+     font-size:11px;
+     font-weight:700;
+     transition:.2s;
+ }
+ .ai-quick button:hover{
+     background:#087a58;
+     color:white;
+ }
+ .ai-input-area{
+     display:flex;
+     padding:12px;
+     gap:8px;
+     background:white;
+     border-top:1px solid #dce8e5;
+ }
+ #aiInput{
+     flex:1;
+     min-width:0;
+     border:1px solid #cbdcd7;
+     border-radius:13px;
+     padding:11px 13px;
+     outline:none;
+     font-size:14px;
+ }
+ #aiInput:focus{
+     border-color:#087a58;
+     box-shadow:0 0 0 3px rgba(8,122,88,.08);
+ }
+ #aiSend{
+     width:46px;
+     border:0;
+     border-radius:13px;
+     background:#087a58;
+     color:white;
+     cursor:pointer;
+     font-size:18px;
+ }
+ .typing{
+     opacity:.7;
+     font-style:italic;
+ }
+ .ai-quiz-option{
+     display:block;
+     width:100%;
+     margin:7px 0;
+     padding:9px;
+     border:1px solid #b9d9cd;
+     border-radius:10px;
+     background:#f1faf6;
+     color:#087a58;
+     cursor:pointer;
+     text-align:left;
+     font-weight:700;
+ }
+ .ai-quiz-option:hover{
+     background:#087a58;
+     color:white;
+ }
+ body.dark-mode #climateAI{
+     background:#10232f;
+     border-color:#234352;
+ }
+ body.dark-mode #aiMessages{
+     background:#08131c;
+ }
+ body.dark-mode .ai-message.bot{
+     background:#10232f;
+     color:#eaf4f7;
+     border-color:#284651;
+ }
+ body.dark-mode .ai-category{
+     background:#163b34;
+     color:#7ce5b3;
+ }
+ body.dark-mode .ai-quick-title,
+ body.dark-mode .ai-quick,
+ body.dark-mode .ai-input-area{
+     background:#10232f;
+     border-color:#234352;
+ }
+ body.dark-mode .ai-quick button{
+     background:#163b34;
+     color:#7ce5b3;
+     border-color:#285b4c;
+ }
+ body.dark-mode #aiInput{
+     background:#08131c;
+     color:white;
+     border-color:#31515e;
+ }
+ @media(max-width:500px){
+     #climateAI{
+         right:8px;
+         bottom:145px;
+         width:calc(100vw - 16px);
+         height:570px;
+     }
+     #climateAIButton{
+         right:14px;
+     }
+ }
+ </style>
+ <!-- FLOATING AI BUTTON -->
+ <button
+     id="climateAIButton"
+     onclick="toggleClimateAI()"
+     title="Open Climate AI">
+     🤖
+ </button>
+ <!-- AI WINDOW -->
+ <div id="climateAI">
+     <div class="ai-header">
+         <div class="ai-title">
+             <div class="ai-avatar">
+                 🌍
+             </div>
+             <div>
+                 <h4>Climate AI</h4>
+                 <small>
+                     Smart Climate Assistant
+                     <span class="ai-online">● Online</span>
+                 </small>
+             </div>
+         </div>
+         <button
+             class="ai-close"
+             onclick="toggleClimateAI()">
+             ×
+         </button>
+     </div>
+     <!-- MESSAGES -->
+     <div id="aiMessages">
+         <div class="ai-message bot">
+             <span class="ai-category">
+                 CLIMATE AI
+             </span>
+             👋 <b>Hello!</b> I'm Climate AI.
+             <br><br>
+             I can answer questions about climate science,
+             Earth's atmosphere, oceans, ice, ecosystems,
+             energy and climate solutions.
+             <br><br>
+             Try:
+             <br>🌫️ What happens if CO₂ increases?
+             <br>🌊 Why is sea level rising?
+             <br>🧊 Why are glaciers melting?
+             <br>⚡ What is renewable energy?
+             <br>🛰️ How do satellites study climate?
+             <br><br>
+             Type <b>"quiz"</b> to start a climate quiz.
+         </div>
+     </div>
+     <!-- QUICK QUESTIONS -->
+     <div class="ai-quick-title">
+         Popular questions
+     </div>
+     <div class="ai-quick">
+         <button onclick="askClimateAI('What is CO2?')">
+             🌫️ CO₂
+         </button>
+         <button onclick="askClimateAI('Why is Earth warming?')">
+             🌡️ Warming
+         </button>
+         <button onclick="askClimateAI('Why is sea level rising?')">
+             🌊 Sea Level
+         </button>
+         <button onclick="askClimateAI('How do glaciers change?')">
+             🧊 Ice
+         </button>
+         <button onclick="askClimateAI('What is renewable energy?')">
+             ⚡ Energy
+         </button>
+         <button onclick="askClimateAI('Start climate quiz')">
+             🧠 Quiz
+         </button>
+     </div>
+     <!-- INPUT -->
+     <div class="ai-input-area">
+         <input
+             id="aiInput"
+             type="text"
+             placeholder="Ask Climate AI..."
+             autocomplete="off"
+             onkeydown="
+                 if(event.key === 'Enter'){
+                     sendClimateQuestion();
+                 }
+             "
+         >
+         <button
+             id="aiSend"
+             onclick="sendClimateQuestion()">
+             ➤
+         </button>
+     </div>
+ </div>
+ <script>
+ /* =========================================================
+    CLIMATE AI CORE
+ ========================================================= */
+ function toggleClimateAI(){
+     const ai = document.getElementById("climateAI");
+     if(ai.style.display === "flex"){
+         ai.style.display = "none";
+     }else{
+         ai.style.display = "flex";
+         setTimeout(() => {
+             document.getElementById("aiInput").focus();
+         },100);
+     }
+ }
+ /* =========================================================
+    ADD MESSAGE
+ ========================================================= */
+ function addAIMessage(text,type){
+     const messages =
+         document.getElementById("aiMessages");
+     const message =
+         document.createElement("div");
+     message.className =
+         "ai-message " + type;
+     message.innerHTML = text;
+     messages.appendChild(message);
+     messages.scrollTop =
+         messages.scrollHeight;
+ }
+ /* =========================================================
+    SEND QUESTION
+ ========================================================= */
+ function sendClimateQuestion(){
+     const input =
+         document.getElementById("aiInput");
+     const question =
+         input.value.trim();
+     if(!question) return;
+     askClimateAI(question);
+     input.value = "";
+ }
+ /* =========================================================
+    ASK AI
+ ========================================================= */
+ function askClimateAI(question){
+     addAIMessage(
+         escapeAIText(question),
+         "user"
+     );
+     const typing =
+         document.createElement("div");
+     typing.className =
+         "ai-message bot typing";
+     typing.id = "aiTyping";
+     typing.innerHTML =
+         "🌍 Climate AI is thinking...";
+     document.getElementById("aiMessages")
+         .appendChild(typing);
+     document.getElementById("aiMessages")
+         .scrollTop =
+         document.getElementById("aiMessages")
+         .scrollHeight;
+     setTimeout(function(){
+         if(document.getElementById("aiTyping")){
+             document.getElementById("aiTyping").remove();
+         }
+         const answer =
+             getAdvancedClimateAnswer(question);
+         addAIMessage(answer,"bot");
+     },700);
+ }
+ /* =========================================================
+    SAFE TEXT
+ ========================================================= */
+ function escapeAIText(text){
+     const div =
+         document.createElement("div");
+     div.textContent = text;
+     return div.innerHTML;
+ }
+ /* =========================================================
+    ADVANCED ANSWER ENGINE
+ ========================================================= */
+ function getAdvancedClimateAnswer(question){
+     const q =
+         question
+         .toLowerCase()
+         .replace(/[?!.,;:]/g," ")
+         .replace(/\s+/g," ")
+         .trim();
+     /* ================= HELP ================= */
+     if(
+         q === "help" ||
+         q.includes("what can i ask") ||
+         q.includes("what can you do") ||
+         q.includes("topics")
+     ){
+         return `
+         <span class="ai-category">HELP</span>
+         🤖 <b>I can answer many climate questions.</b>
+         <br><br>
+         🌫️ <b>Atmosphere</b>
+         <br>CO₂, methane, greenhouse gases,
+         carbon cycle, ozone
+         <br><br>
+         🌡️ <b>Climate</b>
+         <br>Global warming, temperature,
+         climate models, weather vs climate
+         <br><br>
+         🌊 <b>Oceans</b>
+         <br>Ocean warming, acidification,
+         sea level
+         <br><br>
+         🧊 <b>Ice</b>
+         <br>Glaciers, Arctic, Antarctica,
+         permafrost
+         <br><br>
+         🌳 <b>Nature</b>
+         <br>Forests, biodiversity, wildlife,
+         ecosystems
+         <br><br>
+         ⚡ <b>Energy</b>
+         <br>Solar, wind, renewable energy,
+         electricity
+         <br><br>
+         🌱 <b>Solutions</b>
+         <br>Mitigation, adaptation,
+         carbon footprint
+         <br><br>
+         🧠 Type <b>quiz</b> to test your climate knowledge.
+         `;
+     }
+     /* ================= QUIZ ================= */
+     if(
+         q === "quiz" ||
+         q.includes("start quiz") ||
+         q.includes("climate quiz")
+     ){
+         return `
+         <span class="ai-category">CLIMATE QUIZ</span>
+         🧠 <b>Question 1</b>
+         <br><br>
+         Which gas is the largest contributor to
+         human-caused long-term warming?
+         <button class="ai-quiz-option"
+         onclick="quizAnswer(this,'correct')">
+         A) Carbon dioxide
+         </button>
+         <button class="ai-quiz-option"
+         onclick="quizAnswer(this,'wrong')">
+         B) Oxygen
+         </button>
+         <button class="ai-quiz-option"
+         onclick="quizAnswer(this,'wrong')">
+         C) Nitrogen
+         </button>
+         <button class="ai-quiz-option"
+         onclick="quizAnswer(this,'wrong')">
+         D) Helium
+         </button>
+         `;
+     }
+     /* ================= CO2 ================= */
+     if(
+         q.includes("co2") ||
+         q.includes("carbon dioxide")
+     ){
+         return `
+         <span class="ai-category">ATMOSPHERE</span>
+         🌫️ <b>Carbon dioxide (CO₂)</b> is a greenhouse gas.
+         <br><br>
+         Human activities increase atmospheric CO₂ mainly through
+         fossil-fuel use and land-use changes.
+         <br><br>
+         CO₂ absorbs infrared radiation and contributes to the
+         warming of Earth's climate system.
+         <br><br>
+         <b>Key idea:</b> CO₂ is naturally occurring, but the rapid
+         increase caused by human activities is the important
+         climate issue.
+         `;
+     }
+     /* ================= CO2 INCREASE ================= */
+     if(
+         q.includes("if co2 increases") ||
+         q.includes("co2 increase") ||
+         q.includes("more co2")
+     ){
+         return `
+         <span class="ai-category">CO₂</span>
+         📈 If atmospheric CO₂ increases, more infrared radiation
+         is absorbed by the atmosphere.
+         <br><br>
+         This strengthens the greenhouse effect and contributes
+         to additional warming.
+         <br><br>
+         The climate system responds over different timescales,
+         with oceans and ice making the response more complex.
+         `;
+     }
+     /* ================= METHANE ================= */
+     if(
+         q.includes("methane") ||
+         q.includes("ch4")
+     ){
+         return `
+         <span class="ai-category">GREENHOUSE GASES</span>
+         🔥 <b>Methane (CH₄)</b> is a potent greenhouse gas.
+         <br><br>
+         Major sources include livestock, wetlands, agriculture,
+         landfills and fossil-fuel systems.
+         <br><br>
+         Methane is present at much lower concentrations than CO₂,
+         but it has a strong warming effect per molecule.
+         `;
+     }
+     /* ================= GREENHOUSE EFFECT ================= */
+     if(
+         q.includes("greenhouse effect") ||
+         q.includes("greenhouse gas")
+     ){
+         return `
+         <span class="ai-category">CLIMATE SCIENCE</span>
+         🌡️ The <b>greenhouse effect</b> is a natural process.
+         <br><br>
+         Certain atmospheric gases absorb some outgoing infrared
+         radiation and help keep Earth warm.
+         <br><br>
+         Human activities increase greenhouse-gas concentrations,
+         strengthening this natural effect and causing additional
+         warming.
+         `;
+     }
+     /* ================= GLOBAL WARMING ================= */
+     if(
+         q.includes("global warming") ||
+         q.includes("why earth warming") ||
+         q.includes("why is earth warming") ||
+         q.includes("earth getting warmer") ||
+         q.includes("earth hotter")
+     ){
+         return `
+         <span class="ai-category">GLOBAL WARMING</span>
+         🌡️ Earth is warming primarily because human activities
+         have increased greenhouse gases in the atmosphere.
+         <br><br>
+         These gases change Earth's energy balance by absorbing
+         outgoing infrared radiation.
+         <br><br>
+         Natural climate factors still cause short-term variations,
+         but they do not explain the observed long-term warming trend.
+         `;
+     }
+     /* ================= WEATHER VS CLIMATE ================= */
+     if(
+         q.includes("weather vs climate") ||
+         q.includes("weather and climate") ||
+         q.includes("difference between weather")
+     ){
+         return `
+         <span class="ai-category">BASIC CLIMATE</span>
+         🌦️ <b>Weather</b> describes atmospheric conditions over
+         short periods.
+         <br><br>
+         Example: "It is raining today."
+         <br><br>
+         🌍 <b>Climate</b> describes long-term patterns and
+         statistics.
+         <br><br>
+         Example: "This region normally has a dry climate."
+         `;
+     }
+     /* ================= TEMPERATURE ================= */
+     if(
+         q.includes("temperature") ||
+         q.includes("temperature rise") ||
+         q.includes("temperature increase") ||
+         q.includes("warming trend")
+     ){
+         return `
+         <span class="ai-category">TEMPERATURE</span>
+         🌡️ Earth's average surface temperature has increased
+         substantially since the late 19th century.
+         <br><br>
+         The long-term trend is mainly explained by increased
+         human-caused greenhouse-gas concentrations.
+         <br><br>
+         Individual years can still be warmer or cooler because
+         natural variability affects short-term climate.
+         `;
+     }
+     /* ================= OCEAN ================= */
+     if(
+         q.includes("ocean") ||
+         q.includes("ocean warming")
+     ){
+         return `
+         <span class="ai-category">OCEANS</span>
+         🌊 Oceans are a major part of Earth's climate system.
+         <br><br>
+         They absorb much of the excess heat added to the climate
+         system and also absorb atmospheric CO₂.
+         <br><br>
+         Ocean warming can contribute to sea-level rise and
+         ecosystem changes.
+         `;
+     }
+     /* ================= ACIDIFICATION ================= */
+     if(
+         q.includes("acidification") ||
+         q.includes("ocean acidity") ||
+         q.includes("acidic ocean")
+     ){
+         return `
+         <span class="ai-category">OCEANS</span>
+         🌊 <b>Ocean acidification</b> happens when seawater
+         absorbs CO₂ and its chemistry changes.
+         <br><br>
+         The resulting decrease in pH can make conditions more
+         difficult for some organisms that build calcium-carbonate
+         shells or structures.
+         `;
+     }
+     /* ================= SEA LEVEL ================= */
+     if(
+         q.includes("sea level") ||
+         q.includes("rising sea") ||
+         q.includes("sea rise")
+     ){
+         return `
+         <span class="ai-category">SEA LEVEL</span>
+         🌊 Global sea level rises mainly because:
+         <br><br>
+         1️⃣ Warmer seawater expands.
+         <br>
+         2️⃣ Melting land ice adds water to the ocean.
+         <br><br>
+         Rising seas can increase risks for coastal ecosystems,
+         communities and infrastructure.
+         `;
+     }
+     /* ================= GLACIERS ================= */
+     if(
+         q.includes("glacier") ||
+         q.includes("glaciers") ||
+         q.includes("ice sheet")
+     ){
+         return `
+         <span class="ai-category">CRYOSPHERE</span>
+         🧊 Glaciers and ice sheets store freshwater as ice.
+         <br><br>
+         When ice loss exceeds snowfall accumulation, glaciers
+         and ice sheets lose mass.
+         <br><br>
+         Loss of land ice contributes to global sea-level rise.
+         `;
+     }
+     /* ================= ARCTIC ================= */
+     if(
+         q.includes("arctic") ||
+         q.includes("north pole")
+     ){
+         return `
+         <span class="ai-category">ARCTIC</span>
+         🧊 The Arctic is experiencing major changes in temperature,
+         sea ice, snow and permafrost.
+         <br><br>
+         Ice and snow reflect sunlight. When reflective surfaces
+         decrease, more solar energy can be absorbed by the Earth
+         system.
+         `;
+     }
+     /* ================= ANTARCTICA ================= */
+     if(
+         q.includes("antarctica") ||
+         q.includes("south pole")
+     ){
+         return `
+         <span class="ai-category">ANTARCTICA</span>
+         🧊 Antarctica contains a huge land-based ice sheet.
+         <br><br>
+         Changes in Antarctic ice mass can contribute to sea-level
+         rise.
+         <br><br>
+         Scientists monitor Antarctica using satellites,
+         aircraft and field observations.
+         `;
+     }
+     /* ================= PERMAFROST ================= */
+     if(
+         q.includes("permafrost") ||
+         q.includes("frozen ground")
+     ){
+         return `
+         <span class="ai-category">PERMAFROST</span>
+         ❄️ Permafrost is ground that remains frozen for long
+         periods.
+         <br><br>
+         Warming can cause permafrost to thaw.
+         <br><br>
+         Thawing can affect landscapes and infrastructure and may
+         expose carbon stored in frozen organic material.
+         `;
+     }
+     /* ================= FORESTS ================= */
+     if(
+         q.includes("forest") ||
+         q.includes("forests") ||
+         q.includes("tree") ||
+         q.includes("trees")
+     ){
+         return `
+         <span class="ai-category">ECOSYSTEMS</span>
+         🌳 Forests store carbon in vegetation and soils.
+         <br><br>
+         They also provide habitats, influence water cycles and
+         support biodiversity.
+         <br><br>
+         Protecting existing forests is important for both
+         ecosystem health and climate action.
+         `;
+     }
+     /* ================= BIODIVERSITY ================= */
+     if(
+         q.includes("biodiversity") ||
+         q.includes("species") ||
+         q.includes("wildlife") ||
+         q.includes("animals")
+     ){
+         return `
+         <span class="ai-category">BIODIVERSITY</span>
+         🐾 Climate change can affect species through changes in
+         temperature, rainfall, habitats and food availability.
+         <br><br>
+         Some species may shift their ranges or adapt, while others
+         may face increased environmental stress.
+         <br><br>
+         Protecting and restoring habitats can improve ecosystem
+         resilience.
+         `;
+     }
+     /* ================= EXTREME WEATHER ================= */
+     if(
+         q.includes("extreme weather") ||
+         q.includes("extreme event") ||
+         q.includes("extreme events")
+     ){
+         return `
+         <span class="ai-category">EXTREME WEATHER</span>
+         🌪️ Climate change can influence some extreme weather events.
+         <br><br>
+         Examples include extreme heat and heavy precipitation,
+         while changes in drought, wildfire and storms vary
+         significantly by region and event type.
+         <br><br>
+         Climate science studies these changes using observations,
+         statistics and physical models.
+         `;
+     }
+     /* ================= HEATWAVE ================= */
+     if(
+         q.includes("heatwave") ||
+         q.includes("heat wave") ||
+         q.includes("extreme heat")
+     ){
+         return `
+         <span class="ai-category">EXTREME HEAT</span>
+         ☀️ As average temperatures increase, many regions can
+         experience more frequent or intense heat extremes.
+         <br><br>
+         Cities can be especially vulnerable because buildings
+         and paved surfaces can retain heat.
+         <br><br>
+         Shade, trees, cooling spaces and heat-warning systems
+         can help reduce risks.
+         `;
+     }
+     /* ================= DROUGHT ================= */
+     if(
+         q.includes("drought") ||
+         q.includes("dry") ||
+         q.includes("water shortage")
+     ){
+         return `
+         <span class="ai-category">WATER</span>
+         💧 Drought means unusually low water availability over
+         a period of time.
+         <br><br>
+         Climate change can increase drought risk in some regions
+         through higher temperatures and changing precipitation.
+         <br><br>
+         Local impacts vary considerably.
+         `;
+     }
+     /* ================= FLOOD ================= */
+     if(
+         q.includes("flood") ||
+         q.includes("flooding") ||
+         q.includes("heavy rainfall")
+     ){
+         return `
+         <span class="ai-category">WATER</span>
+         🌧️ A warmer atmosphere can hold more water vapor, which
+         can contribute to heavier rainfall in many situations.
+         <br><br>
+         Flood risk also depends on rivers, drainage, land use,
+         coastal conditions and infrastructure.
+         `;
+     }
+     /* ================= WILDFIRE ================= */
+     if(
+         q.includes("wildfire") ||
+         q.includes("forest fire")
+     ){
+         return `
+         <span class="ai-category">WILDFIRES</span>
+         🔥 Climate change can increase hot and dry conditions
+         that contribute to wildfire risk in some regions.
+         <br><br>
+         Fire risk is also influenced by vegetation, land management,
+         weather and ignition sources.
+         `;
+     }
+     /* ================= RENEWABLE ENERGY ================= */
+     if(
+         q.includes("renewable energy") ||
+         q.includes("clean energy") ||
+         q.includes("renewables")
+     ){
+         return `
+         <span class="ai-category">ENERGY</span>
+         ⚡ Renewable energy includes:
+         <br><br>
+         ☀️ Solar
+         <br>💨 Wind
+         <br>🌊 Hydropower
+         <br>🌋 Geothermal
+         <br>🌱 Some forms of bioenergy
+         <br><br>
+         Increasing low-carbon electricity can reduce emissions
+         from fossil-fuel power generation.
+         `;
+     }
+     /* ================= SOLAR ================= */
+     if(
+         q.includes("solar") ||
+         q.includes("solar power")
+     ){
+         return `
+         <span class="ai-category">SOLAR ENERGY</span>
+         ☀️ Solar panels convert sunlight into electricity.
+         <br><br>
+         Solar electricity does not require direct fossil-fuel
+         combustion during operation.
+         <br><br>
+         Solar can be combined with batteries, grids and other
+         energy sources.
+         `;
+     }
+     /* ================= WIND ================= */
+     if(
+         q.includes("wind energy") ||
+         q.includes("wind power") ||
+         q.includes("wind turbine")
+     ){
+         return `
+         <span class="ai-category">WIND ENERGY</span>
+         💨 Wind turbines convert the movement of air into
+         electrical energy.
+         <br><br>
+         Wind power has very low direct greenhouse-gas emissions
+         during electricity generation.
+         `;
+     }
+     /* ================= CARBON FOOTPRINT ================= */
+     if(
+         q.includes("carbon footprint") ||
+         q.includes("my carbon footprint")
+     ){
+         return `
+         <span class="ai-category">CARBON FOOTPRINT</span>
+         👣 A carbon footprint represents greenhouse-gas emissions
+         associated with an activity, product, person or organization.
+         <br><br>
+         Common sources include transportation, electricity,
+         heating, food and consumption.
+         <br><br>
+         Measuring the largest sources first can help identify
+         meaningful reductions.
+         `;
+     }
+     /* ================= TRANSPORT ================= */
+     if(
+         q.includes("transport") ||
+         q.includes("cars") ||
+         q.includes("car emissions") ||
+         q.includes("traffic")
+     ){
+         return `
+         <span class="ai-category">TRANSPORT</span>
+         🚗 Transportation can produce greenhouse-gas emissions,
+         especially when vehicles use fossil fuels.
+         <br><br>
+         Public transportation, walking, cycling, efficient
+         vehicles and cleaner fuels can reduce emissions.
+         `;
+     }
+     /* ================= AGRICULTURE ================= */
+     if(
+         q.includes("agriculture") ||
+         q.includes("farming") ||
+         q.includes("farms") ||
+         q.includes("livestock")
+     ){
+         return `
+         <span class="ai-category">AGRICULTURE</span>
+         🌾 Agriculture interacts with climate through methane,
+         nitrous oxide, land use and energy use.
+         <br><br>
+         Climate change can also affect crops through heat,
+         rainfall changes, pests and extreme events.
+         <br><br>
+         Better fertilizer, soil and water management can improve
+         efficiency and resilience.
+         `;
+     }
+     /* ================= WATER ================= */
+     if(
+         q.includes("water") ||
+         q.includes("freshwater")
+     ){
+         return `
+         <span class="ai-category">WATER</span>
+         💧 Climate change can affect rainfall, snow, evaporation,
+         drought and water availability.
+         <br><br>
+         Some regions may experience greater water stress, while
+         others may face heavier rainfall and flooding.
+         <br><br>
+         Water conservation and good planning can improve resilience.
+         `;
+     }
+     /* ================= CITIES ================= */
+     if(
+         q.includes("city") ||
+         q.includes("cities") ||
+         q.includes("urban")
+     ){
+         return `
+         <span class="ai-category">CITIES</span>
+         🏙️ Cities can experience additional heat because roads,
+         buildings and other surfaces absorb and retain heat.
+         <br><br>
+         Trees, parks, shade, efficient buildings and public
+         transportation can improve urban resilience.
+         `;
+     }
+     /* ================= RECYCLING ================= */
+     if(
+         q.includes("recycling") ||
+         q.includes("recycle") ||
+         q.includes("plastic")
+     ){
+         return `
+         <span class="ai-category">WASTE</span>
+         ♻️ Recycling can reduce the need for some new raw
+         materials and can save energy for certain materials.
+         <br><br>
+         Reducing unnecessary consumption and reusing products
+         can also reduce environmental impacts.
+         <br><br>
+         Waste management is only one part of climate action.
+         `;
+     }
+     /* ================= EL NINO ================= */
+     if(
+         q.includes("el nino") ||
+         q.includes("el niño") ||
+         q.includes("la nina") ||
+         q.includes("la niña") ||
+         q.includes("enso")
+     ){
+         return `
+         <span class="ai-category">CLIMATE PATTERNS</span>
+         🌊 <b>ENSO</b> is a natural climate pattern involving
+         changes in tropical Pacific Ocean temperatures and
+         atmospheric circulation.
+         <br><br>
+         Its two major phases are El Niño and La Niña.
+         <br><br>
+         ENSO can influence rainfall and temperature around
+         the world and can affect year-to-year climate variability.
+         `;
+     }
+     /* ================= VOLCANO ================= */
+     if(
+         q.includes("volcano") ||
+         q.includes("volcanic eruption")
+     ){
+         return `
+         <span class="ai-category">NATURAL CLIMATE FACTORS</span>
+         🌋 Large volcanic eruptions can temporarily cool Earth's
+         surface by putting reflective particles into the atmosphere.
+         <br><br>
+         This cooling generally lasts much less time than the
+         long-term warming associated with increasing greenhouse gases.
+         `;
+     }
+     /* ================= CLIMATE MODELS ================= */
+     if(
+         q.includes("climate model") ||
+         q.includes("climate models") ||
+         q.includes("computer climate model")
+     ){
+         return `
+         <span class="ai-category">CLIMATE MODELS</span>
+         💻 Climate models are computer-based representations of
+         Earth's climate system.
+         <br><br>
+         They use physics, mathematics and observations to simulate
+         interactions between the atmosphere, ocean, land and ice.
+         <br><br>
+         Scientists use models to investigate past climate and
+         possible future scenarios.
+         `;
+     }
+     /* ================= SATELLITES ================= */
+     if(
+         q.includes("satellite") ||
+         q.includes("satellites") ||
+         q.includes("earth observation")
+     ){
+         return `
+         <span class="ai-category">EARTH OBSERVATION</span>
+         🛰️ Earth-observing satellites measure and monitor
+         properties of the atmosphere, land, oceans and ice.
+         <br><br>
+         Because satellites can observe large areas repeatedly,
+         they are extremely useful for studying global changes
+         over time.
+         `;
+     }
+     /* ================= NASA ================= */
+     if(
+         q.includes("nasa") ||
+         q.includes("nasa climate")
+     ){
+         return `
+         <span class="ai-category">NASA</span>
+         🚀 NASA studies Earth using satellites, aircraft,
+         ground observations and scientific models.
+         <br><br>
+         Research includes Earth's atmosphere, oceans, land,
+         ecosystems, ice and energy balance.
+         <br><br>
+         Space-based observations help scientists study
+         climate changes on a global scale.
+         `;
+     }
+     /* ================= EVIDENCE ================= */
+     if(
+         q.includes("evidence") ||
+         q.includes("proof") ||
+         q.includes("climate change real") ||
+         q.includes("is climate change real")
+     ){
+         return `
+         <span class="ai-category">SCIENTIFIC EVIDENCE</span>
+         🔬 There are many independent lines of evidence
+         for climate change.
+         <br><br>
+         🌡️ Surface temperature measurements
+         <br>🌊 Ocean heat observations
+         <br>🧊 Glacier and ice-sheet measurements
+         <br>🌊 Sea-level measurements
+         <br>🌫️ Atmospheric greenhouse-gas measurements
+         <br>🛰️ Satellite observations
+         <br><br>
+         These observations are consistent with the physical
+         effects expected from increasing greenhouse gases.
+         `;
+     }
+     /* ================= CAUSES ================= */
+     if(
+         q.includes("cause") ||
+         q.includes("causes climate") ||
+         q.includes("what causes warming")
+     ){
+         return `
+         <span class="ai-category">CAUSES</span>
+         🔥 Major human sources of greenhouse gases include:
+         <br><br>
+         🏭 Fossil-fuel combustion
+         <br>🚗 Transportation
+         <br>⚡ Energy production
+         <br>🌳 Land-use change
+         <br>🌾 Agriculture
+         <br>🏗️ Industrial processes
+         <br><br>
+         Natural factors influence climate too, but they do not
+         explain the observed long-term warming by themselves.
+         `;
+     }
+     /* ================= EFFECTS ================= */
+     if(
+         q.includes("effect") ||
+         q.includes("effects") ||
+         q.includes("impact") ||
+         q.includes("impacts")
+     ){
+         return `
+         <span class="ai-category">IMPACTS</span>
+         🌍 Climate change can affect:
+         <br><br>
+         🌡️ Temperature extremes
+         <br>🌊 Sea levels
+         <br>🧊 Ice and glaciers
+         <br>🌳 Ecosystems
+         <br>🐾 Biodiversity
+         <br>🌾 Agriculture
+         <br>💧 Water resources
+         <br>🌊 Oceans
+         <br>🏙️ Communities and infrastructure
+         <br><br>
+         The exact impacts depend on location, vulnerability,
+         future emissions and adaptation.
+         `;
+     }
+     /* ================= MITIGATION ================= */
+     if(
+         q.includes("mitigation") ||
+         q.includes("reduce emissions")
+     ){
+         return `
+         <span class="ai-category">MITIGATION</span>
+         🌱 Climate mitigation means reducing greenhouse-gas
+         emissions or increasing removal of CO₂ from the atmosphere.
+         <br><br>
+         Examples include clean electricity, energy efficiency,
+         cleaner transportation and protecting carbon-rich ecosystems.
+         `;
+     }
+     /* ================= ADAPTATION ================= */
+     if(
+         q.includes("adaptation") ||
+         q.includes("adapt to climate")
+     ){
+         return `
+         <span class="ai-category">ADAPTATION</span>
+         🛡️ Climate adaptation means preparing for and reducing
+         the risks caused by climate change.
+         <br><br>
+         Examples:
+         <br>🌳 Urban shade
+         <br>💧 Water conservation
+         <br>🌊 Flood protection
+         <br>☀️ Heat-warning systems
+         <br>🏠 Resilient buildings
+         <br><br>
+         Adaptation works alongside emission reduction.
+         `;
+     }
+     /* ================= FUTURE ================= */
+     if(
+         q.includes("future climate") ||
+         q.includes("future of earth") ||
+         q.includes("what happens in the future")
+     ){
+         return `
+         <span class="ai-category">FUTURE CLIMATE</span>
+         🔮 Future climate conditions depend strongly on future
+         greenhouse-gas emissions.
+         <br><br>
+         Lower emissions generally mean less additional warming
+         and lower long-term climate risks.
+         <br><br>
+         Climate models help scientists explore different
+         possible future scenarios.
+         `;
+     }
+     /* ================= WHY CO2 MATTERS ================= */
+     if(
+         q.includes("why co2 matters") ||
+         q.includes("why carbon dioxide matters")
+     ){
+         return `
+         <span class="ai-category">CO₂</span>
+         🌫️ CO₂ matters because it is a long-lived greenhouse gas
+         and human activities have greatly increased its atmospheric
+         concentration.
+         <br><br>
+         It plays an important role in Earth's energy balance and
+         therefore in long-term climate warming.
+         `;
+     }
+     /* ================= OZONE ================= */
+     if(
+         q.includes("ozone") ||
+         q.includes("ozone layer")
+     ){
+         return `
+         <span class="ai-category">ATMOSPHERE</span>
+         🛡️ The ozone layer absorbs much of the Sun's harmful
+         ultraviolet radiation.
+         <br><br>
+         Ozone depletion and climate change are different
+         environmental issues, although atmospheric chemistry
+         connects them in some ways.
+         <br><br>
+         It is important not to treat "ozone" and "CO₂" as the
+         same climate problem.
+         `;
+     }
+     /* ================= SUN ================= */
+     if(
+         q.includes("sun cause climate change") ||
+         q.includes("does the sun cause warming") ||
+         q.includes("sun cause global warming")
+     ){
+         return `
+         <span class="ai-category">SOLAR INFLUENCE</span>
+         ☀️ The Sun influences Earth's climate and natural
+         climate variability.
+         <br><br>
+         However, changes in solar energy do not explain the
+         observed long-term warming trend of recent decades.
+         <br><br>
+         The evidence points primarily to increasing human-caused
+         greenhouse gases.
+         `;
+     }
+     /* ================= ICE ALBEDO ================= */
+     if(
+         q.includes("albedo") ||
+         q.includes("ice reflect sunlight") ||
+         q.includes("ice reflect")
+     ){
+         return `
+         <span class="ai-category">EARTH SYSTEM</span>
+         🧊 <b>Albedo</b> describes how much sunlight a surface
+         reflects.
+         <br><br>
+         Snow and ice have relatively high reflectivity.
+         <br><br>
+         When bright ice or snow decreases, darker surfaces can
+         absorb more solar energy, creating an important climate
+         feedback.
+         `;
+     }
+     /* ================= CARBON SINK ================= */
+     if(
+         q.includes("carbon sink") ||
+         q.includes("carbon sinks")
+     ){
+         return `
+         <span class="ai-category">CARBON CYCLE</span>
+         🌳🌊 A <b>carbon sink</b> is a system that absorbs more
+         carbon from the atmosphere than it releases over a given
+         period.
+         <br><br>
+         Oceans, forests and soils can act as carbon sinks.
+         <br><br>
+         Their ability to absorb carbon can change as climate and
+         environmental conditions change.
+         `;
+     }
+     /* ================= CLIMATE SOLUTIONS ================= */
+     if(
+         q.includes("solution") ||
+         q.includes("solutions") ||
+         q.includes("how can we help") ||
+         q.includes("what can i do") ||
+         q.includes("protect earth") ||
+         q.includes("save earth")
+     ){
+         return `
+         <span class="ai-category">CLIMATE SOLUTIONS</span>
+         🌱 There is no single solution.
+         <br><br>
+         Important actions include:
+         <br>⚡ Cleaner electricity
+         <br>🏠 Energy efficiency
+         <br>🚆 Cleaner transportation
+         <br>🏭 Lower industrial emissions
+         <br>🌳 Ecosystem protection
+         <br>🌾 Sustainable agriculture
+         <br>💧 Water management
+         <br>🏙️ Climate-resilient communities
+         <br><br>
+         The biggest climate benefits come from reducing
+         greenhouse-gas emissions at large scale while also
+         adapting to climate risks.
+         `;
+     }
+     /* ================= THANK YOU ================= */
+     if(
+         q.includes("thank you") ||
+         q.includes("thanks")
+     ){
+         return `
+         😊 You're welcome!
+         <br><br>
+         Keep exploring Earth's climate with
+         <b>Climate AI 🌍</b>.
+         `;
+     }
+     /* ================= DEFAULT ================= */
+     return `
+     <span class="ai-category">CLIMATE AI</span>
+     🤖 I don't have a specific answer for that question yet.
+     <br><br>
+     Try asking:
+     <br>🌫️ What happens if CO₂ increases?
+     <br>🔥 What is methane?
+     <br>🌡️ Why is Earth warming?
+     <br>🌊 Why is sea level rising?
+     <br>🧊 Why are glaciers changing?
+     <br>🌳 How do forests store carbon?
+     <br>🐾 How does climate affect biodiversity?
+     <br>⚡ What is renewable energy?
+     <br>🛰️ How do satellites study Earth?
+     <br>🚀 What does NASA do?
+     <br>🧠 Start climate quiz
+     <br><br>
+     Type <b>help</b> to see all the available topics.
+     `;
+ }
+ /* =========================================================
+    QUIZ ANSWER
+ ========================================================= */
+ function quizAnswer(button,result){
+     const buttons =
+         document.querySelectorAll(".ai-quiz-option");
+     buttons.forEach(btn => {
+         btn.disabled = true;
+         btn.style.opacity = ".65";
+         btn.style.cursor = "default";
+     });
+     if(result === "correct"){
+         button.innerHTML =
+             "✅ Correct! Carbon dioxide is the main driver of current human-caused warming.";
+         button.style.background = "#dff8ea";
+         button.style.color = "#087a58";
+         setTimeout(() => {
+             addAIMessage(`
+             🧠 <b>Question 2</b>
+             <br><br>
+             Which part of the Earth system absorbs a large amount
+             of excess heat?
+             <button class="ai-quiz-option"
+             onclick="quizAnswer(this,'correct2')">
+             A) Oceans
+             </button>
+             <button class="ai-quiz-option"
+             onclick="quizAnswer(this,'wrong2')">
+             B) The Moon
+             </button>
+             <button class="ai-quiz-option"
+             onclick="quizAnswer(this,'wrong2')">
+             C) Desert sand only
+             </button>
+             <button class="ai-quiz-option"
+             onclick="quizAnswer(this,'wrong2')">
+             D) Space
+             </button>
+             `,"bot");
+         },700);
+     }else if(result === "correct2"){
+         button.innerHTML =
+             "✅ Correct! Oceans absorb a large amount of excess heat.";
+         setTimeout(() => {
+             addAIMessage(`
+             🎉 <b>Great job!</b>
+             <br><br>
+             You completed this mini Climate AI quiz.
+             <br><br>
+             🌍 Keep learning about Earth's climate!
+             `,"bot");
+         },700);
+     }else{
+         button.innerHTML =
+             "❌ Not quite. Try another Climate AI question!";
+         button.style.background = "#fff0f0";
+         button.style.color = "#b42318";
+     }
+ }
+ /* =========================================================
+    OPEN AI AUTOMATICALLY WITH A QUESTION
+ ========================================================= */
+ function openClimateAIQuestion(question){
+     const ai =
+         document.getElementById("climateAI");
+     ai.style.display = "flex";
+     setTimeout(() => {
+         askClimateAI(question);
+     },200);
+ }
+ </script>
+ <!-- ================= END ADVANCED CLIMATE AI ================= -->
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+     <!-- ================= GALLERIES ================= -->
+     <section class="container-fluid py-5">
+         <div class="container">
+             <h2 class="section-title">
+                 🎞️ Climate Gallery
+             </h2>
+             <div id="galleriesCarousel" class="carousel slide" data-bs-ride="carousel">
+                 <div class="carousel-inner">
+                     <div class="carousel-item active">
+                         <img src="wildfire.jpg" class="d-block w-100 rounded" alt="Wildfire">
+                     </div>
+                     <div class="carousel-item">
+                         <img src="ssta-mur-2023233-lrg-3.webp" class="d-block w-100 rounded"
+                             alt="Sea surface temperature">
+                     </div>
+                     <div class="carousel-item">
+                         <img src="gistemp_jpg-1280px.jpg" class="d-block w-100 rounded" alt="Global temperature">
+                     </div>
+                     <div class="carousel-item">
+                         <img src="columbia_oli_2014183_front.jpg" class="d-block w-100 rounded" alt="Climate landscape">
+                     </div>
+                 </div>
+                 <button class="carousel-control-prev" type="button" data-bs-target="#galleriesCarousel"
+                     data-bs-slide="prev">
+                     <span class="carousel-control-prev-icon"></span>
+                 </button>
+                 <button class="carousel-control-next" type="button" data-bs-target="#galleriesCarousel"
+                     data-bs-slide="next">
+                     <span class="carousel-control-next-icon"></span>
+                 </button>
+             </div>
+         </div>
+     </section>
+     <!-- ================= Q/A + SPACE ================= -->
+     <section class="container py-5">
+         <div class="row">
+             <div class="col-md-6 mb-4">
+                 <div class="info-card p-5 h-100">
+                     <h2>🧠 Test Your Knowledge</h2>
+                     <p>
+                         Take the Climate Quiz and get a score, percentage,
+                         level and certificate based on your result.
+                     </p>
+                     <a href="qna.html" class="btn btn-success">
+                         Start Q/A Quiz
+                     </a>
+                 </div>
+             </div>
+             <div class="col-md-6 mb-4">
+                 <div class="info-card p-5 h-100">
+                     <h2>🚀 Explore Space</h2>
+                     <p>
+                         Open your Space Explorer page to learn about planets,
+                         moons, mountains, spacecraft and deep space.
+                     </p>
+                     <a href="space.html" target="_blank" rel="noopener noreferrer" class="btn btn-dark">
+                         Open Space Explorer
+                     </a>
+                 </div>
+             </div>
+         </div>
+     </section>
+     <!-- ================= SOURCES ================= -->
+     <section class="container py-5">
+         <div class="light-card p-4 p-md-5">
+             <h2 class="section-title">📚 Recommended Sources</h2>
+             <div class="row">
+                 <div class="col-md-4 mb-3">
+                     <h5>NASA Climate</h5>
+                     <a class="source-link" href="https://climate.nasa.gov/" target="_blank" rel="noopener noreferrer">
+                         Visit NASA Climate →
+                     </a>
+                 </div>
+                 <div class="col-md-4 mb-3">
+                     <h5>NASA Earth</h5>
+                     <a class="source-link" href="https://science.nasa.gov/earth/" target="_blank" rel="noopener noreferrer">
+                         Visit NASA Earth →
+                     </a>
+                 </div>
+                 <div class="col-md-4 mb-3">
+                     <h5>NOAA Climate</h5>
+                     <a class="source-link" href="https://www.noaa.gov/climate" target="_blank" rel="noopener noreferrer">
+                         Visit NOAA →
+                     </a>
+                 </div>
+             </div>
+         </div>
+     </section>
+ 
+    <!-- ================= CLIMATE MISSION CENTER ================= -->
+    <section id="missionCenter" aria-labelledby="missionHeading">
+        <div class="container">
+            <div class="row align-items-end mb-5">
+                <div class="col-lg-8">
+                    <div class="mission-kicker mb-3">Turn knowledge into action</div>
+                    <h2 class="mission-heading" id="missionHeading">Climate Mission Center</h2>
+                    <p class="mission-quiet mt-3 mb-0">Choose practical actions, track your progress on this device, and test what you know. Small actions matter most when they become habits and are supported by wider community and policy changes.</p>
+                </div>
+                <div class="col-lg-4 mt-4 mt-lg-0 text-lg-right">
+                    <span class="badge badge-success p-2">Interactive • Saves on this device</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-7 mb-4">
+                    <div class="mission-card">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap mb-3">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="mission-number mr-3"><i class="fa fa-leaf" aria-hidden="true"></i></div>
+                                <div><h3 class="h4 mb-1">Your action checklist</h3><div class="mission-quiet small">Pick actions you can realistically keep doing.</div></div>
+                            </div>
+                            <strong id="missionProgressText" aria-live="polite">0 of 5 complete</strong>
+                        </div>
+                        <div class="mission-meter mb-3" role="progressbar" aria-label="Climate action checklist progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="missionProgressTrack"><div id="missionProgressBar"></div></div>
+                        <label class="mission-check"><input type="checkbox" data-mission="lights"><span><strong>Use energy thoughtfully</strong><br><span class="mission-quiet small">Switch off unused lights and devices; choose efficient settings.</span></span></label>
+                        <label class="mission-check"><input type="checkbox" data-mission="travel"><span><strong>Choose a lower-emission trip when practical</strong><br><span class="mission-quiet small">Walk, cycle, use public transport, or share a ride when safe and possible.</span></span></label>
+                        <label class="mission-check"><input type="checkbox" data-mission="waste"><span><strong>Reduce avoidable waste</strong><br><span class="mission-quiet small">Reuse items, plan purchases, and sort recycling according to local rules.</span></span></label>
+                        <label class="mission-check"><input type="checkbox" data-mission="food"><span><strong>Make a thoughtful food choice</strong><br><span class="mission-quiet small">Plan meals and avoid wasting edible food.</span></span></label>
+                        <label class="mission-check"><input type="checkbox" data-mission="share"><span><strong>Share reliable climate information</strong><br><span class="mission-quiet small">Use trustworthy sources and help someone understand one climate solution.</span></span></label>
+                        <div class="d-flex flex-wrap align-items-center mt-3">
+                            <button class="mission-btn mr-2 mb-2" type="button" id="resetMissions"><i class="fa fa-refresh mr-1" aria-hidden="true"></i> Reset checklist</button>
+                            <span class="mission-quiet small mb-2" id="missionSaveStatus" aria-live="polite">Progress is stored locally when browser storage is available.</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5 mb-4">
+                    <div class="mission-card">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="mission-number mr-3"><i class="fa fa-lightbulb-o" aria-hidden="true"></i></div>
+                            <div><h3 class="h4 mb-1">Climate quick quiz</h3><div class="mission-quiet small">One question at a time</div></div>
+                        </div>
+                        <div id="missionQuizQuestion" class="font-weight-bold mb-3" aria-live="polite">Loading question…</div>
+                        <div id="missionQuizOptions"></div>
+                        <div id="missionFeedback" role="status" aria-live="polite"></div>
+                        <div class="d-flex align-items-center justify-content-between mt-3">
+                            <span class="mission-quiet small" id="missionQuizScore">Score: 0</span>
+                            <button class="mission-btn" type="button" id="nextMissionQuestion" disabled>Next question <i class="fa fa-arrow-right ml-1" aria-hidden="true"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3"><div class="mission-card"><div class="mission-number mb-3"><i class="fa fa-book" aria-hidden="true"></i></div><h3 class="h5">Check the evidence</h3><p class="mission-quiet mb-0">Look for measurement methods, dates, and named scientific sources before sharing a climate claim.</p></div></div>
+                <div class="col-md-4 mb-3"><div class="mission-card"><div class="mission-number mb-3"><i class="fa fa-users" aria-hidden="true"></i></div><h3 class="h5">Work together</h3><p class="mission-quiet mb-0">Discuss practical improvements with family, school, or community groups and include people affected by local climate risks.</p></div></div>
+                <div class="col-md-4 mb-3"><div class="mission-card"><div class="mission-number mb-3"><i class="fa fa-line-chart" aria-hidden="true"></i></div><h3 class="h5">Track real progress</h3><p class="mission-quiet mb-0">Use measured data and repeatable habits. This checklist is a learning tool, not a verified carbon audit.</p></div></div>
+            </div>
+            <p class="mission-quiet small mt-3 mb-0"><i class="fa fa-info-circle mr-1" aria-hidden="true"></i>Quiz content is educational. This page does not claim to provide live climate measurements unless a metric is explicitly connected to a verified data source.</p>
+        </div>
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+     <footer class="footer py-5">
+         <div class="container text-center">
+             <h4>
+                 🌍 Climate Website — By Abdullah
+             </h4>
+             <p class="mb-1">
+                 Learn • Understand • Protect Our Planet
+             </p>
+             <p class="small">
+                 Page Last Updated: October 16, 2026
+             </p>
+             <div class="mt-3">
+                 <a href="https://www.youtube.com/watch?v=jAa58N4Jlos" target="_blank" rel="noopener noreferrer" class="text-white mr-3">
+                     <i class="fa fa-youtube" style="font-size:42px;color:red;"></i>
+                 </a>
+                 <a href="https://www.facebook.com/earthsciencesnz/videos/using-generative-ai-to-produce-high-resolution-climate-change-projections/594260286550361/"
+                     target="_blank" rel="noopener noreferrer" class="text-white mr-3">
+                     <i class="fa fa-facebook-official" style="font-size:42px;color:#1877f2;"></i>
+                 </a>
+                 <a href="https://www.instagram.com/explore/tags/climatechange/" target="_blank" rel="noopener noreferrer" class="text-white">
+                     <i class="fa fa-instagram" style="font-size:42px;color:#E4405F;"></i>
+                 </a>
+                  <br>
+                   <br>
+                    <br>
+                     <br>
+                  <a href="Untitled-123.html"><p>about me</p></a>
+             </div>
+         </div>
+     <div class="text-center small py-2 opacity-75">Climate By Abdullah • Advanced build</div>
+</footer>
+     <img src="logo.png" alt="Climate By Abdullah logo" loading="lazy" width="48" height="48">
+     <button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+         ↑
+     </button>
+     <!-- ================= JAVASCRIPT ================= -->
+     
+<script>
+/* ================= CLIMATE BY ABDULLAH — APP CORE ================= */
+(function () {
+    "use strict";
+
+    const $ = (selector, root = document) => root.querySelector(selector);
+    const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+
+    function safeStorageGet(key) {
+        try { return localStorage.getItem(key); } catch (_) { return null; }
+    }
+
+    function safeStorageSet(key, value) {
+        try { localStorage.setItem(key, value); } catch (_) {}
+    }
+
+    /* Evidence / Cause / Effect */
+    window.showSection = function (section) {
+        ["evidence", "cause", "effect"].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = id === section ? "block" : "none";
+        });
+    };
+
+    /* Dark mode */
+    window.toggleDarkMode = function () {
+        document.body.classList.toggle("dark-mode");
+        const enabled = document.body.classList.contains("dark-mode");
+        safeStorageSet("climateDarkMode", String(enabled));
+
+        const button = $("#darkModeButton");
+        if (button) {
+            button.setAttribute("aria-pressed", String(enabled));
+            button.innerHTML = enabled ? "☀️ Light Mode" : "🌙 Dark Mode";
+        }
+    };
+
+    function initDarkMode() {
+        const saved = safeStorageGet("climateDarkMode") === "true";
+        document.body.classList.toggle("dark-mode", saved);
+        const button = $("#darkModeButton");
+        if (button) {
+            button.setAttribute("aria-pressed", String(saved));
+            button.innerHTML = saved ? "☀️ Light Mode" : "🌙 Dark Mode";
+        }
+    }
+
+    /* Topic search */
+    window.searchTopics = function () {
+        const input = $("#topicSearch");
+        if (!input) return;
+
+        const query = input.value.trim().toLowerCase();
+        $$(".searchable-topic").forEach(card => {
+            const topic = (card.dataset.topic || card.textContent || "").toLowerCase();
+            card.style.display = topic.includes(query) ? "" : "none";
+        });
+    };
+
+    /* Tree impact calculator — single source of truth */
+    window.calculateTreeImpact = function () {
+        const action = $("#action")?.value;
+        const trees = Number($("#trees")?.value);
+        const result = $("#treeResult");
+
+        if (!result) return;
+
+        if (!action || !Number.isFinite(trees) || trees <= 0) {
+            result.innerHTML = `
+                <div class="result-placeholder">
+                    <div class="result-icon">⚠️</div>
+                    <h3>Enter your information</h3>
+                    <p>Select an action and enter a number greater than zero.</p>
+                </div>`;
+            return;
+        }
+
+        /* Educational estimates only. */
+        const annualCO2PerTree = 21;
+        const annualO2PerTree = 100;
+
+        if (action === "cut") {
+            const lostCO2Storage = trees * annualCO2PerTree;
+            document.body.classList.add("calculator-cut-flash");
+            setTimeout(() => document.body.classList.remove("calculator-cut-flash"), 900);
+
+            result.innerHTML = `
+                <h4>🌳 Tree Loss Estimate</h4>
+                <div class="big-result">+${lostCO2Storage.toFixed(1)} kg CO₂/year</div>
+                <p>Illustrative annual carbon-storage equivalent associated with ${trees} tree(s).</p>
+                <div class="small-note">Actual carbon storage varies by species, age, size, climate and survival.</div>`;
+        } else {
+            const stored = trees * annualCO2PerTree;
+            const oxygen = trees * annualO2PerTree;
+
+            document.body.classList.add("calculator-plant-flash");
+            setTimeout(() => document.body.classList.remove("calculator-plant-flash"), 900);
+
+            result.innerHTML = `
+                <h4>🌱 Tree Planting Estimate</h4>
+                <div class="big-result">≈${stored.toFixed(1)} kg CO₂/year</div>
+                <p>Illustrative annual carbon-storage estimate for ${trees} tree(s).</p>
+                <div class="result-pill">≈${oxygen.toLocaleString()} kg O₂/year</div>
+                <div class="small-note mt-2">Educational estimate; real values vary with species, age, climate and survival.</div>`;
+        }
+    };
+
+    /* Temperature chart */
+    let temperatureChart = null;
+
+    function createTemperatureChart() {
+        const canvas = $("#temperatureChart");
+        if (!canvas || typeof Chart === "undefined") return;
+
+        if (temperatureChart) temperatureChart.destroy();
+
+        temperatureChart = new Chart(canvas, {
+            type: "line",
+            data: {
+                labels: ["1880","1900","1920","1940","1960","1980","2000","2010","2020","2025"],
+                datasets: [{
+                    label: "Illustrative temperature anomaly (°C)",
+                    data: [-0.20,-0.35,-0.25,-0.05,0.00,0.25,0.45,0.72,1.02,1.19],
+                    borderWidth: 3,
+                    tension: 0.35,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: "index", intersect: false },
+                plugins: {
+                    legend: { display: true },
+                    tooltip: { enabled: true }
+                },
+                scales: {
+                    y: { title: { display: true, text: "°C anomaly" } },
+                    x: { title: { display: true, text: "Year" } }
+                }
+            }
+        });
+    }
+
+    /* Advanced Climate Lab */
+    function initAdvancedClimateLab() {
+        const bindings = [
+            ["scenarioTemp","scenarioTempValue",v => `${Number(v) >= 0 ? "+" : ""}${Number(v).toFixed(1)}°C`],
+            ["forestSlider","forestValue",v => `${v}%`],
+            ["energySlider","energyValue",v => `${v}%`],
+            ["transportSlider","transportValue",v => `${v}%`]
+        ];
+
+        bindings.forEach(([id, outputId, format]) => {
+            const input = document.getElementById(id);
+            const output = document.getElementById(outputId);
+            if (!input || !output) return;
+
+            const update = () => output.textContent = format(input.value);
+            input.oninput = update;
+            update();
+        });
+    }
+
+    window.runClimateSimulation = function () {
+        const temp = Number($("#scenarioTemp")?.value ?? 1.2);
+        const forest = Number($("#forestSlider")?.value ?? 50);
+        const energy = Number($("#energySlider")?.value ?? 50);
+        const transport = Number($("#transportSlider")?.value ?? 50);
+
+        let score = 100;
+        score -= Math.max(0, temp - 0.5) * 15;
+        score += forest * 0.12 + energy * 0.10 + transport * 0.08;
+        score = Math.max(0, Math.min(100, Math.round(score)));
+
+        const level = score >= 80 ? "Strong action" : score >= 60 ? "Progressing" : "High climate pressure";
+        const badge = score >= 80 ? "Positive scenario" : score >= 60 ? "Balanced scenario" : "High-pressure scenario";
+
+        const scoreEl = $("#simulationOutput .sim-score");
+        const strongEl = $("#simulationOutput strong");
+        const textEl = $("#simulationOutput p");
+        const badgeEl = $("#scenarioBadge");
+
+        if (scoreEl) scoreEl.textContent = score;
+        if (strongEl) strongEl.textContent = level;
+        if (textEl) {
+            textEl.textContent =
+                `Simulation: ${temp >= 0 ? "+" : ""}${temp.toFixed(1)}°C, forest ${forest}%, clean energy ${energy}%, cleaner transport ${transport}%. Educational model only.`;
+        }
+        if (badgeEl) badgeEl.textContent = badge;
+    };
+
+    window.resetAdvancedLab = function () {
+        const defaults = [
+            ["scenarioTemp", 1.2],
+            ["forestSlider", 50],
+            ["energySlider", 50],
+            ["transportSlider", 50]
+        ];
+
+        defaults.forEach(([id, value]) => {
+            const el = document.getElementById(id);
+            if (el) el.value = value;
+        });
+
+        initAdvancedClimateLab();
+        const score = $("#simulationOutput .sim-score");
+        const strong = $("#simulationOutput strong");
+        const text = $("#simulationOutput p");
+        const badge = $("#scenarioBadge");
+
+        if (score) score.textContent = "72";
+        if (strong) strong.textContent = "Baseline climate action score";
+        if (text) text.textContent = "This is an educational simulation, not a scientific forecast.";
+        if (badge) badge.textContent = "Baseline";
+    };
+
+    window.calculatePersonalImpact = function () {
+        const car = Number($("#carKm")?.value) || 0;
+        const electricity = Number($("#electricityKwh")?.value) || 0;
+        const flights = Number($("#flightsYear")?.value) || 0;
+        const waste = Number($("#wasteKg")?.value) || 0;
+        const result = $("#personalImpactResult");
+
+        if (!result) return;
+
+        const monthly = (car * 0.17) + (electricity * 0.45) + (flights * 120 / 12) + (waste * 0.5);
+        result.innerHTML = `
+            <strong>≈ ${monthly.toFixed(1)} kg CO₂e/month</strong><br>
+            <span class="small-note">Illustrative estimate based on simplified assumptions.</span>`;
+    };
+
+    /* Action checklist */
+    function initActionChecklist() {
+        const checks = $$("#actionChecklist input[type='checkbox']");
+
+        checks.forEach((box, index) => {
+            const key = `climateAction_${index}`;
+            box.checked = safeStorageGet(key) === "true";
+
+            box.addEventListener("change", () => {
+                safeStorageSet(key, String(box.checked));
+                updateActionProgress();
+            });
+        });
+
+        updateActionProgress();
+    }
+
+    function updateActionProgress() {
+        const boxes = $$("#actionChecklist input[type='checkbox']");
+        const done = boxes.filter(box => box.checked).length;
+
+        const text = $("#actionProgressText");
+        const count = $("#actionCount");
+
+        if (text) text.textContent = `${done} / ${boxes.length}`;
+        if (count) count.textContent = done;
+    }
+
+    /* Pollution company search */
+    function initCompanySearch() {
+        const input = $("#pollutionCompanySearch");
+        const rows = $$("#pollutionCompanyTable tbody tr");
+        if (!input || !rows.length) return;
+
+        const filter = () => {
+            const query = input.value.trim().toLowerCase();
+
+            rows.forEach(row => {
+                const name = (row.children[1]?.textContent || "").toLowerCase();
+                row.hidden = !name.includes(query);
+            });
+        };
+
+        input.addEventListener("input", filter);
+    }
+
+    /* Live CO₂ estimate */
+    function initLiveCO2() {
+        const counter = $("#liveCO2Counter");
+        if (!counter) return;
+
+        const yearlyCO2 = 37.8e9;
+        const secondsPerYear = 365.25 * 24 * 60 * 60;
+        const co2PerSecond = yearlyCO2 / secondsPerYear;
+        const start = performance.now();
+
+        const update = now => {
+            const emitted = ((now - start) / 1000) * co2PerSecond;
+            counter.textContent = `${emitted.toLocaleString("en-US", {
+                minimumFractionDigits: 3,
+                maximumFractionDigits: 3
+            })} kg`;
+            requestAnimationFrame(update);
+        };
+
+        requestAnimationFrame(update);
+    }
+
+    /* Animated counters */
+    function animateCounters() {
+        $$("[data-counter]").forEach(el => {
+            const target = Number(el.dataset.counter);
+            if (!Number.isFinite(target)) return;
+
+            const decimals = Number(el.dataset.decimals || 0);
+            const start = performance.now();
+            const duration = 1000;
+
+            const tick = now => {
+                const progress = Math.min(1, (now - start) / duration);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                el.textContent = (target * eased).toFixed(decimals);
+                if (progress < 1) requestAnimationFrame(tick);
+            };
+
+            requestAnimationFrame(tick);
+        });
+    }
+
+    /* Back-to-top */
+    function initBackTop() {
+        const button = $("#backTop");
+        if (!button) return;
+
+        const update = () => {
+            button.style.display = window.scrollY > 500 ? "block" : "none";
+        };
+
+        window.addEventListener("scroll", update, { passive: true });
+        update();
+    }
+
+    /* Keyboard accessibility */
+    function initKeyboardShortcuts() {
+        document.addEventListener("keydown", event => {
+            if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+                const search = $("#topicSearch") || $("#pollutionCompanySearch");
+                if (search) {
+                    event.preventDefault();
+                    search.focus();
+                }
+            }
+        });
+    }
+
+    function boot() {
+        initDarkMode();
+        initCompanySearch();
+        initLiveCO2();
+        initAdvancedClimateLab();
+        initActionChecklist();
+        initBackTop();
+        initKeyboardShortcuts();
+        animateCounters();
+        createTemperatureChart();
+
+        /* Avoid calling map/chart code before their DOM exists. */
+        if (typeof window.initClimateMap === "function") {
+            try { window.initClimateMap(); } catch (error) { console.warn("Climate map init:", error); }
+        }
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", boot, { once: true });
+    } else {
+        boot();
+    }
+})();
+</script>
+
+ 
+<script>
+/* ================= ADVANCED CLIMATE EXPERIENCE ================= */
+(function () {
+    "use strict";
+    const progress = document.getElementById("readingProgress");
+    function updateReadingProgress() {
+        if (!progress) return;
+        const root = document.documentElement;
+        const scrollable = root.scrollHeight - root.clientHeight;
+        const percent = scrollable > 0 ? (root.scrollTop / scrollable) * 100 : 0;
+        progress.style.width = Math.min(100, Math.max(0, percent)) + "%";
+    }
+    window.addEventListener("scroll", updateReadingProgress, { passive: true });
+    window.addEventListener("resize", updateReadingProgress);
+    updateReadingProgress();
+
+    const checkboxes = Array.from(document.querySelectorAll("[data-mission]"));
+    const bar = document.getElementById("missionProgressBar");
+    const text = document.getElementById("missionProgressText");
+    const track = document.getElementById("missionProgressTrack");
+    const saveStatus = document.getElementById("missionSaveStatus");
+    const storageKey = "climateByAbdullahMissionsV1";
+    function readMissions() {
+        try {
+            const saved = JSON.parse(localStorage.getItem(storageKey) || "{}");
+            checkboxes.forEach(box => { box.checked = saved[box.dataset.mission] === true; });
+        } catch (_) {
+            if (saveStatus) saveStatus.textContent = "Local saving is unavailable in this browser session.";
+        }
+    }
+    function updateMissions(save) {
+        const complete = checkboxes.filter(box => box.checked).length;
+        const percent = checkboxes.length ? Math.round(complete / checkboxes.length * 100) : 0;
+        if (bar) bar.style.width = percent + "%";
+        if (text) text.textContent = complete + " of " + checkboxes.length + " complete";
+        if (track) track.setAttribute("aria-valuenow", String(percent));
+        if (save) {
+            try {
+                const values = {};
+                checkboxes.forEach(box => { values[box.dataset.mission] = box.checked; });
+                localStorage.setItem(storageKey, JSON.stringify(values));
+                if (saveStatus) saveStatus.textContent = "Progress saved on this device.";
+            } catch (_) {
+                if (saveStatus) saveStatus.textContent = "Progress works for this visit, but browser storage is unavailable.";
+            }
+        }
+    }
+    readMissions();
+    updateMissions(false);
+    checkboxes.forEach(box => box.addEventListener("change", () => updateMissions(true)));
+    document.getElementById("resetMissions")?.addEventListener("click", () => {
+        checkboxes.forEach(box => { box.checked = false; });
+        updateMissions(true);
+    });
+
+    const questions = [
+        { q: "Which gas is the main driver of current long-term human-caused warming?", options: ["Carbon dioxide (CO₂)", "Oxygen (O₂)", "Helium (He)"], answer: 0, why: "Carbon dioxide is the largest contributor to human-caused warming among long-lived greenhouse gases." },
+        { q: "What is the difference between weather and climate?", options: ["They mean exactly the same thing", "Weather is short-term; climate describes long-term patterns", "Climate changes every hour only"], answer: 1, why: "Weather describes short-term conditions; climate is assessed from patterns over many years." },
+        { q: "Which is a useful way to check a climate claim?", options: ["Share it immediately", "Trust it only because it is popular", "Check the source, date, methods, and supporting evidence"], answer: 2, why: "Reliable climate information should be traceable to credible sources and evidence." },
+        { q: "Why does reducing food waste help the climate?", options: ["Food production and disposal can create greenhouse-gas emissions", "Food waste removes all greenhouse gases", "It changes Earth's orbit"], answer: 0, why: "Growing, transporting, and disposing of food uses resources and can generate emissions." },
+        { q: "What does a global temperature anomaly show?", options: ["A temperature difference from a reference average", "The temperature of every city", "The amount of rainfall in one day"], answer: 0, why: "An anomaly expresses how far a measurement is above or below a chosen baseline." }
+    ];
+    const questionNode = document.getElementById("missionQuizQuestion");
+    const optionsNode = document.getElementById("missionQuizOptions");
+    const feedback = document.getElementById("missionFeedback");
+    const scoreNode = document.getElementById("missionQuizScore");
+    const nextButton = document.getElementById("nextMissionQuestion");
+    let questionIndex = 0;
+    let score = 0;
+    let answered = false;
+    function renderQuestion() {
+        if (!questionNode || !optionsNode) return;
+        const item = questions[questionIndex];
+        questionNode.textContent = (questionIndex + 1) + ". " + item.q;
+        optionsNode.replaceChildren();
+        feedback.textContent = "";
+        nextButton.disabled = true;
+        nextButton.textContent = questionIndex === questions.length - 1 ? "Restart quiz" : "Next question →";
+        answered = false;
+        item.options.forEach((option, index) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "quiz-option";
+            button.textContent = String.fromCharCode(65 + index) + ". " + option;
+            button.addEventListener("click", () => {
+                if (answered) return;
+                answered = true;
+                const correct = index === item.answer;
+                if (correct) score++;
+                Array.from(optionsNode.querySelectorAll("button")).forEach((choice, choiceIndex) => {
+                    choice.disabled = true;
+                    if (choiceIndex === item.answer) choice.style.borderColor = "#42e6a5";
+                });
+                feedback.textContent = (correct ? "Correct! " : "Not quite. ") + item.why;
+                scoreNode.textContent = "Score: " + score + " / " + (questionIndex + 1);
+                nextButton.disabled = false;
+            });
+            optionsNode.appendChild(button);
+        });
+    }
+    nextButton?.addEventListener("click", () => {
+        if (!answered) return;
+        if (questionIndex >= questions.length - 1) {
+            questionIndex = 0;
+            score = 0;
+            scoreNode.textContent = "Score: 0";
+        } else {
+            questionIndex++;
+        }
+        renderQuestion();
+    });
+    renderQuestion();
+})();
+</script>
+
+</body>
+ </html>
