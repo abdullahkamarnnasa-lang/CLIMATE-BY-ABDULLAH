@@ -1,0 +1,2149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Climate | By Abdullah</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="bootstrap.css">
+
+    <!-- Your CSS -->
+    <link rel="stylesheet" href="mysheet.css">
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Leaflet JS (required for the map) -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: #f4f8fb;
+            color: #15202b;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        body.dark-mode {
+            background: #08131c;
+            color: #e9f4f8;
+        }
+
+        body.dark-mode .light-card,
+        body.dark-mode .info-card,
+        body.dark-mode .climate-section,
+        body.dark-mode .calculator-box,
+        body.dark-mode .dashboard-card {
+            background: #10232f !important;
+            color: #e9f4f8;
+            border-color: #234352;
+        }
+
+        body.dark-mode .text-muted {
+            color: #aac0c9 !important;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 9999;
+            background: rgba(10, 25, 35, 0.96);
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-brand {
+            color: white;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-decoration: none;
+            font-size: 22px;
+        }
+
+        .nav-brand:hover {
+            color: #66e0a3;
+            text-decoration: none;
+        }
+
+        .hero {
+            min-height: 620px;
+            background:
+                linear-gradient(rgba(0, 16, 25, 0.52), rgba(0, 16, 25, 0.72)),
+                url("baa.webp") center/cover;
+            display: flex;
+            align-items: center;
+            color: white;
+        }
+
+        .hero-content {
+            max-width: 850px;
+            padding: 70px 25px;
+        }
+
+        .hero-title {
+            font-size: clamp(44px, 7vw, 82px);
+            font-weight: 900;
+            line-height: 0.95;
+        }
+
+        .hero-title span {
+            color: #70e39e;
+        }
+
+        .hero-text {
+            font-size: 20px;
+            line-height: 1.8;
+            color: #e6f5f1;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 18px;
+            padding: 20px;
+            backdrop-filter: blur(12px);
+        }
+
+        .section-title {
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .section-subtitle {
+            color: #667780;
+            line-height: 1.7;
+        }
+
+        .dark-mode .section-subtitle {
+            color: #abc0c8;
+        }
+
+        .dashboard-card,
+        .info-card,
+        .light-card,
+        .calculator-box {
+            background: white;
+            border-radius: 18px;
+            border: 1px solid #dce8ed;
+            box-shadow: 0 10px 30px rgba(20, 50, 70, 0.08);
+            transition: transform .25s, box-shadow .25s;
+        }
+
+        .dashboard-card:hover,
+        .info-card:hover,
+        .light-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 16px 38px rgba(20, 50, 70, 0.14);
+        }
+
+        .metric {
+            font-size: 36px;
+            font-weight: 900;
+            color: #087a58;
+        }
+
+        .metric-label {
+            color: #657882;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .pulse {
+            width: 10px;
+            height: 10px;
+            display: inline-block;
+            border-radius: 50%;
+            background: #30c878;
+            box-shadow: 0 0 0 rgba(48, 200, 120, .6);
+            animation: pulse 1.8s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(48, 200, 120, .6);
+            }
+
+            70% {
+                box-shadow: 0 0 0 12px rgba(48, 200, 120, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(48, 200, 120, 0);
+            }
+        }
+
+        .climate-btn {
+            cursor: pointer;
+            padding: 14px;
+            border-radius: 14px;
+            transition: .2s;
+        }
+
+        .climate-btn:hover {
+            background: #0b7556;
+            color: white;
+        }
+
+        .climate-section {
+            background: white;
+            border-radius: 20px;
+            padding: 28px;
+            border: 1px solid #dde8ed;
+        }
+
+        .news-card img {
+            height: 220px;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        .chart-box {
+            position: relative;
+            height: 320px;
+        }
+
+        #map {
+            height: 520px;
+            width: 100%;
+            border-radius: 18px;
+            overflow: hidden;
+            background: #dfecef;
+            z-index: 1;
+        }
+
+        .map-panel {
+            position: sticky;
+            top: 90px;
+        }
+
+        .result-pill {
+            display: inline-block;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: #e7f8ef;
+            color: #087a58;
+            font-weight: 800;
+        }
+
+        .big-result {
+            font-size: 34px;
+            font-weight: 900;
+        }
+
+        .footer {
+            background: #071119;
+            color: #dceaf0;
+        }
+
+        .source-link {
+            color: #087a58;
+            font-weight: 700;
+        }
+
+        .source-link:hover {
+            color: #05573f;
+        }
+
+        .back-top {
+            position: fixed;
+            bottom: 22px;
+            right: 22px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background: #087a58;
+            color: white;
+            display: none;
+            z-index: 5000;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, .25);
+        }
+
+        .search-result {
+            cursor: pointer;
+        }
+
+        .badge-soft {
+            border-radius: 999px;
+            padding: 7px 11px;
+            background: #eaf7f3;
+            color: #087a58;
+            font-weight: 700;
+        }
+
+        .impact-meter {
+            height: 14px;
+            background: #dfe8ed;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .impact-meter span {
+            display: block;
+            height: 100%;
+            background: linear-gradient(90deg, #53c878, #efb22f, #e45c4a);
+            border-radius: inherit;
+            width: 0%;
+            transition: width .6s ease;
+        }
+
+        .small-note {
+            font-size: 13px;
+            color: #71828a;
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                min-height: 540px;
+            }
+
+            .map-panel {
+                position: static;
+            }
+
+            #map {
+                height: 400px;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+
+    <!-- ================= NAVBAR ================= -->
+
+    <nav class="topbar navbar navbar-expand-lg navbar-dark">
+
+        <div class="container-fluid px-4">
+
+            <a class="nav-brand" href="#home">
+                🌍 CLIMATE <span style="color:#66e0a3;">BY ABDULLAH</span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mainNav">
+
+                <ul class="navbar-nav ml-auto">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#vital">Vital Signs</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#evidenceArea">Evidence</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#dashboard">Dashboard</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#mapArea">Map</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="qna.html">Q/A</a>
+                    </li>
+
+                    <li class="nav-item ml-lg-2">
+                        <button class="btn btn-outline-light btn-sm" onclick="toggleDarkMode()">
+                            🌙 Dark Mode
+                        </button>
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+    <!-- ================= HERO ================= -->
+
+    <section id="home" class="hero">
+
+        <div class="container">
+
+            <div class="hero-content">
+
+                <div class="glass mb-4">
+                    <span class="pulse"></span>
+                    <span class="ml-2">
+                        Climate information & interactive learning
+                    </span>
+                </div>
+
+                <h1 class="hero-title">
+                    Understand <span>Climate Change.</span>
+                </h1>
+
+                <p class="hero-text mt-4">
+
+                    Explore greenhouse gases, global temperature,
+                    climate evidence, impacts, solutions, current
+                    vital signs and location-based climate information.
+
+                </p>
+
+                <div class="mt-4">
+
+                    <a href="#dashboard" class="btn btn-success btn-lg mr-2">
+                        Explore Dashboard
+                    </a>
+
+                    <a href="ab_space_explorer (1).html" target="_blank" class="btn btn-outline-light btn-lg">
+                        🚀 Explore Space
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= VITAL SIGNS ================= -->
+
+    <section id="vital" class="container py-5">
+
+        <div class="text-center mb-5">
+
+            <h2 class="section-title">🌎 Climate Vital Signs</h2>
+
+            <p class="section-subtitle">
+                Key climate indicators displayed in a simple dashboard.
+            </p>
+
+        </div>
+
+
+        <div class="row">
+
+
+            <div class="col-lg-4 mb-4">
+
+                <div class="dashboard-card p-4 h-100">
+
+                    <div class="metric">429</div>
+
+                    <div class="metric-label">
+                        CO₂ Parts Per Million
+                    </div>
+
+                    <hr>
+
+                    <p>
+                        Atmospheric carbon dioxide is one of the
+                        major greenhouse gases linked to human-caused
+                        warming.
+                    </p>
+
+                    <a href="carbon.html" target="_blank" class="source-link">
+                        Explore CO₂ →
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-lg-4 mb-4">
+
+                <div class="dashboard-card p-4 h-100">
+
+                    <div class="metric">1.19°C</div>
+
+                    <div class="metric-label">
+                        2025 NASA global temperature anomaly
+                    </div>
+
+                    <hr>
+
+                    <p>
+                        NASA's GISTEMP annual value for 2025 was about
+                        1.19°C above the 1951–1980 average.
+                    </p>
+
+                    <a href="temp.html" target="_blank" class="source-link">
+                        Explore Temperature →
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-lg-4 mb-4">
+
+                <div class="dashboard-card p-4 h-100">
+
+                    <div class="metric">1938</div>
+
+                    <div class="metric-label">
+                        Methane Parts Per Billion
+                    </div>
+
+                    <hr>
+
+                    <p>
+                        Methane is a powerful greenhouse gas. Its
+                        concentration and sources are actively monitored.
+                    </p>
+
+                    <a href="iner.html.html" target="_blank" class="source-link">
+                        Explore Methane →
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= CLIMATE DASHBOARD ================= -->
+
+    <section id="dashboard" class="container py-4">
+
+        <div class="row mb-4">
+
+            <div class="col-md-7">
+
+                <h2 class="section-title">
+                    📊 Interactive Climate Dashboard
+                </h2>
+
+                <p class="section-subtitle">
+                    Compare simplified climate trends and explore what
+                    different temperature increases could mean.
+                </p>
+
+            </div>
+
+            <div class="col-md-5 text-md-right">
+
+                <span class="badge-soft">
+                    Page updated: Sep 03, 2026
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="row">
+
+            <div class="col-lg-7 mb-4">
+
+                <div class="light-card p-4">
+
+                    <h4>Global Temperature Trend (Illustrative)</h4>
+
+                    <p class="small-note">
+                        Educational chart based on a simplified set of
+                        example anomaly values. Replace with your chosen
+                        official dataset for publication.
+                    </p>
+
+                    <div class="chart-box">
+                        <canvas id="temperatureChart"></canvas>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-lg-5 mb-4">
+
+                <div class="light-card p-4">
+
+                    <h4>Climate Indicators</h4>
+
+                    <div class="mb-4 mt-4">
+
+                        <div class="d-flex justify-content-between">
+                            <span>CO₂</span>
+                            <strong>429 ppm</strong>
+                        </div>
+
+                        <div class="impact-meter mt-2">
+                            <span style="width:86%"></span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="mb-4">
+
+                        <div class="d-flex justify-content-between">
+                            <span>Methane</span>
+                            <strong>1938 ppb</strong>
+                        </div>
+
+                        <div class="impact-meter mt-2">
+                            <span style="width:67%"></span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="mb-4">
+
+                        <div class="d-flex justify-content-between">
+                            <span>Global temperature anomaly</span>
+                            <strong>+1.19°C</strong>
+                        </div>
+
+                        <div class="impact-meter mt-2">
+                            <span style="width:72%"></span>
+                        </div>
+
+                    </div>
+
+
+                    <p class="small-note">
+                        The meters are visual aids, not risk scores.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= NASA INFORMATION ================= -->
+
+    <section class="container py-5">
+
+        <div class="light-card p-4 p-md-5">
+
+            <h2 class="section-title">
+                🛰️ Why NASA Observes Earth
+            </h2>
+
+            <p>
+                NASA uses satellites, aircraft, ground observations and
+                scientific models to study Earth's atmosphere, oceans,
+                land, ice and ecosystems.
+            </p>
+
+            <p>
+                Long-term observations let scientists compare conditions
+                across years and decades, helping identify climate trends,
+                changes in ice, sea level, ocean heat and atmospheric gases.
+            </p>
+
+            <p class="mb-0">
+                Climate science combines observations from many independent
+                systems rather than relying on one measurement.
+            </p>
+
+        </div>
+
+    </section>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+
+
+
+    <!-- ================= SEARCHABLE TOPICS ================= -->
+
+    <section class="container py-4">
+
+        <div class="row align-items-end">
+
+            <div class="col-md-8">
+
+                <h2 class="section-title">
+                    🔎 Find a Climate Topic
+                </h2>
+
+                <p class="section-subtitle">
+                    Search the topics below to quickly locate information.
+                </p>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <input type="text" id="topicSearch" class="form-control" placeholder="Search: ocean, ice, methane..."
+                    oninput="searchTopics()">
+
+            </div>
+
+        </div>
+
+
+        <div id="topicCards" class="row mt-3">
+
+            <div class="col-md-4 mb-3 searchable-topic" data-topic="carbon dioxide co2 greenhouse gas">
+
+                <div class="info-card p-4 h-100">
+
+                    <h4>🟢 Carbon Dioxide</h4>
+
+                    <p>
+                        CO₂ is a long-lived greenhouse gas released by
+                        fossil-fuel use, land-use change and other processes.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4 mb-3 searchable-topic" data-topic="methane ch4 agriculture livestock gas">
+
+                <div class="info-card p-4 h-100">
+
+                    <h4>🔥 Methane</h4>
+
+                    <p>
+                        Methane has important natural and human sources,
+                        including wetlands, agriculture and fossil-fuel systems.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4 mb-3 searchable-topic" data-topic="ocean warming sea acidification ocean">
+
+                <div class="info-card p-4 h-100">
+
+                    <h4>🌊 Oceans</h4>
+
+                    <p>
+                        Oceans absorb heat and carbon, and changes in chemistry,
+                        temperature and circulation affect ecosystems.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4 mb-3 searchable-topic" data-topic="ice glaciers arctic antarctica">
+
+                <div class="info-card p-4 h-100">
+
+                    <h4>🧊 Ice</h4>
+
+                    <p>
+                        Scientists monitor glaciers, ice sheets and sea ice using
+                        satellites, field observations and other techniques.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4 mb-3 searchable-topic" data-topic="heat wave extreme weather temperature">
+
+                <div class="info-card p-4 h-100">
+
+                    <h4>🔥 Extreme Heat</h4>
+
+                    <p>
+                        A warmer climate changes the odds and characteristics of
+                        many heat extremes.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4 mb-3 searchable-topic" data-topic="forest trees carbon land ecosystem">
+
+                <div class="info-card p-4 h-100">
+
+                    <h4>🌳 Forests</h4>
+
+                    <p>
+                        Forests exchange carbon with the atmosphere and are
+                        affected by heat, drought, fire, pests and land use.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= EVIDENCE / CAUSE / EFFECT ================= -->
+
+    <section id="evidenceArea" class="container py-5">
+
+        <div class="row text-center mb-4">
+
+            <div class="col-md-4 mb-2">
+                <h3 onclick="showSection('evidence')" class="climate-btn">
+                    EVIDENCE
+                </h3>
+            </div>
+
+            <div class="col-md-4 mb-2">
+                <h3 onclick="showSection('cause')" class="climate-btn">
+                    CAUSE
+                </h3>
+            </div>
+
+            <div class="col-md-4 mb-2">
+                <h3 onclick="showSection('effect')" class="climate-btn">
+                    EFFECT
+                </h3>
+            </div>
+
+        </div>
+
+
+        <div id="evidence" class="climate-section">
+
+            <div class="row align-items-center">
+
+                <div class="col-md-6">
+
+                    <h2>How Do We Know Climate Change is Real?</h2>
+
+                    <p>
+                        Earth-orbiting satellites and other observation systems
+                        measure temperature, ice, oceans, land and atmospheric
+                        composition around the world.
+                    </p>
+
+                    <p>
+                        When these independent records are combined over long
+                        periods, they reveal persistent changes in Earth's climate
+                        system.
+                    </p>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <img src="climate-evidence-image.webp" class="img-fluid rounded" alt="Climate change evidence">
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div id="cause" class="climate-section mt-3" style="display:none;">
+
+            <div class="row align-items-center">
+
+                <div class="col-md-6">
+
+                    <h2>What is Causing Climate Change?</h2>
+
+                    <p>
+                        Human activities have increased the concentration of
+                        greenhouse gases in the atmosphere, especially through
+                        fossil-fuel use and changes in land use.
+                    </p>
+
+                    <p>
+                        Greenhouse gases absorb outgoing infrared radiation,
+                        strengthening the natural greenhouse effect.
+                    </p>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <img src="power-station-374097-1920.jpeg" class="img-fluid rounded" alt="Power station">
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div id="effect" class="climate-section mt-3" style="display:none;">
+
+            <div class="row align-items-center">
+
+                <div class="col-md-6">
+
+                    <h2>What Are the Effects of Climate Change?</h2>
+
+                    <p>
+                        Observed effects include warming temperatures, glacier
+                        loss, sea-level rise, changing precipitation patterns
+                        and increasing heat risks in many regions.
+                    </p>
+
+                    <p>
+                        Impacts vary by location and can affect people, ecosystems,
+                        water resources, agriculture and infrastructure.
+                    </p>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <img src="effectsbannernew-opt - Copy.jpeg" class="img-fluid rounded"
+                        alt="Effects of climate change">
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<div class="col-lg-4">
+
+    <div class="map-panel dashboard-card p-4">
+
+        <h3>🌍 Climate Control Center</h3>
+
+        <p class="small-note">
+            Select a location on the map, then explore how climate
+            conditions could change.
+        </p>
+
+        <hr>
+
+        <!-- LOCATION -->
+        <p>
+            <b>📍 Location:</b>
+            <span id="locationName">Click the map</span>
+        </p>
+
+        <div class="row">
+
+            <div class="col-6">
+                <p>
+                    <b>Latitude:</b><br>
+                    <span id="latitude">-</span>
+                </p>
+            </div>
+
+            <div class="col-6">
+                <p>
+                    <b>Longitude:</b><br>
+                    <span id="longitude">-</span>
+                </p>
+            </div>
+
+        </div>
+
+        <hr>
+
+        <!-- CURRENT WEATHER -->
+        <h5>☀️ Current Weather</h5>
+
+        <div class="weather-box mt-3">
+
+            <div class="row text-center">
+
+                <div class="col-6 mb-3">
+                    <div class="weather-icon">🌡️</div>
+                    <strong id="currentTemperature">--</strong>
+                    <small>Temperature</small>
+                </div>
+
+                <div class="col-6 mb-3">
+                    <div class="weather-icon">💧</div>
+                    <strong id="humidity">--</strong>
+                    <small>Humidity</small>
+                </div>
+
+                <div class="col-6">
+                    <div class="weather-icon">💨</div>
+                    <strong id="windSpeed">--</strong>
+                    <small>Wind Speed</small>
+                </div>
+
+                <div class="col-6">
+                    <div class="weather-icon">☁️</div>
+                    <strong id="weatherCondition">--</strong>
+                    <small>Condition</small>
+                </div>
+
+            </div>
+
+            <div id="weatherLoading" class="small-note text-center mt-2">
+                Select a location to load weather.
+            </div>
+
+        </div>
+
+        <hr>
+
+        <!-- TEMPERATURE CONTROL -->
+        <h5>🌡️ Temperature Simulator</h5>
+
+        <div class="d-flex gap-2 mb-2">
+
+            <button
+                type="button"
+                class="btn btn-outline-primary flex-fill"
+                onclick="changeTemperature(-0.5)">
+                − 0.5°C
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-outline-danger flex-fill"
+                onclick="changeTemperature(0.5)">
+                + 0.5°C
+            </button>
+
+        </div>
+
+        <div class="text-center my-2">
+
+            <div class="temperature-display">
+                <span id="temperatureValue">0.0</span>°C
+            </div>
+
+            <small class="text-muted">
+                Simulated temperature change
+            </small>
+
+        </div>
+
+        <input
+            type="range"
+            id="temperatureSlider"
+            class="form-range"
+            min="-5"
+            max="10"
+            step="0.1"
+            value="0"
+            oninput="updateTemperatureFromSlider()">
+
+        <hr>
+
+        <!-- TREE CONTROL -->
+        <h5>🌳 Forest Simulator</h5>
+
+        <div class="input-group mb-2">
+
+            <input
+                type="number"
+                id="treeAmount"
+                class="form-control"
+                min="1"
+                value="10"
+                placeholder="Trees">
+
+            <button
+                class="btn btn-success"
+                type="button"
+                onclick="plantTrees()">
+                🌱 Plant
+            </button>
+
+        </div>
+
+        <button
+            type="button"
+            class="btn btn-outline-danger btn-block mb-2"
+            onclick="removeTrees()">
+            🪓 Remove Trees
+        </button>
+
+        <div class="forest-status">
+
+            <div class="d-flex justify-content-between">
+                <span>🌳 Trees</span>
+                <strong id="treeCount">0</strong>
+            </div>
+
+            <div class="impact-meter mt-2">
+                <span id="treeMeter" style="width:0%"></span>
+            </div>
+
+        </div>
+
+        <hr>
+
+        <!-- SIMULATION RESULT -->
+        <button
+            onclick="checkClimateImpact()"
+            class="btn btn-danger btn-block">
+
+            🔎 Analyze Climate Impact
+
+        </button>
+
+        <button
+            onclick="resetClimateSimulation()"
+            class="btn btn-secondary btn-block mt-2">
+
+            🔄 Reset Simulation
+
+        </button>
+
+        <div id="climateResult" class="mt-3">
+
+            <p class="small-note">
+                Select a location and adjust the simulation.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<div class="container">
+    <div class="row g-4">
+
+        <!-- MARS -->
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h3>Mars</h3>
+                    <p>Explore the Red Planet.</p>
+
+                    <a href="mars.html" class="btn btn-danger">
+                        Explore Mars
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- JUPITER -->
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h3>Jupiter</h3>
+                    <p>Explore the Gas Giant.</p>
+
+                    <a href="jupiter.html" class="btn btn-warning">
+                        Explore Jupiter
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div> <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h3>uranus</h3>
+                    <p>Explore the cold planet </p>
+
+                    <a href="uranus.html" class="btn btn-warning">
+                        Explore uranus
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+
+
+    <!-- ================= STORIES ================= -->
+
+    <section class="container py-5">
+
+        <h2 class="section-title">
+            📰 Latest & Featured Stories
+        </h2>
+
+        <div class="row mt-3">
+
+            <div class="col-lg-4 mb-4 news-card">
+                <div class="info-card overflow-hidden h-100">
+
+                    <img src="img.jpg" alt="Climate story">
+
+                    <div class="p-4">
+
+                        <h4>Climate Observation</h4>
+
+                        <p>
+                            Explore how Earth-observing systems help scientists
+                            track changes over time.
+                        </p>
+
+                    </div>
+
+                </div>
+                </div>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+
+
+
+
+                <div class="col-lg-4 mb-4 news-card">
+                    <div class="info-card overflow-hidden h-100">
+
+                        <img src="Caribou.jpg" alt="Caribou">
+
+                        <div class="p-4">
+
+                            <h4>Climate & Ecosystems</h4>
+
+                            <p>
+                                Climate conditions influence habitats, migration,
+                                vegetation and ecosystem health.
+                            </p>
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div class="col-lg-4 mb-4 news-card">
+                    <div class="info-card overflow-hidden h-100">
+
+                        <img src="barnesicecapwide_oli2_20260712_th.jpg" alt="Barnes Ice Cap">
+
+                        <div class="p-4">
+
+                            <h4>Barnes Ice Cap</h4>
+
+                            <p>
+                                Ice observations provide a visual record of changes
+                                in the cryosphere.
+                            </p>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+    </section>
+
+
+    <!-- ================= TREE CALCULATOR ================= -->
+
+    <section class="container py-5">
+
+        <div class="calculator-box p-4 p-md-5">
+
+            <div class="row">
+
+                <div class="col-lg-6">
+
+                    <h2>🌳 Tree Impact Calculator</h2>
+
+                    <p class="section-subtitle">
+                        Educational estimate only. Tree carbon and oxygen
+                        benefits vary by species, age, climate and conditions.
+                    </p>
+
+                    <select id="action" class="form-control mb-3">
+
+                        <option value="">
+                            Select an option
+                        </option>
+
+                        <option value="cut">
+                            Cut a Tree
+                        </option>
+
+                        <option value="plant">
+                            Plant a Tree
+                        </option>
+
+                    </select>
+
+
+                    <input type="number" id="trees" min="0" class="form-control mb-3"
+                        placeholder="Enter number of trees">
+
+
+                    <button onclick="calculateTreeImpact()" class="btn btn-success">
+
+                        Calculate
+
+                    </button>
+
+                </div>
+
+
+                <div class="col-lg-6 mt-4 mt-lg-0">
+
+                    <div id="treeResult" class="glass" style="background:#0a3328;color:white;">
+
+                        <h4>Result</h4>
+
+                        <p>
+                            Select an action and enter a number of trees.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= WORLD CLIMATE MAP ================= -->
+
+    <section id="mapArea" class="container py-5">
+
+        <div class="row">
+
+            <div class="col-lg-8 mb-4">
+
+                <h2 class="section-title">
+                    🌍 Select a Location
+                </h2>
+
+                <p class="section-subtitle">
+                    Click anywhere on the map to inspect a location.
+                </p>
+
+                <div id="map"></div>
+
+            </div>
+
+
+            <div class="col-lg-4">
+
+                <div class="map-panel dashboard-card p-4">
+
+                    <h3>Climate Information</h3>
+
+                    <p>
+                        <b>Location:</b>
+                        <span id="locationName">Click the map</span>
+                    </p>
+
+                    <p>
+                        <b>Latitude:</b>
+                        <span id="latitude">-</span>
+                    </p>
+
+                    <p>
+                        <b>Longitude:</b>
+                        <span id="longitude">-</span>
+                    </p>
+
+                    <hr>
+
+
+                    <h5>Temperature Increase Simulator</h5>
+
+                    <input type="number" id="temperatureIncrease" class="form-control" value="0" min="0" max="10"
+                        step="0.1">
+
+
+                    <button onclick="checkClimateImpact()" class="btn btn-danger mt-2 btn-block">
+
+                        Calculate Climate Impact
+
+                    </button>
+
+
+                    <div id="climateResult" class="mt-3">
+
+                        <p class="small-note">
+                            Select a location and enter a temperature increase.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= GALLERIES ================= -->
+
+    <section class="container-fluid py-5">
+
+        <div class="container">
+
+            <h2 class="section-title">
+                🎞️ Climate Gallery
+            </h2>
+
+            <div id="galleriesCarousel" class="carousel slide" data-bs-ride="carousel">
+
+                <div class="carousel-inner">
+
+                    <div class="carousel-item active">
+                        <img src="wildfire.jpg" class="d-block w-100 rounded" alt="Wildfire">
+                    </div>
+
+                    <div class="carousel-item">
+                        <img src="ssta-mur-2023233-lrg-3.webp" class="d-block w-100 rounded"
+                            alt="Sea surface temperature">
+                    </div>
+
+                    <div class="carousel-item">
+                        <img src="gistemp_jpg-1280px.jpg" class="d-block w-100 rounded" alt="Global temperature">
+                    </div>
+
+                    <div class="carousel-item">
+                        <img src="columbia_oli_2014183_front.jpg" class="d-block w-100 rounded" alt="Climate landscape">
+                    </div>
+
+                </div>
+
+
+                <button class="carousel-control-prev" type="button" data-bs-target="#galleriesCarousel"
+                    data-bs-slide="prev">
+
+                    <span class="carousel-control-prev-icon"></span>
+
+                </button>
+
+
+                <button class="carousel-control-next" type="button" data-bs-target="#galleriesCarousel"
+                    data-bs-slide="next">
+
+                    <span class="carousel-control-next-icon"></span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= Q/A + SPACE ================= -->
+
+    <section class="container py-5">
+
+        <div class="row">
+
+            <div class="col-md-6 mb-4">
+
+                <div class="info-card p-5 h-100">
+
+                    <h2>🧠 Test Your Knowledge</h2>
+
+                    <p>
+                        Take the Climate Quiz and get a score, percentage,
+                        level and certificate based on your result.
+                    </p>
+
+                    <a href="qna.html" class="btn btn-success">
+
+                        Start Q/A Quiz
+
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 mb-4">
+
+                <div class="info-card p-5 h-100">
+
+                    <h2>🚀 Explore Space</h2>
+
+                    <p>
+                        Open your Space Explorer page to learn about planets,
+                        moons, mountains, spacecraft and deep space.
+                    </p>
+
+                    <a href="ab_space_explorer (1).html" target="_blank" class="btn btn-dark">
+
+                        Open Space Explorer
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= SOURCES ================= -->
+
+    <section class="container py-5">
+
+        <div class="light-card p-4 p-md-5">
+
+            <h2 class="section-title">📚 Recommended Sources</h2>
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <h5>NASA Climate</h5>
+                    <a class="source-link" href="https://climate.nasa.gov/" target="_blank">
+                        Visit NASA Climate →
+                    </a>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <h5>NASA Earth</h5>
+                    <a class="source-link" href="https://science.nasa.gov/earth/" target="_blank">
+                        Visit NASA Earth →
+                    </a>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <h5>NOAA Climate</h5>
+                    <a class="source-link" href="https://www.noaa.gov/climate" target="_blank">
+                        Visit NOAA →
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer class="footer py-5">
+
+        <div class="container text-center">
+
+            <h4>
+                🌍 Climate Website — By Abdullah
+            </h4>
+
+            <p class="mb-1">
+                Learn • Understand • Protect Our Planet
+            </p>
+
+            <p class="small">
+                Page Last Updated: September 03, 2026
+            </p>
+
+            <div class="mt-3">
+
+                <a href="https://www.youtube.com/watch?v=jAa58N4Jlos" target="_blank" class="text-white mr-3">
+
+                    <i class="fa fa-youtube" style="font-size:42px;color:red;"></i>
+
+                </a>
+
+
+                <a href="https://www.facebook.com/earthsciencesnz/videos/using-generative-ai-to-produce-high-resolution-climate-change-projections/594260286550361/"
+                    target="_blank" class="text-white mr-3">
+
+                    <i class="fa fa-facebook-official" style="font-size:42px;color:#1877f2;"></i>
+
+                </a>
+
+
+                <a href="https://www.instagram.com/explore/tags/climatechange/" target="_blank" class="text-white">
+
+                    <i class="fa fa-instagram" style="font-size:42px;color:#E4405F;"></i>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+    <button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+
+        ↑
+
+    </button>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script>
+
+        /* EVIDENCE / CAUSE / EFFECT */
+
+        function showSection(section) {
+
+            document.getElementById("evidence").style.display = "none";
+            document.getElementById("cause").style.display = "none";
+            document.getElementById("effect").style.display = "none";
+
+            document.getElementById(section).style.display = "block";
+
+        }
+
+
+        /* DARK MODE */
+
+        function toggleDarkMode() {
+
+            document.body.classList.toggle("dark-mode");
+
+            localStorage.setItem(
+                "climateDarkMode",
+                document.body.classList.contains("dark-mode")
+            );
+
+        }
+
+
+        if (localStorage.getItem("climateDarkMode") === "true") {
+            document.body.classList.add("dark-mode");
+        }
+
+
+        /* TOPIC SEARCH */
+
+        function searchTopics() {
+
+            const query =
+                document.getElementById("topicSearch").value.toLowerCase();
+
+            const cards =
+                document.querySelectorAll(".searchable-topic");
+
+            cards.forEach(function (card) {
+
+                const topic =
+                    card.getAttribute("data-topic").toLowerCase();
+
+                if (topic.includes(query)) {
+                    card.style.display = "";
+                } else {
+                    card.style.display = "none";
+                }
+
+            });
+
+        }
+
+
+        /* TREE CALCULATOR */
+
+        function calculateTreeImpact() {
+
+            const action =
+                document.getElementById("action").value;
+
+            const trees =
+                Number(document.getElementById("trees").value);
+
+            const result =
+                document.getElementById("treeResult");
+
+
+            if (!action || trees <= 0) {
+
+                result.innerHTML =
+                    "<h4>Result</h4>" +
+                    "<p>Please select an action and enter a positive number.</p>";
+
+                return;
+
+            }
+
+
+            const estimatedCarbon =
+                trees * 21;
+
+            if (action === "cut") {
+
+                document.body.style.backgroundColor = "#30363b";
+
+                setTimeout(function () {
+                    if (!document.body.classList.contains("dark-mode")) {
+                        document.body.style.backgroundColor = "";
+                    }
+                }, 1500);
+
+                result.innerHTML =
+                    "<h4>🌳 Tree Loss Estimate</h4>" +
+                    "<div class='big-result'>+" +
+                    estimatedCarbon.toFixed(1) +
+                    " kg CO₂</div>" +
+                    "<p>Illustrative annual carbon-storage equivalent for " +
+                    trees + " tree(s). Actual values vary greatly by species, age and conditions.</p>";
+
+            }
+
+            else {
+
+                document.body.style.backgroundColor = "#dff7e9";
+
+                setTimeout(function () {
+                    document.body.style.backgroundColor = "";
+                }, 1500);
+
+                result.innerHTML =
+                    "<h4>🌱 Tree Planting Estimate</h4>" +
+                    "<div class='big-result'>≈" +
+                    estimatedCarbon.toFixed(1) +
+                    " kg CO₂/year</div>" +
+                    "<p>Illustrative annual carbon-storage estimate for " +
+                    trees + " tree(s). Real sequestration depends on species, age, climate and survival.</p>";
+
+            }
+
+        }
+
+
+        /* CLIMATE MAP */
+
+        let map;
+        let selectedMarker = null;
+        let selectedLatitude = null;
+        let selectedLongitude = null;
+
+
+        function initMap() {
+
+            const mapElement = document.getElementById("map");
+
+            if (!mapElement) {
+                return;
+            }
+
+            if (typeof L === "undefined") {
+                mapElement.innerHTML =
+                    "<div style='padding:20px;color:#b00020;font-weight:bold;'>" +
+                    "Map library could not be loaded. Please check your internet connection and refresh the page." +
+                    "</div>";
+                return;
+            }
+
+            map =
+                L.map("map").setView([20, 0], 2);
+
+            L.tileLayer(
+                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+                    attribution: "&copy; OpenStreetMap contributors"
+                }
+            ).addTo(map);
+
+
+            map.on("click", function (e) {
+
+                selectedLatitude = e.latlng.lat;
+                selectedLongitude = e.latlng.lng;
+
+
+                if (selectedMarker) {
+                    map.removeLayer(selectedMarker);
+                }
+
+
+                selectedMarker =
+                    L.marker([
+                        selectedLatitude,
+                        selectedLongitude
+                    ]).addTo(map);
+
+
+                document.getElementById("latitude").innerHTML =
+                    selectedLatitude.toFixed(4);
+
+                document.getElementById("longitude").innerHTML =
+                    selectedLongitude.toFixed(4);
+
+
+                getLocationName(
+                    selectedLatitude,
+                    selectedLongitude
+                );
+
+            });
+
+        }
+
+
+        function getLocationName(lat, lon) {
+
+            fetch(
+                "https://nominatim.openstreetmap.org/reverse?format=json&lat=" +
+                encodeURIComponent(lat) +
+                "&lon=" +
+                encodeURIComponent(lon)
+            )
+
+                .then(function (response) {
+                    return response.json();
+                })
+
+                .then(function (data) {
+
+                    const address =
+                        data.address || {};
+
+                    const name =
+                        address.city ||
+                        address.town ||
+                        address.village ||
+                        address.state ||
+                        address.country ||
+                        "Selected Location";
+
+                    document.getElementById("locationName").innerHTML =
+                        name;
+
+                })
+
+                .catch(function () {
+
+                    document.getElementById("locationName").innerHTML =
+                        "Selected Location";
+
+                });
+
+        }
+
+
+        function checkClimateImpact() {
+
+            if (selectedLatitude === null) {
+
+                alert("Please select a location on the map first.");
+
+                return;
+
+            }
+
+
+            const increase =
+                Number(
+                    document.getElementById("temperatureIncrease").value
+                );
+
+
+            const result =
+                document.getElementById("climateResult");
+
+
+            if (increase <= 0) {
+
+                result.innerHTML =
+                    "<p class='small-note'>Please enter a temperature increase greater than 0.</p>";
+
+                return;
+
+            }
+
+
+            let title;
+            let people;
+            let environment;
+            let solution;
+            let risk;
+
+
+            if (increase < 1) {
+
+                title = "Low additional warming scenario";
+                risk = 20;
+
+                people =
+                    "Some heat-related risks can increase, especially during extreme heat.";
+
+                environment =
+                    "Local ecosystems may experience additional climate pressure.";
+
+                solution =
+                    "Reduce greenhouse-gas emissions and strengthen local resilience.";
+
+            }
+
+            else if (increase < 2) {
+
+                title = "Moderate additional warming scenario";
+                risk = 40;
+
+                people =
+                    "Heat stress, water stress and other climate hazards can become more significant.";
+
+                environment =
+                    "Agriculture, water systems and ecosystems can face additional pressure.";
+
+                solution =
+                    "Cut emissions, protect ecosystems and improve climate adaptation.";
+
+            }
+
+            else if (increase < 3) {
+
+                title = "High additional warming scenario";
+                risk = 68;
+
+                people =
+                    "Risks from extreme heat and climate hazards can become substantially higher.";
+
+                environment =
+                    "Water resources, biodiversity, agriculture and ecosystems may face serious stress.";
+
+                solution =
+                    "Rapid emissions reductions plus strong adaptation and resilience planning.";
+
+            }
+
+            else {
+
+                title = "Very high additional warming scenario";
+                risk = 90;
+
+                people =
+                    "Extreme heat and other hazards can pose serious risks to communities.";
+
+                environment =
+                    "Many ecosystems may face severe stress, with greater water and food-system risks.";
+
+                solution =
+                    "Rapidly reduce emissions and invest in climate resilience and ecosystem protection.";
+
+            }
+
+
+            result.innerHTML =
+
+                "<div class='result-pill'>" +
+                title +
+                "</div>" +
+
+                "<p class='mt-3'><b>Location:</b> " +
+                document.getElementById("locationName").innerText +
+                "</p>" +
+
+                "<p><b>Additional warming:</b> +" +
+                increase +
+                " °C</p>" +
+
+                "<p><b>Possible people impacts:</b><br>" +
+                people +
+                "</p>" +
+
+                "<p><b>Possible environmental impacts:</b><br>" +
+                environment +
+                "</p>" +
+
+                "<p><b>How we can help:</b><br>" +
+                solution +
+                "</p>" +
+
+                "<div class='mt-3'>" +
+                "<small>Illustrative impact meter</small>" +
+                "<div class='impact-meter mt-2'>" +
+                "<span style='width:" + risk + "%'></span>" +
+                "</div>" +
+                "</div>";
+
+        }
+
+
+        /* CHART */
+
+        function createTemperatureChart() {
+
+            const canvas =
+                document.getElementById("temperatureChart");
+
+            if (!canvas || typeof Chart === "undefined") {
+                return;
+            }
+
+
+            new Chart(canvas, {
+
+                type: "line",
+
+                data: {
+
+                    labels: [
+                        "1880",
+                        "1900",
+                        "1920",
+                        "1940",
+                        "1960",
+                        "1980",
+                        "2000",
+                        "2010",
+                        "2020",
+                        "2025"
+                    ],
+
+                    datasets: [
+
+                        {
+                            label: "Illustrative temperature anomaly (°C)",
+                            data: [
+                                -0.2,
+                                -0.35,
+                                -0.25,
+                                -0.05,
+                                0.00,
+                                0.25,
+                                0.45,
+                                0.72,
+                                1.02,
+                                1.19
+                            ],
+                            borderWidth: 3,
+                            tension: 0.35,
+                            fill: false
+                        }
+
+                    ]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    plugins: {
+                        legend: {
+                            display: true
+                        }
+                    },
+
+                    scales: {
+
+                        y: {
+                            title: {
+                                display: true,
+                                text: "°C anomaly"
+                            }
+                        },
+
+                        x: {
+                            title: {
+                                display: true,
+                                text: "Year"
+                            }
+                        }
+
+                    }
+
+                }
+
+            });
+
+        }
+
+
+        /* BACK TO TOP */
+
+        window.addEventListener("scroll", function () {
+
+            const button =
+                document.getElementById("backTop");
+
+            if (window.scrollY > 500) {
+                button.style.display = "block";
+            } else {
+                button.style.display = "none";
+            }
+
+        });
+
+
+        /* START EVERYTHING */
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            initMap();
+
+            setTimeout(function () {
+                if (map) {
+                    map.invalidateSize();
+                }
+            }, 300);
+
+            createTemperatureChart();
+
+        });
+
+    </script>
+
+
+
+
+</body>
+
+</html>

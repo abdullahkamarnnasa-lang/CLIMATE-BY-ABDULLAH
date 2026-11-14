@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AB Space Explorer — By Abdullah</title>
+<style>
+:root{
+  --bg:#050816; --card:#0c1226; --card2:#121b35; --text:#eef4ff; --muted:#9eacce;
+  --accent:#64d7ff; --accent2:#8d7cff; --line:#263354; --good:#5ee0a0; --warn:#ffd166;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,Arial,sans-serif;background:radial-gradient(circle at 20% 0%,#18264b 0,#050816 38%),var(--bg);color:var(--text)}
+header{position:sticky;top:0;z-index:10;background:rgba(5,8,22,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav{max-width:1300px;margin:auto;display:flex;align-items:center;justify-content:space-between;padding:14px 20px}
+.brand{font-size:22px;font-weight:800;letter-spacing:.5px}.brand span{color:var(--accent)}
+nav a{color:var(--muted);text-decoration:none;margin-left:18px;font-size:14px}nav a:hover{color:var(--text)}
+.hero{max-width:1300px;margin:auto;padding:78px 20px 46px;display:grid;grid-template-columns:1.2fr .8fr;gap:30px;align-items:center}
+h1{font-size:clamp(42px,6vw,78px);line-height:.95;margin:0 0 20px}
+.hero p{font-size:18px;line-height:1.7;color:var(--muted);max-width:760px}
+.badge{display:inline-block;padding:8px 12px;border:1px solid #34527b;border-radius:999px;color:var(--accent);background:#0b1730;margin-bottom:14px}
+.hero-art{min-height:320px;border:1px solid var(--line);border-radius:28px;background:radial-gradient(circle at 50% 50%,#284e84 0 7%,#0a1731 8% 27%,transparent 28%),radial-gradient(circle at 50% 50%,#14264a 0 39%,transparent 40%),#060b1b;position:relative;overflow:hidden}
+.hero-art:before,.hero-art:after{content:"";position:absolute;border:1px solid #365784;border-radius:50%;inset:15% 7% 15% 7%;transform:rotate(12deg)}
+.hero-art:after{inset:28% 18% 28% 18%;transform:rotate(-25deg)}
+.star{position:absolute;width:3px;height:3px;background:#fff;border-radius:50%;box-shadow:60px 60px #fff,130px 170px #fff,260px 80px #fff,340px 210px #fff,420px 70px #fff,500px 150px #fff,180px 30px #fff,570px 40px #fff}
+.section{max-width:1300px;margin:auto;padding:35px 20px}
+.section h2{font-size:34px;margin:0 0 8px}.section>p{color:var(--muted);line-height:1.7}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}
+input,select{background:#0a1022;color:var(--text);border:1px solid var(--line);padding:12px 14px;border-radius:10px;outline:none}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.card{background:linear-gradient(160deg,var(--card),#080d1d);border:1px solid var(--line);border-radius:18px;padding:20px}
+.card h3{margin:0 0 8px;font-size:22px}.card p{color:var(--muted);line-height:1.6;margin:7px 0}
+.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+.stat{background:var(--card);border:1px solid var(--line);padding:18px;border-radius:16px}
+.stat b{display:block;font-size:28px;color:var(--accent);margin-top:4px}
+.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:16px}
+table{width:100%;border-collapse:collapse;min-width:850px}th,td{padding:13px 14px;border-bottom:1px solid var(--line);text-align:left}th{background:#0d1730;color:var(--accent)}
+tr:hover td{background:#0a1225}
+.details{margin-top:12px}.details summary{cursor:pointer;color:var(--accent);font-weight:700}
+.meter{height:10px;background:#1b2641;border-radius:999px;overflow:hidden;margin-top:10px}.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:inherit}
+.note{padding:16px;border-left:4px solid var(--warn);background:#151a28;border-radius:10px;color:#dbe3f3}
+.footer{border-top:1px solid var(--line);margin-top:40px;padding:30px 20px;color:var(--muted);text-align:center}
+.source a{color:var(--accent)}
+.small{font-size:13px;color:var(--muted)}
+@media(max-width:850px){.hero{grid-template-columns:1fr}.hero-art{min-height:250px}nav{display:none}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <div class="brand">🚀 <span>AB</span> Space Explorer</div>
+    <nav>
+      <a href="#overview">Overview</a><a href="#planets">Planets</a><a href="#moons">Moons</a>
+      <a href="#terrain">Terrain</a><a href="#smallworlds">Small Worlds</a><a href="#missions">Missions</a><a href="#sources">Sources</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div>
+    <div class="badge">SPACE ENCYCLOPEDIA • BY ABDULLAH</div>
+    <h1>Explore the Solar System & Beyond.</h1>
+    <p>
+      A detailed, interactive learning page covering the Sun, eight planets, dwarf planets,
+      major moons, rings, atmospheres, temperatures, terrain and mountain heights, asteroids,
+      comets, the Kuiper Belt, Oort Cloud, exoplanets and major robotic exploration missions.
+    </p>
+    <p class="small">Data is designed for learning and is linked to NASA/JPL/Caltech sources. For live catalogs and mission status, use the source links below.</p>
+  </div>
+  <div class="hero-art"><span class="star"></span></div>
+</section>
+
+<section id="overview" class="section">
+  <h2>🌌 Solar System at a Glance</h2>
+  <p>Our solar system contains the Sun, eight planets, five officially recognized dwarf planets, hundreds of moons, and thousands of asteroids and comets.</p>
+  <div class="statgrid">
+    <div class="stat">Planets<b>8</b></div>
+    <div class="stat">Official dwarf planets<b>5</b></div>
+    <div class="stat">Sun → Earth<b>1 AU</b></div>
+    <div class="stat">Solar-system age<b>≈4.6B years</b></div>
+    <div class="stat">Confirmed exoplanets*<b>6,354</b><span class="small">NASA archive, 20 Aug 2026</span></div>
+    <div class="stat">Oort Cloud<b>5,000–100,000 AU</b></div>
+  </div>
+  <div class="note" style="margin-top:16px">
+    *The exoplanet count is a time-sensitive catalog value and can change as discoveries are confirmed.
+  </div>
+</section>
+
+<section id="planets" class="section">
+  <h2>🪐 The Eight Planets</h2>
+  <p>Click a planet card to expand additional information.</p>
+  <div class="toolbar">
+    <input id="planetSearch" placeholder="Search planets..." oninput="renderPlanets()">
+    <select id="planetType" onchange="renderPlanets()">
+      <option value="all">All types</option><option value="rocky">Rocky planets</option><option value="giant">Giant planets</option>
+    </select>
+  </div>
+  <div id="planetCards" class="cards"></div>
+</section>
+
+<section class="section">
+  <h2>🌡️ Planet Temperature Reference</h2>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>World</th><th>Mean temperature</th><th>Type</th><th>Key point</th></tr></thead>
+      <tbody>
+        <tr><td>Mercury</td><td>167°C</td><td>Rocky</td><td>Huge day/night temperature swings</td></tr>
+        <tr><td>Venus</td><td>464°C</td><td>Rocky</td><td>Hottest planet; dense greenhouse atmosphere</td></tr>
+        <tr><td>Earth</td><td>15°C</td><td>Rocky</td><td>Only world known to support life</td></tr>
+        <tr><td>Mars</td><td>-65°C</td><td>Rocky</td><td>Cold desert with thin atmosphere</td></tr>
+        <tr><td>Jupiter</td><td>-110°C</td><td>Gas giant</td><td>Temperature measured at an Earth-sea-level pressure reference</td></tr>
+        <tr><td>Saturn</td><td>-140°C</td><td>Gas giant</td><td>Major ring system</td></tr>
+        <tr><td>Uranus</td><td>-195°C</td><td>Ice giant</td><td>Very cold atmosphere</td></tr>
+        <tr><td>Neptune</td><td>-200°C</td><td>Ice giant</td><td>Farthest major planet from the Sun</td></tr>
+        <tr><td>Pluto</td><td>-225°C</td><td>Dwarf planet</td><td>Kuiper Belt dwarf planet</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="small">Temperatures are NASA mean values; giant-planet values use a pressure level comparable to sea-level pressure on Earth.</p>
+</section>
+
+<section id="moons" class="section">
+  <h2>🌙 Moon & Major Moon Worlds</h2>
+  <p>Some moons are active worlds with volcanoes, thick atmospheres, ice shells or subsurface oceans.</p>
+  <div class="cards">
+    <div class="card"><h3>Earth's Moon</h3><p>Diameter ≈3,475 km. A rocky satellite heavily marked by craters and large impact basins.</p><p><b>Notable terrain:</b> Olympus-sized mountain comparisons are not appropriate; the Moon has enormous peaks and crater rims created mainly by impacts.</p></div>
+    <div class="card"><h3>Ganymede</h3><p>Jupiter's largest moon and the largest moon in the solar system.</p><p><b>Science interest:</b> evidence points to a subsurface ocean.</p></div>
+    <div class="card"><h3>Europa</h3><p>Jupiter's icy moon with a strong scientific case for a subsurface ocean.</p><p><b>Mission:</b> NASA's Europa Clipper is designed to study its habitability.</p></div>
+    <div class="card"><h3>Io</h3><p>Jupiter's volcanically active moon. Tidal heating powers intense geological activity.</p></div>
+    <div class="card"><h3>Titan</h3><p>Saturn's largest moon and the only moon known with a thick atmosphere.</p><p>It has surface lakes and seas of methane and ethane.</p></div>
+    <div class="card"><h3>Enceladus</h3><p>Saturn's icy ocean moon. Jets of water-rich material erupt from fractures near its south pole.</p></div>
+  </div>
+</section>
+
+<section id="terrain" class="section">
+  <h2>⛰️ Mountains, Volcanoes & Height / Topography</h2>
+  <p>Here are notable planetary relief features. “Height” can depend on the reference datum used, so planetary topography is best treated as a measurement with a defined baseline.</p>
+  <div class="cards">
+    <div class="card"><h3>Mars — Olympus Mons</h3><p><b>Height:</b> ≈27 km above the surrounding reference surface.</p><p><b>Base:</b> more than 600 km across.</p><p>NASA describes it as the largest known volcano in the solar system.</p></div>
+    <div class="card"><h3>Venus — Maxwell Montes</h3><p><b>Elevation:</b> about 11 km above the mean planetary radius reference.</p><p>It is the highest mountain range on Venus, within the Ishtar Terra region.</p></div>
+    <div class="card"><h3>Earth — Mount Everest</h3><p><b>Elevation:</b> ≈8.85 km above mean sea level.</p><p>Earth's highest point above sea level.</p></div>
+    <div class="card"><h3>Moon — Mountainous Highlands</h3><p>Large impact basins, mountain ranges, crater rims and peaks dominate much of the ancient highlands.</p><p><b>Mapping:</b> spacecraft laser altimetry provides detailed elevation maps.</p></div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <h3>What is a heightmap?</h3>
+    <p>A heightmap stores elevation values across a surface as a grid. Planetary scientists build digital terrain models from laser altimeters, stereo images, radar and other observations. Bright/dark pixels can represent high/low terrain depending on the dataset.</p>
+    <div class="meter"><i style="width:82%"></i></div>
+    <p class="small">Interactive idea for this page: upload or load a DEM/heightmap later and render it as a shaded relief or 3D terrain surface.</p>
+  </div>
+</section>
+
+<section id="smallworlds" class="section">
+  <h2>☄️ Dwarf Planets, Asteroids, Comets & Outer Regions</h2>
+  <div class="cards">
+    <div class="card"><h3>Pluto</h3><p>Complex Kuiper Belt dwarf planet with mountains, valleys, plains, craters and glaciers. Reclassified as a dwarf planet in 2006.</p><p><b>Moons:</b> 5 known major moons, including Charon.</p></div>
+    <div class="card"><h3>Ceres</h3><p>Largest object in the main asteroid belt and the only dwarf planet in the inner solar system. NASA's Dawn spacecraft visited it.</p><p><b>Radius:</b> ≈476 km.</p></div>
+    <div class="card"><h3>Haumea</h3><p>A rapidly rotating dwarf planet in the Kuiper Belt with an elongated shape and two known moons.</p></div>
+    <div class="card"><h3>Makemake</h3><p>A distant Kuiper Belt dwarf planet covered in volatile ices such as methane.</p></div>
+    <div class="card"><h3>Eris</h3><p>A massive dwarf planet in the distant solar system and one of the objects that helped drive the debate that led to Pluto's reclassification.</p></div>
+    <div class="card"><h3>Asteroid Belt</h3><p>The main belt lies between Mars and Jupiter. Most asteroids orbit the Sun there, and they are remnants of early solar-system formation.</p></div>
+    <div class="card"><h3>Kuiper Belt</h3><p>A thick disk of icy bodies beyond Neptune, beginning near ~30 AU. Its main region extends to roughly ~50 AU, with the scattered disk reaching farther.</p></div>
+    <div class="card"><h3>Oort Cloud</h3><p>A theorized spherical shell of icy bodies from roughly 5,000 to 100,000 AU. It has not been directly observed.</p></div>
+  </div>
+</section>
+
+<section id="missions" class="section">
+  <h2>🚀 Human Spaceflight & Robotic Exploration</h2>
+  <div class="cards">
+    <div class="card"><h3>Voyager 1 & 2</h3><p>The two Voyagers are the only spacecraft to have reached interstellar space; their science continues to inform studies of the outer heliosphere.</p></div>
+    <div class="card"><h3>Perseverance — Mars</h3><p>Explores Jezero Crater, studies ancient environments and collects rock samples for possible future return.</p></div>
+    <div class="card"><h3>Curiosity — Mars</h3><p>Studies Mount Sharp and Gale Crater to understand Mars' ancient environments and habitability.</p></div>
+    <div class="card"><h3>Europa Clipper</h3><p>NASA mission designed to make repeated close flybys of Europa and investigate its ice shell, ocean, chemistry and geological activity.</p></div>
+    <div class="card"><h3>New Horizons</h3><p>Flew past Pluto in 2015 and later explored a Kuiper Belt object, expanding knowledge of the outer solar system.</p></div>
+    <div class="card"><h3>Webb Space Telescope</h3><p>Observes infrared light from distant galaxies, stars, planets and exoplanet atmospheres, extending space science far beyond the solar system.</p></div>
+  </div>
+</section>
+
+<section class="section">
+  <h2>✨ Exoplanets & Deep Space</h2>
+  <div class="card">
+    <h3>NASA Exoplanet Archive</h3>
+    <p>The NASA Exoplanet Archive reported <b>6,354 confirmed planets</b> on 20 August 2026, with more candidates and confirmations added over time.</p>
+    <p>Exoplanets are worlds orbiting stars beyond our Sun. Scientists study their size, mass, orbital periods, host stars and atmospheres to understand how planetary systems form and where conditions might permit life.</p>
+    <a class="source" href="https://exoplanetarchive.ipac.caltech.edu/" target="_blank">Open NASA Exoplanet Archive ↗</a>
+  </div>
+</section>
+
+<section class="section">
+  <h2>🧠 Space Facts</h2>
+  <div class="cards">
+    <div class="card"><h3>Why is Venus hotter than Mercury?</h3><p>Venus has a dense atmosphere dominated by carbon dioxide, producing an extreme greenhouse effect that traps heat efficiently.</p></div>
+    <div class="card"><h3>How big is Saturn's ring system?</h3><p>NASA notes the visible ring system spans roughly 280,000 km while being extremely thin compared with its width; some measured sections are only around meters to tens of meters thick.</p></div>
+    <div class="card"><h3>How far is the Oort Cloud?</h3><p>NASA places its theorized region at about 5,000–100,000 AU, far beyond the Kuiper Belt.</p></div>
+    <div class="card"><h3>Can planets have rings?</h3><p>Jupiter, Saturn, Uranus and Neptune have ring systems; NASA notes at least one asteroid also has rings.</p></div>
+  </div>
+</section>
+
+<section id="sources" class="section">
+  <h2>📚 Sources & Live Data</h2>
+  <p>Use these authoritative sources for the newest catalog values, mission updates and detailed datasets.</p>
+  <div class="cards">
+    <div class="card source"><h3>NASA Science — Solar System</h3><p>Planet and solar-system facts, temperatures, moons and exploration.</p><a href="https://science.nasa.gov/solar-system/" target="_blank">NASA Solar System ↗</a></div>
+    <div class="card source"><h3>NASA / JPL — Solar System Dynamics</h3><p>Precise orbital and small-body data, useful for deeper quantitative work.</p><a href="https://ssd.jpl.nasa.gov/" target="_blank">JPL SSD ↗</a></div>
+    <div class="card source"><h3>NASA Exoplanet Archive</h3><p>Confirmed planets, candidates and mission products.</p><a href="https://exoplanetarchive.ipac.caltech.edu/" target="_blank">Exoplanet Archive ↗</a></div>
+    <div class="card source"><h3>NASA Planetary Fact Sheet</h3><p>Size, distances, orbital periods and planetary reference values.</p><a href="https://nssdc.gsfc.nasa.gov/planetary/factsheet/" target="_blank">Planetary Fact Sheet ↗</a></div>
+  </div>
+</section>
+
+<footer class="footer">
+  <strong>🚀 AB Space Explorer — By Abdullah</strong><br>
+  <span class="small">Educational project. Values marked as live/catalog data should be refreshed from the linked authority before publication.</span>
+</footer>
+
+<script>
+const planets = [
+  {name:"Mercury",type:"rocky",order:1,radius:"2,440 km",temp:"167°C",moons:"0",rings:"No",atm:"Extremely thin exosphere",day:"58.6 Earth days",year:"88 Earth days",fact:"Smallest planet and closest to the Sun. Daytime can reach about 430°C and nights can fall to about −180°C."},
+  {name:"Venus",type:"rocky",order:2,radius:"6,052 km",temp:"464°C",moons:"0",rings:"No",atm:"Very dense; mostly CO₂",day:"243 Earth days",year:"224.7 Earth days",fact:"Hottest planet because its dense atmosphere creates an extreme greenhouse effect."},
+  {name:"Earth",type:"rocky",order:3,radius:"6,371 km",temp:"15°C",moons:"1",rings:"No",atm:"Mostly N₂ and O₂",day:"23.9 hours",year:"365.25 days",fact:"The only world known to support life and the fifth-largest planet."},
+  {name:"Mars",type:"rocky",order:4,radius:"3,390 km",temp:"−65°C",moons:"2",rings:"No",atm:"Thin; mostly CO₂",day:"24.6 hours",year:"687 Earth days",fact:"Red planet with Olympus Mons, Valles Marineris, polar ice and a long history of water-related geology."},
+  {name:"Jupiter",type:"giant",order:5,radius:"69,911 km",temp:"−110°C",moons:"Dozens",rings:"Yes",atm:"Mostly H₂ and He",day:"9.9 hours",year:"11.86 Earth years",fact:"Largest planet. A gas giant with powerful storms, strong magnetic fields and a large moon system."},
+  {name:"Saturn",type:"giant",order:6,radius:"58,232 km",temp:"−140°C",moons:"Dozens",rings:"Yes",atm:"Mostly H₂ and He",day:"10.7 hours",year:"29.45 Earth years",fact:"Famous for its bright ring system made of countless particles of ice and rock."},
+  {name:"Uranus",type:"giant",order:7,radius:"25,362 km",temp:"−195°C",moons:"27",rings:"Yes",atm:"H₂, He, methane",day:"17.2 hours",year:"84 Earth years",fact:"An ice giant rotating with a very large axial tilt, producing extreme seasons."},
+  {name:"Neptune",type:"giant",order:8,radius:"24,622 km",temp:"−200°C",moons:"14",rings:"Yes",atm:"H₂, He, methane",day:"16.1 hours",year:"164.8 Earth years",fact:"The farthest of the eight planets from the Sun, with very fast winds and a dark, active atmosphere."}
+];
+
+function renderPlanets(){
+  const q=(document.getElementById("planetSearch").value||"").toLowerCase();
+  const type=document.getElementById("planetType").value;
+  const wrap=document.getElementById("planetCards");
+  wrap.innerHTML="";
+  planets.filter(p=>(type==="all"||p.type===type)&&p.name.toLowerCase().includes(q)).forEach(p=>{
+    wrap.insertAdjacentHTML("beforeend",`
+      <div class="card">
+        <h3>${p.order}. ${p.name}</h3>
+        <p><b>Radius:</b> ${p.radius}</p>
+        <p><b>Mean temperature:</b> ${p.temp}</p>
+        <p><b>Moons:</b> ${p.moons}</p>
+        <details class="details">
+          <summary>More facts</summary>
+          <p><b>Rings:</b> ${p.rings}</p>
+          <p><b>Atmosphere:</b> ${p.atm}</p>
+          <p><b>Day length:</b> ${p.day}</p>
+          <p><b>Year length:</b> ${p.year}</p>
+          <p>${p.fact}</p>
+        </details>
+      </div>
+    `);
+  });
+}
+renderPlanets();
+</script>
+</body>
+</html>

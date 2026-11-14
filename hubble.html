@@ -1,0 +1,2050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Hubble Observer 3D</title>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    margin:0;
+    overflow:hidden;
+    background:#02050a;
+    color:#edf4ff;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+#three{
+    position:fixed;
+    inset:0;
+    z-index:0;
+}
+
+/* ---------- TOP ---------- */
+
+.top{
+    position:fixed;
+    left:0;
+    right:0;
+    top:0;
+    height:64px;
+    z-index:20;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 22px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(6,12,22,.98),
+            rgba(6,12,22,.82)
+        );
+
+    border-bottom:1px solid #263246;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.logoMark{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2b7cff,
+            #6e39ff
+        );
+
+    font-weight:bold;
+}
+
+.logoTitle{
+    font-size:15px;
+    font-weight:bold;
+}
+
+.logoSub{
+    color:#7e8da7;
+    font-size:9px;
+    margin-top:3px;
+    letter-spacing:1px;
+}
+
+.topControls{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.topBtn{
+    border:1px solid #2b374b;
+    background:#0b1424;
+    color:#dce7f8;
+    border-radius:7px;
+    padding:8px 12px;
+    cursor:pointer;
+    font-size:10px;
+}
+
+.topBtn:hover{
+    border-color:#4e8cff;
+    background:#11254a;
+}
+
+.status{
+    padding:8px 12px;
+    border-radius:20px;
+    border:1px solid #27354a;
+    background:#091221;
+    color:#9fb0c9;
+    font-size:9px;
+}
+
+.green{
+    display:inline-block;
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#45ed91;
+    margin-right:6px;
+}
+
+/* ---------- MAIN ---------- */
+
+.main{
+    position:fixed;
+    top:64px;
+    bottom:0;
+    left:0;
+    right:0;
+    z-index:5;
+}
+
+/* ---------- LEFT ---------- */
+
+.left{
+    position:absolute;
+    top:14px;
+    left:14px;
+    bottom:175px;
+    width:295px;
+
+    background:rgba(6,13,25,.94);
+    border:1px solid #283549;
+    border-radius:10px;
+
+    overflow:hidden;
+}
+
+.leftHead{
+    padding:14px;
+    border-bottom:1px solid #263246;
+}
+
+.leftHead h2{
+    margin:0;
+    font-size:14px;
+}
+
+.leftHead p{
+    margin:5px 0 0;
+    font-size:9px;
+    color:#7787a1;
+}
+
+.tabs{
+    display:flex;
+    border-bottom:1px solid #263246;
+}
+
+.tabs button{
+    flex:1;
+    padding:11px 5px;
+    border:0;
+    background:#08111f;
+    color:#74839b;
+    cursor:pointer;
+    font-size:9px;
+}
+
+.tabs button.active{
+    color:white;
+    background:#102144;
+    box-shadow:inset 0 -2px #4e91ff;
+}
+
+.leftBody{
+    height:calc(100% - 95px);
+    overflow:auto;
+    padding:12px;
+}
+
+.card{
+    background:#091322;
+    border:1px solid #1e2b3e;
+    border-radius:8px;
+    padding:11px;
+    margin-bottom:9px;
+}
+
+.cardTitle{
+    color:#6ca7ff;
+    text-transform:uppercase;
+    font-size:8px;
+    letter-spacing:1.2px;
+    margin-bottom:9px;
+}
+
+.row{
+    display:flex;
+    justify-content:space-between;
+    padding:7px 0;
+    border-bottom:1px solid #182335;
+    font-size:9px;
+}
+
+.row:last-child{
+    border-bottom:0;
+}
+
+.row b{
+    color:#687993;
+    font-weight:normal;
+}
+
+.row span{
+    color:#e5edf9;
+    text-align:right;
+}
+
+/* ---------- RIGHT ---------- */
+
+.right{
+    position:absolute;
+    top:14px;
+    right:14px;
+    bottom:175px;
+    width:315px;
+
+    background:rgba(6,13,25,.94);
+    border:1px solid #283549;
+    border-radius:10px;
+
+    overflow:auto;
+    padding:13px;
+}
+
+.title{
+    font-size:14px;
+    font-weight:bold;
+}
+
+.sub{
+    color:#73839e;
+    font-size:9px;
+    margin-top:4px;
+    margin-bottom:12px;
+}
+
+.target{
+    padding:13px;
+    border-radius:8px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #102b57,
+            #10172c
+        );
+
+    border:1px solid #31548b;
+    margin-bottom:10px;
+}
+
+.targetSmall{
+    color:#82a7d6;
+    font-size:8px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+}
+
+.targetName{
+    margin-top:6px;
+    font-size:15px;
+    font-weight:bold;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+}
+
+.mini{
+    background:#091322;
+    border:1px solid #1d2a3c;
+    padding:10px;
+    border-radius:8px;
+}
+
+.mini label{
+    display:block;
+    color:#6c7e99;
+    font-size:8px;
+    margin-bottom:5px;
+}
+
+.mini strong{
+    font-size:10px;
+}
+
+.description{
+    color:#abb8cb;
+    font-size:10px;
+    line-height:1.55;
+}
+
+/* ---------- SKY MAP ---------- */
+
+.sky{
+    height:240px;
+    border-radius:8px;
+    border:1px solid #27364c;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(70,115,190,.16),
+            transparent 28%
+        ),
+        #020710;
+
+    position:relative;
+    overflow:hidden;
+
+    margin-top:10px;
+}
+
+.stars{
+    position:absolute;
+    inset:0;
+
+    background-image:
+        radial-gradient(circle,#fff 1px,transparent 1.4px),
+        radial-gradient(circle,#80aaf0 1px,transparent 1.3px);
+
+    background-size:
+        31px 37px,
+        57px 61px;
+
+    opacity:.65;
+}
+
+.cross{
+    position:absolute;
+    left:50%;
+    top:50%;
+
+    width:22px;
+    height:22px;
+
+    transform:translate(-50%,-50%);
+
+    border:1px solid #5ea0ff;
+    border-radius:50%;
+
+    box-shadow:
+        0 0 28px #438aff;
+}
+
+.cross:before{
+    content:"";
+    position:absolute;
+    width:38px;
+    height:1px;
+    left:-9px;
+    top:10px;
+    background:#5ea0ff;
+}
+
+.cross:after{
+    content:"";
+    position:absolute;
+    width:1px;
+    height:38px;
+    left:10px;
+    top:-9px;
+    background:#5ea0ff;
+}
+
+.mapLabel{
+    position:absolute;
+    left:10px;
+    bottom:8px;
+    color:#687b98;
+    font-size:8px;
+}
+
+/* ---------- TIMELINE ---------- */
+
+.timeline{
+    position:absolute;
+    left:14px;
+    right:14px;
+    bottom:14px;
+    height:145px;
+
+    background:rgba(5,12,23,.97);
+    border:1px solid #29374b;
+    border-radius:10px;
+
+    padding:13px;
+}
+
+.timeHead{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+}
+
+.timeHead strong{
+    font-size:11px;
+}
+
+.date{
+    color:#8291aa;
+    font-size:9px;
+}
+
+.bar{
+    height:38px;
+    display:flex;
+    align-items:stretch;
+    gap:2px;
+}
+
+.block{
+    flex:1;
+    border-radius:4px;
+    background:#132039;
+    border:1px solid #263b5c;
+    position:relative;
+}
+
+.block.done{
+    background:#173b64;
+}
+
+.block.current{
+    background:#2268ba;
+    box-shadow:0 0 14px rgba(45,136,255,.25);
+}
+
+.block span{
+    position:absolute;
+    left:5px;
+    bottom:4px;
+    font-size:7px;
+    color:#87a0bf;
+}
+
+.hours{
+    display:flex;
+    justify-content:space-between;
+    margin-top:7px;
+    color:#60718b;
+    font-size:8px;
+}
+
+.timelineControls{
+    display:flex;
+    gap:6px;
+    margin-top:10px;
+}
+
+.timelineControls button{
+    background:#0a1527;
+    border:1px solid #26364c;
+    color:#aebbd0;
+    padding:6px 9px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:8px;
+}
+
+.timelineControls button:hover{
+    border-color:#4c91ff;
+}
+
+/* ---------- CENTER LABEL ---------- */
+
+.centerInfo{
+    position:absolute;
+    left:50%;
+    top:20px;
+    transform:translateX(-50%);
+
+    z-index:9;
+
+    padding:8px 13px;
+
+    border:1px solid #29394f;
+    border-radius:18px;
+
+    background:rgba(3,9,18,.82);
+
+    font-size:9px;
+    color:#a5b4c9;
+
+    backdrop-filter:blur(9px);
+}
+
+/* ---------- HINT ---------- */
+
+.hint{
+    position:absolute;
+    left:50%;
+    bottom:160px;
+
+    transform:translateX(-50%);
+
+    color:#75859e;
+    font-size:9px;
+
+    z-index:10;
+}
+
+/* ---------- MOBILE ---------- */
+
+@media(max-width:900px){
+
+    .left{
+        width:240px;
+    }
+
+    .right{
+        width:260px;
+    }
+}
+
+@media(max-width:720px){
+
+    .left{
+        width:calc(100% - 28px);
+        right:14px;
+        bottom:165px;
+    }
+
+    .right{
+        display:none;
+    }
+
+    .timeline{
+        height:135px;
+    }
+
+    .centerInfo{
+        display:none;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="three"></div>
+
+<!-- TOP -->
+
+<div class="top">
+
+    <div class="logo">
+
+        <div class="logoMark">
+            H
+        </div>
+
+        <div>
+            <div class="logoTitle">
+                Hubble Space Telescope
+            </div>
+
+            <div class="logoSub">
+                SPACE OBSERVATORY
+            </div>
+        </div>
+
+    </div>
+
+    <div class="topControls">
+
+        <button
+            class="topBtn"
+            onclick="focusEarth()"
+        >
+            Earth
+        </button>
+
+        <button
+            class="topBtn"
+            onclick="focusHubble()"
+        >
+            Hubble 3D
+        </button>
+
+        <button
+            class="topBtn"
+            onclick="resetCamera()"
+        >
+            Reset
+        </button>
+
+        <div class="status">
+            <span class="green"></span>
+            OBSERVATION DATA
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="main">
+
+<!-- LEFT -->
+
+<div class="left">
+
+    <div class="leftHead">
+
+        <h2>
+            What is Hubble observing?
+        </h2>
+
+        <p id="leftSub">
+            Current observation information
+        </p>
+
+    </div>
+
+
+    <div class="tabs">
+
+        <button
+            class="active"
+            onclick="tab('overview',this)"
+        >
+            OVERVIEW
+        </button>
+
+        <button
+            onclick="tab('science',this)"
+        >
+            SCIENCE
+        </button>
+
+        <button
+            onclick="tab('mission',this)"
+        >
+            MISSION
+        </button>
+
+    </div>
+
+
+    <div class="leftBody">
+
+        <div id="overview">
+
+            <div class="card">
+
+                <div class="cardTitle">
+                    Observation Status
+                </div>
+
+                <div class="row">
+                    <b>Status</b>
+                    <span>Scheduled</span>
+                </div>
+
+                <div class="row">
+                    <b>Target</b>
+                    <span>Next target</span>
+                </div>
+
+                <div class="row">
+                    <b>Category</b>
+                    <span>Astronomy</span>
+                </div>
+
+                <div class="row">
+                    <b>Schedule</b>
+                    <span>UTC</span>
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="cardTitle">
+                    Spacecraft
+                </div>
+
+                <div class="row">
+                    <b>Altitude</b>
+                    <span>~483 km</span>
+                </div>
+
+                <div class="row">
+                    <b>Speed</b>
+                    <span>~27,000 km/h</span>
+                </div>
+
+                <div class="row">
+                    <b>Orbit</b>
+                    <span>~95 min</span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div id="science" style="display:none">
+
+            <div class="card">
+
+                <div class="cardTitle">
+                    Science Instruments
+                </div>
+
+                <div class="row">
+                    <b>WFC3</b>
+                    <span>UV / Visible / IR</span>
+                </div>
+
+                <div class="row">
+                    <b>ACS</b>
+                    <span>Imaging</span>
+                </div>
+
+                <div class="row">
+                    <b>COS</b>
+                    <span>UV Spectroscopy</span>
+                </div>
+
+                <div class="row">
+                    <b>STIS</b>
+                    <span>Spectroscopy</span>
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="cardTitle">
+                    Science
+                </div>
+
+                <div class="description">
+                    Hubble studies distant galaxies,
+                    stars, nebulae, planets and other
+                    astronomical targets across
+                    ultraviolet, visible and infrared
+                    wavelengths.
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div id="mission" style="display:none">
+
+            <div class="card">
+
+                <div class="cardTitle">
+                    Mission
+                </div>
+
+                <div class="row">
+                    <b>Launch</b>
+                    <span>1990</span>
+                </div>
+
+                <div class="row">
+                    <b>Type</b>
+                    <span>Space Telescope</span>
+                </div>
+
+                <div class="row">
+                    <b>Orbit</b>
+                    <span>Low Earth Orbit</span>
+                </div>
+
+                <div class="row">
+                    <b>Primary Mirror</b>
+                    <span>2.4 m</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- CENTER -->
+
+<div class="centerInfo">
+    3D ORBITAL VIEW • HUBBLE / EARTH / SPACE
+</div>
+
+
+<!-- RIGHT -->
+
+<div class="right">
+
+    <div class="title">
+        Observation Details
+    </div>
+
+    <div class="sub">
+        Telescope target and sky position
+    </div>
+
+
+    <div class="target">
+
+        <div class="targetSmall">
+            Target
+        </div>
+
+        <div
+            class="targetName"
+            id="targetName"
+        >
+            Next Scheduled Observation
+        </div>
+
+    </div>
+
+
+    <div class="grid">
+
+        <div class="mini">
+            <label>
+                TARGET CATEGORY
+            </label>
+
+            <strong>
+                Astronomy
+            </strong>
+        </div>
+
+
+        <div class="mini">
+            <label>
+                STATUS
+            </label>
+
+            <strong>
+                Scheduled
+            </strong>
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="cardTitle">
+            Research Program
+        </div>
+
+        <div class="description">
+            Observation scheduling and proposal
+            information can include the target,
+            research program, principal investigator,
+            instrument and observation timing.
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="cardTitle">
+            Sky Map
+        </div>
+
+        <div class="sky">
+
+            <div class="stars"></div>
+
+            <div class="cross"></div>
+
+            <div class="mapLabel">
+                DIGITIZED SKY SURVEY • 30 ARC-MIN FIELD
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="hint">
+    Drag to rotate  •  Scroll to zoom  •  Click Hubble
+</div>
+
+
+<!-- TIMELINE -->
+
+<div class="timeline">
+
+    <div class="timeHead">
+
+        <strong>
+            Observation Schedule
+        </strong>
+
+        <div class="date">
+            UTC • September 6, 2026
+        </div>
+
+    </div>
+
+
+    <div class="bar">
+
+        <div class="block done">
+            <span>00</span>
+        </div>
+
+        <div class="block done">
+            <span>02</span>
+        </div>
+
+        <div class="block done">
+            <span>04</span>
+        </div>
+
+        <div class="block done">
+            <span>06</span>
+        </div>
+
+        <div class="block current">
+            <span>08</span>
+        </div>
+
+        <div class="block">
+            <span>10</span>
+        </div>
+
+        <div class="block">
+            <span>12</span>
+        </div>
+
+        <div class="block">
+            <span>14</span>
+        </div>
+
+        <div class="block">
+            <span>16</span>
+        </div>
+
+        <div class="block">
+            <span>18</span>
+        </div>
+
+        <div class="block">
+            <span>20</span>
+        </div>
+
+        <div class="block">
+            <span>22</span>
+        </div>
+
+    </div>
+
+
+    <div class="hours">
+        <span>12 AM</span>
+        <span>4 AM</span>
+        <span>8 AM</span>
+        <span>12 PM</span>
+        <span>4 PM</span>
+        <span>8 PM</span>
+        <span>12 AM</span>
+    </div>
+
+
+    <div class="timelineControls">
+
+        <button onclick="shiftDay(-1)">
+            ◀ PREVIOUS DAY
+        </button>
+
+        <button onclick="shiftDay(1)">
+            NEXT DAY ▶
+        </button>
+
+        <button onclick="set24()">
+            24 HOURS
+        </button>
+
+        <button onclick="setUTC()">
+            UTC
+        </button>
+
+        <button onclick="openOfficial()">
+            OFFICIAL SPACE TELESCOPE LIVE
+        </button>
+
+    </div>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   THREE SCENE
+========================================================= */
+
+const scene =
+    new THREE.Scene();
+
+scene.background =
+    new THREE.Color(
+        0x01040a
+    );
+
+
+const camera =
+    new THREE.PerspectiveCamera(
+        48,
+        innerWidth/innerHeight,
+        .1,
+        4000
+    );
+
+
+camera.position.set(
+    0,
+    8,
+    17
+);
+
+
+const renderer =
+    new THREE.WebGLRenderer({
+        antialias:true
+    });
+
+
+renderer.setPixelRatio(
+    Math.min(
+        window.devicePixelRatio,
+        2
+    )
+);
+
+
+renderer.setSize(
+    innerWidth,
+    innerHeight
+);
+
+
+document
+    .getElementById("three")
+    .appendChild(
+        renderer.domElement
+    );
+
+
+/* =========================================================
+   LIGHT
+========================================================= */
+
+scene.add(
+    new THREE.AmbientLight(
+        0x8aa9d4,
+        1.5
+    )
+);
+
+
+const sunLight =
+    new THREE.DirectionalLight(
+        0xffffff,
+        3.3
+    );
+
+sunLight.position.set(
+    12,
+    10,
+    10
+);
+
+scene.add(
+    sunLight
+);
+
+
+/* =========================================================
+   EARTH
+========================================================= */
+
+const earthGroup =
+    new THREE.Group();
+
+scene.add(
+    earthGroup
+);
+
+
+const earth =
+    new THREE.Mesh(
+
+        new THREE.SphereGeometry(
+            4.2,
+            96,
+            96
+        ),
+
+        new THREE.MeshPhongMaterial({
+
+            color:0x146ca8,
+
+            shininess:50,
+
+            specular:0x67b6ff
+
+        })
+
+    );
+
+
+earthGroup.add(
+    earth
+);
+
+
+/* atmosphere */
+
+const atmosphere =
+    new THREE.Mesh(
+
+        new THREE.SphereGeometry(
+            4.35,
+            64,
+            64
+        ),
+
+        new THREE.MeshBasicMaterial({
+
+            color:0x3c9eff,
+
+            transparent:true,
+
+            opacity:.13,
+
+            side:THREE.BackSide
+
+        })
+
+    );
+
+
+earthGroup.add(
+    atmosphere
+);
+
+
+/* =========================================================
+   EARTH LIGHTS
+========================================================= */
+
+const lights =
+    new THREE.Group();
+
+
+for(
+    let i=0;
+    i<220;
+    i++
+){
+
+    const lat =
+        (Math.random()-.5)
+        *Math.PI;
+
+    const lon =
+        Math.random()
+        *Math.PI*2;
+
+    const r=4.21;
+
+    const x =
+        r*
+        Math.cos(lat)*
+        Math.cos(lon);
+
+    const y =
+        r*
+        Math.sin(lat);
+
+    const z =
+        r*
+        Math.cos(lat)*
+        Math.sin(lon);
+
+
+    const light =
+        new THREE.Mesh(
+
+            new THREE.SphereGeometry(
+                .018,
+                4,
+                4
+            ),
+
+            new THREE.MeshBasicMaterial({
+                color:0xffdb77
+            })
+
+        );
+
+
+    light.position.set(
+        x,
+        y,
+        z
+    );
+
+
+    lights.add(
+        light
+    );
+
+}
+
+
+earthGroup.add(
+    lights
+);
+
+
+/* =========================================================
+   ORBIT
+========================================================= */
+
+const orbitR=7;
+
+const pts=[];
+
+for(
+    let i=0;
+    i<=300;
+    i++
+){
+
+    const a=
+        i/300*
+        Math.PI*2;
+
+    pts.push(
+
+        new THREE.Vector3(
+
+            Math.cos(a)*orbitR,
+
+            Math.sin(a*.5)*.3,
+
+            Math.sin(a)*orbitR
+
+        )
+
+    );
+
+}
+
+
+const orbit=
+    new THREE.Line(
+
+        new THREE.BufferGeometry()
+            .setFromPoints(pts),
+
+        new THREE.LineBasicMaterial({
+
+            color:0x4d93ff,
+
+            transparent:true,
+
+            opacity:.65
+
+        })
+
+    );
+
+
+scene.add(
+    orbit
+);
+
+
+/* =========================================================
+   HUBBLE
+========================================================= */
+
+const hubble =
+    new THREE.Group();
+
+scene.add(
+    hubble
+);
+
+
+/* body */
+
+const body =
+    new THREE.Mesh(
+
+        new THREE.CylinderGeometry(
+            .7,
+            .7,
+            3.6,
+            48
+        ),
+
+        new THREE.MeshStandardMaterial({
+
+            color:0xe7e9ed,
+
+            metalness:.42,
+
+            roughness:.3
+
+        })
+
+    );
+
+body.rotation.z=
+    Math.PI/2;
+
+hubble.add(
+    body
+);
+
+
+/* front */
+
+const front =
+    new THREE.Mesh(
+
+        new THREE.CylinderGeometry(
+            .52,
+            .69,
+            .7,
+            48
+        ),
+
+        new THREE.MeshStandardMaterial({
+
+            color:0x1d242e,
+
+            metalness:.85,
+
+            roughness:.2
+
+        })
+
+    );
+
+front.rotation.z=
+    Math.PI/2;
+
+front.position.x=
+    -2.05;
+
+hubble.add(
+    front
+);
+
+
+/* mirror */
+
+const mirror =
+    new THREE.Mesh(
+
+        new THREE.CircleGeometry(
+            .48,
+            64
+        ),
+
+        new THREE.MeshPhysicalMaterial({
+
+            color:0x184784,
+
+            metalness:.98,
+
+            roughness:.12
+
+        })
+
+    );
+
+mirror.rotation.y=
+    Math.PI/2;
+
+mirror.position.x=
+    -2.42;
+
+hubble.add(
+    mirror
+);
+
+
+/* solar panel */
+
+function panel(y){
+
+    const p =
+        new THREE.Mesh(
+
+            new THREE.BoxGeometry(
+                3.8,
+                .08,
+                1.55
+            ),
+
+            new THREE.MeshStandardMaterial({
+
+                color:0x122d6a,
+
+                metalness:.85,
+
+                roughness:.23
+
+            })
+
+        );
+
+    p.position.y=y;
+
+    hubble.add(p);
+
+
+    for(
+        let i=-3;
+        i<=3;
+        i++
+    ){
+
+        const line =
+            new THREE.Mesh(
+
+                new THREE.BoxGeometry(
+                    .018,
+                    .09,
+                    1.5
+                ),
+
+                new THREE.MeshBasicMaterial({
+                    color:0x88b1ff
+                })
+
+            );
+
+        line.position.set(
+            i*.55,
+            y+.02,
+            0
+        );
+
+        hubble.add(line);
+    }
+
+}
+
+panel(1.32);
+panel(-1.32);
+
+
+/* antenna */
+
+const mast =
+    new THREE.Mesh(
+
+        new THREE.CylinderGeometry(
+            .025,
+            .025,
+            2.4,
+            12
+        ),
+
+        new THREE.MeshBasicMaterial({
+            color:0xffffff
+        })
+
+    );
+
+mast.rotation.z=
+    Math.PI/2;
+
+mast.position.set(
+    2.05,
+    .8,
+    0
+);
+
+hubble.add(
+    mast
+);
+
+
+/* dish */
+
+const dish =
+    new THREE.Mesh(
+
+        new THREE.SphereGeometry(
+            .34,
+            24,
+            16,
+            0,
+            Math.PI*2,
+            0,
+            Math.PI/2
+        ),
+
+        new THREE.MeshBasicMaterial({
+
+            color:0xffffff,
+            wireframe:true
+
+        })
+
+    );
+
+dish.position.set(
+    3.12,
+    .8,
+    0
+);
+
+dish.rotation.z=
+    -Math.PI/2;
+
+hubble.add(
+    dish
+);
+
+
+/* structural rings */
+
+for(
+    let x=-1.25;
+    x<=1.25;
+    x+=.62
+){
+
+    const ring =
+        new THREE.Mesh(
+
+            new THREE.TorusGeometry(
+                .7,
+                .035,
+                8,
+                32
+            ),
+
+            new THREE.MeshStandardMaterial({
+                color:0xbfc4cb,
+                metalness:.6,
+                roughness:.3
+            })
+
+        );
+
+    ring.rotation.z=
+        Math.PI/2;
+
+    ring.position.x=x;
+
+    hubble.add(
+        ring
+    );
+}
+
+
+/* initial */
+
+hubble.position.set(
+    orbitR,
+    0,
+    0
+);
+
+hubble.scale.setScalar(
+    .78
+);
+
+
+/* =========================================================
+   STAR FIELD
+========================================================= */
+
+const starN=9000;
+
+const starPos =
+    new Float32Array(
+        starN*3
+    );
+
+
+for(
+    let i=0;
+    i<starN;
+    i++
+){
+
+    const r=
+        100+
+        Math.random()*1300;
+
+    const a=
+        Math.random()*
+        Math.PI*2;
+
+    const p=
+        Math.acos(
+            2*Math.random()-1
+        );
+
+
+    starPos[i*3]=
+        r*Math.sin(p)*Math.cos(a);
+
+    starPos[i*3+1]=
+        r*Math.cos(p);
+
+    starPos[i*3+2]=
+        r*Math.sin(p)*Math.sin(a);
+
+}
+
+
+const starGeo=
+    new THREE.BufferGeometry();
+
+
+starGeo.setAttribute(
+    "position",
+    new THREE.BufferAttribute(
+        starPos,
+        3
+    )
+);
+
+
+const starMat=
+    new THREE.PointsMaterial({
+
+        color:0xffffff,
+
+        size:.85,
+
+        transparent:true,
+
+        opacity:.9
+
+    });
+
+
+const stars=
+    new THREE.Points(
+        starGeo,
+        starMat
+    );
+
+scene.add(
+    stars
+);
+
+
+/* =========================================================
+   CAMERA
+========================================================= */
+
+let yaw=0;
+let pitch=.32;
+let distance=17;
+
+let target =
+    new THREE.Vector3(
+        0,0,0
+    );
+
+let dragging=false;
+
+let lx=0;
+let ly=0;
+
+
+renderer.domElement.addEventListener(
+    "pointerdown",
+    e=>{
+        dragging=true;
+        lx=e.clientX;
+        ly=e.clientY;
+    }
+);
+
+
+window.addEventListener(
+    "pointerup",
+    ()=>{
+        dragging=false;
+    }
+);
+
+
+window.addEventListener(
+    "pointermove",
+    e=>{
+
+        if(!dragging)
+            return;
+
+        yaw -=
+            (e.clientX-lx)
+            *.005;
+
+        pitch -=
+            (e.clientY-ly)
+            *.005;
+
+        pitch=
+            Math.max(
+                -1.35,
+                Math.min(
+                    1.35,
+                    pitch
+                )
+            );
+
+        lx=e.clientX;
+        ly=e.clientY;
+    }
+);
+
+
+renderer.domElement.addEventListener(
+    "wheel",
+    e=>{
+
+        distance +=
+            e.deltaY*.012;
+
+        distance=
+            Math.max(
+                5,
+                Math.min(
+                    55,
+                    distance
+                )
+            );
+
+    }
+);
+
+
+/* =========================================================
+   CAMERA BUTTONS
+========================================================= */
+
+function focusEarth(){
+
+    target.set(0,0,0);
+
+    distance=12;
+
+}
+
+
+function focusHubble(){
+
+    target.copy(
+        hubble.position
+    );
+
+    distance=5;
+
+}
+
+
+function resetCamera(){
+
+    target.set(0,0,0);
+
+    yaw=0;
+    pitch=.32;
+    distance=17;
+
+}
+
+
+function toggleOrbit(){
+
+    orbit.visible=
+        !orbit.visible;
+
+}
+
+
+function toggleStars(){
+
+    stars.visible=
+        !stars.visible;
+
+}
+
+
+/* =========================================================
+   TABS
+========================================================= */
+
+function tab(
+    name,
+    button
+){
+
+    document.getElementById(
+        "overview"
+    ).style.display="none";
+
+    document.getElementById(
+        "science"
+    ).style.display="none";
+
+    document.getElementById(
+        "mission"
+    ).style.display="none";
+
+
+    document.getElementById(
+        name
+    ).style.display="block";
+
+
+    document
+        .querySelectorAll(".tabs button")
+        .forEach(
+            b=>
+            b.classList.remove("active")
+        );
+
+
+    button.classList.add(
+        "active"
+    );
+
+}
+
+
+/* =========================================================
+   TIMELINE
+========================================================= */
+
+function shiftDay(n){
+
+    const date =
+        new Date();
+
+    date.setUTCDate(
+        date.getUTCDate()+n
+    );
+
+    document.querySelector(
+        ".date"
+    ).textContent =
+        "UTC • "+
+        date.toLocaleDateString(
+            "en-US",
+            {
+                year:"numeric",
+                month:"long",
+                day:"numeric",
+                timeZone:"UTC"
+            }
+        );
+
+}
+
+
+function set24(){
+    alert(
+        "24-hour timeline selected."
+    );
+}
+
+
+function setUTC(){
+    alert(
+        "Timeline set to UTC."
+    );
+}
+
+
+/* =========================================================
+   OFFICIAL
+========================================================= */
+
+function openOfficial(){
+
+    window.open(
+        "https://spacetelescopelive.org/hubble",
+        "_blank"
+    );
+
+}
+
+
+/* =========================================================
+   ANIMATION
+========================================================= */
+
+const clock=
+    new THREE.Clock();
+
+
+function animate(){
+
+    requestAnimationFrame(
+        animate
+    );
+
+
+    const t=
+        clock.getElapsedTime();
+
+
+    earth.rotation.y=
+        t*.07;
+
+    lights.rotation.y=
+        t*.07;
+
+
+    const a=
+        t*.13;
+
+
+    hubble.position.set(
+
+        Math.cos(a)*orbitR,
+
+        Math.sin(a*.5)*.3,
+
+        Math.sin(a)*orbitR
+
+    );
+
+
+    hubble.rotation.y=
+        -a+Math.PI/2;
+
+
+    camera.position.set(
+
+        Math.cos(pitch)*
+        Math.sin(yaw)*
+        distance,
+
+        Math.sin(pitch)*
+        distance,
+
+        Math.cos(pitch)*
+        Math.cos(yaw)*
+        distance
+
+    );
+
+
+    camera.lookAt(
+        target
+    );
+
+
+    renderer.render(
+        scene,
+        camera
+    );
+
+}
+
+
+animate();
+
+
+/* =========================================================
+   RESIZE
+========================================================= */
+
+window.addEventListener(
+    "resize",
+    ()=>{
+
+        camera.aspect=
+            innerWidth/
+            innerHeight;
+
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(
+            innerWidth,
+            innerHeight
+        );
+
+    }
+);
+
+</script>
+
+</body>
+</html>

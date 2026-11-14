@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Methane - Climate Information</title>
+
+    <link rel="stylesheet" href="bootstrap.css">
+
+    <style>
+        body {
+            background-color: #f4f7f9;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #3b2f63, #6f42c1);
+            color: white;
+            padding: 60px 20px;
+        }
+
+        .info-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .methane-number {
+            font-size: 50px;
+            font-weight: bold;
+            color: #6f42c1;
+        }
+
+        .image-box {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+
+        /* GRAPH */
+        .chart {
+            height: 300px;
+            display: flex;
+            align-items: end;
+            gap: 12px;
+            padding: 20px;
+            border-left: 2px solid #333;
+            border-bottom: 2px solid #333;
+        }
+
+        .bar {
+            flex: 1;
+            background: #6f42c1;
+            border-radius: 6px 6px 0 0;
+        }
+
+        .bar:hover {
+            background: #59359a;
+        }
+
+        footer {
+            background: #212529;
+            color: white;
+            padding: 25px;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <!-- HERO -->
+    <div class="hero text-center">
+
+        <h1 class="display-4">
+            Methane (CH₄)
+        </h1>
+
+        <p class="lead">
+            Understanding Methane and Its Role in Climate Change
+        </p>
+
+    </div>
+
+
+    <div class="container my-5">
+
+
+        <!-- INTRODUCTION -->
+        <div class="row align-items-center mb-5">
+
+            <div class="col-md-6">
+
+                <img src="methane.jpg"
+                     class="image-box"
+                     alt="Methane">
+
+            </div>
+
+
+            <div class="col-md-6 mt-4 mt-md-0">
+
+                <h2>What is Methane?</h2>
+
+                <p>
+                    Methane (CH₄) is a colorless and odorless gas
+                    made up of one carbon atom and four hydrogen atoms.
+                </p>
+
+                <p>
+                    Methane is a powerful greenhouse gas and plays
+                    an important role in Earth's climate system.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- CURRENT METHANE -->
+        <div class="card info-card p-4 text-center mb-5">
+
+            <h2>
+                Atmospheric Methane
+            </h2>
+
+            <div class="methane-number">
+                ~1,900 ppb
+            </div>
+
+            <p>
+                Atmospheric methane concentration is currently
+                around 1,900 parts per billion.
+            </p>
+
+            <small class="text-muted">
+                Approximate value; concentrations change over time.
+            </small>
+
+        </div>
+
+
+        <!-- GRAPH -->
+        <div class="card info-card p-4 mb-5">
+
+            <h2 class="text-center">
+                Methane Concentration Trend
+            </h2>
+
+            <p class="text-center text-muted">
+                Simplified visualization of the long-term increase.
+            </p>
+
+
+            <div class="chart">
+
+                <div class="bar" style="height: 25%;"></div>
+
+                <div class="bar" style="height: 30%;"></div>
+
+                <div class="bar" style="height: 38%;"></div>
+
+                <div class="bar" style="height: 45%;"></div>
+
+                <div class="bar" style="height: 58%;"></div>
+
+                <div class="bar" style="height: 65%;"></div>
+
+                <div class="bar" style="height: 76%;"></div>
+
+                <div class="bar" style="height: 88%;"></div>
+
+            </div>
+
+
+            <div class="d-flex justify-content-between mt-2">
+
+                <span>1980</span>
+                <span>1985</span>
+                <span>1990</span>
+                <span>1995</span>
+                <span>2000</span>
+                <span>2005</span>
+                <span>2010</span>
+                <span>2020+</span>
+
+            </div>
+
+        </div>
+
+
+        <!-- SOURCES -->
+        <h2 class="text-center mb-4">
+            Main Sources of Methane
+        </h2>
+
+
+        <div class="row g-4 mb-5">
+
+
+            <div class="col-md-3">
+
+                <div class="card info-card p-4 text-center">
+
+                    <h4>🐄 Agriculture</h4>
+
+                    <p>
+                        Livestock such as cattle produce methane
+                        during digestion.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-3">
+
+                <div class="card info-card p-4 text-center">
+
+                    <h4>🛢️ Oil & Gas</h4>
+
+                    <p>
+                        Methane can escape during the production,
+                        processing and transport of fossil fuels.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-3">
+
+                <div class="card info-card p-4 text-center">
+
+                    <h4>🗑️ Landfills</h4>
+
+                    <p>
+                        Organic waste decomposing without oxygen
+                        can produce methane.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-3">
+
+                <div class="card info-card p-4 text-center">
+
+                    <h4>🌾 Rice Farming</h4>
+
+                    <p>
+                        Flooded rice fields can produce methane
+                        as organic material decomposes.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SECOND IMAGE -->
+        <div class="row align-items-center mb-5">
+
+            <div class="col-md-6 order-md-2">
+
+                <img src="methane-farming.jpg"
+                     class="image-box"
+                     alt="Methane Sources">
+
+            </div>
+
+
+            <div class="col-md-6 order-md-1">
+
+                <h2>Why Does Methane Matter?</h2>
+
+                <p>
+                    Methane is much more effective than carbon dioxide
+                    at trapping heat in the atmosphere over a short
+                    period.
+                </p>
+
+                <p>
+                    Although methane remains in the atmosphere for
+                    less time than CO₂, reducing methane emissions can
+                    have a relatively fast climate benefit.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- EFFECTS -->
+        <h2 class="text-center mb-4">
+            Effects of Methane
+        </h2>
+
+
+        <div class="row g-4 mb-5">
+
+
+            <div class="col-md-4">
+
+                <div class="card info-card p-4">
+
+                    <h4>🌡️ Warming</h4>
+
+                    <p>
+                        Methane contributes significantly to
+                        greenhouse gas warming.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="card info-card p-4">
+
+                    <h4>🌫️ Air Quality</h4>
+
+                    <p>
+                        Methane contributes to the formation of
+                        ground-level ozone.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="card info-card p-4">
+
+                    <h4>🌍 Climate Change</h4>
+
+                    <p>
+                        Increasing methane emissions add to
+                        human-caused climate change.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- REDUCTION -->
+        <div class="card info-card p-4 mb-5">
+
+            <h2>
+                How Can We Reduce Methane?
+            </h2>
+
+
+            <ul class="list-group list-group-flush">
+
+                <li class="list-group-item">
+                    🐄 Improve livestock management.
+                </li>
+
+                <li class="list-group-item">
+                    🛢️ Detect and repair oil and gas leaks.
+                </li>
+
+                <li class="list-group-item">
+                    🗑️ Capture methane from landfills.
+                </li>
+
+                <li class="list-group-item">
+                    🌾 Improve rice farming techniques.
+                </li>
+
+                <li class="list-group-item">
+                    ♻️ Reduce organic waste.
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <!-- STATUS -->
+        <div class="card info-card p-4 text-center mb-5">
+
+            <h2>
+                Methane Situation
+            </h2>
+
+            <div class="progress mt-4"
+                 style="height: 30px;">
+
+                <div class="progress-bar"
+                     style="width: 78%; background-color: #6f42c1;">
+
+                    Increasing
+
+                </div>
+
+            </div>
+
+            <p class="mt-3">
+                Atmospheric methane levels have increased
+                substantially compared with pre-industrial levels.
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- FOOTER -->
+    <footer class="text-center">
+
+        <h4>Methane & Climate</h4>
+
+        <p class="mb-0">
+            Learn • Understand • Protect Our Planet
+        </p>
+
+    </footer>
+
+
+</body>
+
+</html>

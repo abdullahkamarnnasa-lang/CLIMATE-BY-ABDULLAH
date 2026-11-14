@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>APEX Star Gamer - Indian Bikes Driving 3D Codes</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #0b0b0b;
+            color: white;
+        }
+
+        /* HEADER */
+        header {
+            background: linear-gradient(90deg, #111, #e60000, #111);
+            padding: 25px 15px;
+            text-align: center;
+            box-shadow: 0 0 20px red;
+        }
+
+        header h1 {
+            font-size: 38px;
+            color: white;
+            text-shadow: 0 0 10px red;
+        }
+
+        header p {
+            margin-top: 8px;
+            color: #ddd;
+        }
+
+        /* SEARCH */
+        .search-box {
+            width: 90%;
+            max-width: 700px;
+            margin: 35px auto;
+            display: flex;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 17px;
+            border: 2px solid red;
+            border-radius: 12px 0 0 12px;
+            background: #171717;
+            color: white;
+            outline: none;
+            font-size: 17px;
+        }
+
+        .search-box button {
+            padding: 0 25px;
+            border: none;
+            background: red;
+            color: white;
+            font-size: 17px;
+            border-radius: 0 12px 12px 0;
+            cursor: pointer;
+        }
+
+        .search-box button:hover {
+            background: #ff3333;
+        }
+
+        /* CATEGORIES */
+        .categories {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .categories button {
+            padding: 10px 18px;
+            margin: 5px;
+            border: 1px solid red;
+            border-radius: 20px;
+            background: #151515;
+            color: white;
+            cursor: pointer;
+        }
+
+        .categories button:hover,
+        .categories button.active {
+            background: red;
+        }
+
+        /* GRID */
+        .container {
+            width: 92%;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            padding-bottom: 50px;
+        }
+
+        /* CARD */
+        .card {
+            background: #151515;
+            border: 1px solid #333;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-7px);
+            border-color: red;
+            box-shadow: 0 0 18px rgba(255, 0, 0, 0.5);
+        }
+
+        .card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: #222;
+        }
+
+        .card-content {
+            padding: 18px;
+        }
+
+        .card h2 {
+            color: #ff3333;
+            margin-bottom: 8px;
+        }
+
+        .card p {
+            color: #bbb;
+            margin-bottom: 12px;
+        }
+
+        .code {
+            background: #050505;
+            border: 1px dashed red;
+            padding: 12px;
+            border-radius: 8px;
+            color: #00ff88;
+            font-size: 20px;
+            text-align: center;
+            margin-bottom: 12px;
+            font-weight: bold;
+        }
+
+        .copy-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            background: red;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .copy-btn:hover {
+            background: #ff3333;
+        }
+
+        /* NO RESULT */
+        #noResult {
+            display: none;
+            text-align: center;
+            padding: 50px;
+            color: #ff4444;
+            font-size: 22px;
+        }
+
+        /* FOOTER */
+        footer {
+            background: #111;
+            text-align: center;
+            padding: 25px;
+            border-top: 1px solid #333;
+        }
+
+        footer span {
+            color: red;
+            font-weight: bold;
+        }
+
+        @media(max-width:600px) {
+
+            header h1 {
+                font-size: 28px;
+            }
+
+            .search-box {
+                width: 94%;
+            }
+
+            .card img {
+                height: 160px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <h1>APEX STAR GAMER</h1>
+        <p>Indian Bikes Driving 3D Cheat Codes</p>
+    </header>
+
+
+    <!-- SEARCH -->
+    <div class="search-box">
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search bike, car, helicopter or cheat code..."
+            onkeyup="searchCodes()"
+        >
+
+        <button onclick="searchCodes()">Search</button>
+
+    </div>
+
+
+    <!-- CATEGORIES -->
+    <div class="categories">
+
+        <button class="active" onclick="filterCategory('all', this)">
+            All
+        </button>
+
+        <button onclick="filterCategory('bike', this)">
+            Bikes
+        </button>
+
+        <button onclick="filterCategory('car', this)">
+            Cars
+        </button>
+
+        <button onclick="filterCategory('vehicle', this)">
+            Vehicles
+        </button>
+
+        <button onclick="filterCategory('aircraft', this)">
+            Aircraft
+        </button>
+
+        <button onclick="filterCategory('animal', this)">
+            Animals
+        </button>
+
+        <button onclick="filterCategory('power', this)">
+            Powers
+        </button>
+
+    </div>
+
+
+    <!-- CONTENT -->
+    <div class="container">
+
+        <div class="grid" id="codeGrid"></div>
+
+        <div id="noResult">
+            No cheat code found.
+        </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+    <footer>
+        <p>
+            © 2026
+           <a href="https://www.youtube.com/@apexgamer-654" target="_blank"><span>APEX STAR GAMER</span></a>
+            | Indian Bikes Driving 3D Codes
+        </p>
+    </footer>
+
+
+    <script>
+
+        let currentCategory = "all";
+
+
+        /*
+        ==========================================
+        INDIAN BIKES DRIVING 3D CHEAT CODE DATABASE
+        ==========================================
+        */
+
+        const cheatCodes = [
+
+            /* ================= BIKES ================= */
+
+            {
+                name: "Hero Pleasure / Activa 4G",
+                code: "0000",
+                category: "bike",
+                type: "Bike",
+                image: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Yamaha R15",
+                code: "0015",
+                category: "bike",
+                type: "Bike",
+                image: "https://images.unsplash.com/photo-1558980664-10ea9c3f4f3e?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Kawasaki Ninja ZX10R",
+                code: "400",
+                category: "bike",
+                type: "Bike",
+                image: "https://images.unsplash.com/photo-1609630875171-b1321377ee65?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Benelli TNT",
+                code: "666",
+                category: "bike",
+                type: "Bike",
+                image: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Ducati Diavel",
+                code: "777",
+                category: "bike",
+                type: "Bike",
+                image: "https://images.unsplash.com/photo-1558980394-0c7f6c0a5f91?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Yamaha FZ10",
+                code: "888",
+                category: "bike",
+                type: "Bike",
+                image: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Yamaha VMAX",
+                code: "999",
+                category: "bike",
+                type: "Bike",
+                image: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Cycle",
+                code: "1111",
+                category: "bike",
+                type: "Bike",
+                image: "https://images.unsplash.com/photo-1502744688674-c619d1586c9e?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "New KTM",
+                code: "1190",
+                category: "bike",
+                type: "Bike",
+                image: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "KTM",
+                code: "1210",
+                category: "bike",
+                type: "Bike",
+                image: "https://images.unsplash.com/photo-1558980664-10ea9c3f4f3e?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Pulsar",
+                code: "1211",
+                category: "bike",
+                type: "Bike",
+                image: "https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Kawasaki Ninja H2R",
+                code: "3000",
+                category: "bike",
+                type: "Bike",
+                image: "https://images.unsplash.com/photo-1609630875171-b1321377ee65?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "TVS Apache",
+                code: "4050",
+                category: "bike",
+                type: "Bike",
+                image: "https://images.unsplash.com/photo-1558980664-10ea9c3f4f3e?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "KTM Duke",
+                code: "4215",
+                category: "bike",
+                type: "Bike",
+                image: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Pulsar RS200",
+                code: "5000",
+                category: "bike",
+                type: "Bike",
+                image: "https://images.unsplash.com/photo-1558980394-0c7f6c0a5f91?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Ghost Rider Bike",
+                code: "5555",
+                category: "bike",
+                type: "Bike",
+                image: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Tron Bike",
+                code: "6000",
+                category: "bike",
+                type: "Bike",
+                image: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Super Splendor",
+                code: "6021",
+                category: "bike",
+                type: "Bike",
+                image: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Suzuki Hayabusa",
+                code: "7000",
+                category: "bike",
+                type: "Bike",
+                image: "https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "KTM Duke 200",
+                code: "7777",
+                category: "bike",
+                type: "Bike",
+                image: "https://images.unsplash.com/photo-1558980664-10ea9c3f4f3e?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "KTM Duke 1290",
+                code: "8888",
+                category: "bike",
+                type: "Bike",
+                image: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Hero Splendor",
+                code: "9000",
+                category: "bike",
+                type: "Bike",
+                image: "https://images.unsplash.com/photo-1558980664-10ea9c3f4f3e?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Royal Enfield Bullet",
+                code: "9999",
+                category: "bike",
+                type: "Bike",
+                image: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "ATV Quad Bike",
+                code: "2222",
+                category: "bike",
+                type: "Bike",
+                image: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=800&q=80"
+            },
+
+
+            /* ================= CARS ================= */
+
+            {
+                name: "Defender",
+                code: "0002",
+                category: "car",
+                type: "Car",
+                image: "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Police SUV",
+                code: "101",
+                category: "car",
+                type: "Car",
+                image: "https://images.unsplash.com/photo-1504215680853-026ed2a45def?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Bolero / Scorpio Classic",
+                code: "333",
+                category: "car",
+                type: "Car",
+                image: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Scorpio S11",
+                code: "444",
+                category: "car",
+                type: "Car",
+                image: "https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Audi",
+                code: "500",
+                category: "car",
+                type: "Car",
+                image: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Lamborghini V2",
+                code: "700",
+                category: "car",
+                type: "Car",
+                image: "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Bugatti V2",
+                code: "800",
+                category: "car",
+                type: "Car",
+                image: "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Koenigsegg",
+                code: "900",
+                category: "car",
+                type: "Car",
+                image: "https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Fortuner",
+                code: "1000",
+                category: "car",
+                type: "Car",
+                image: "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Legendar",
+                code: "1001",
+                category: "car",
+                type: "Car",
+                image: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Land Cruiser",
+                code: "1820",
+                category: "car",
+                type: "Car",
+                image: "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Rolls Royce",
+                code: "2000",
+                category: "car",
+                type: "Car",
+                image: "https://images.unsplash.com/photo-1631295868223-63265b40d9e4?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Endeavour",
+                code: "2020",
+                category: "car",
+                type: "Car",
+                image: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Supra",
+                code: "2244",
+                category: "car",
+                type: "Car",
+                image: "https://images.unsplash.com/photo-1553440569-bcc63803a83d?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "GTR",
+                code: "3005",
+                category: "car",
+                type: "Car",
+                image: "https://images.unsplash.com/photo-1542362567-b07e54358753?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Lamborghini",
+                code: "3333",
+                category: "car",
+                type: "Car",
+                image: "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Porsche",
+                code: "4000",
+                category: "car",
+                type: "Car",
+                image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Bugatti Chiron",
+                code: "4444",
+                category: "car",
+                type: "Car",
+                image: "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Sports Car",
+                code: "5000",
+                category: "car",
+                type: "Car",
+                image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "G-Wagon / Range Rover",
+                code: "6666",
+                category: "car",
+                type: "Car",
+                image: "https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Mustang",
+                code: "8123",
+                category: "car",
+                type: "Car",
+                image: "https://images.unsplash.com/photo-1584345604476-8ec5e12e42dd?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Ferrari / Bentley",
+                code: "8811",
+                category: "car",
+                type: "Car",
+                image: "https://images.unsplash.com/photo-1592198084033-aade902d1aae?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Hummer H2",
+                code: "8880",
+                category: "car",
+                type: "Car",
+                image: "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Thar Modified",
+                code: "9090",
+                category: "car",
+                type: "Car",
+                image: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Thar",
+                code: "9191",
+                category: "car",
+                type: "Car",
+                image: "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=800&q=80"
+            },
+
+
+            /* ================= VEHICLES ================= */
+
+            {
+                name: "Truck",
+                code: "1212",
+                category: "vehicle",
+                type: "Heavy Vehicle",
+                image: "https://images.unsplash.com/photo-1519003722824-194d4455a60c?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Truck With Trailer",
+                code: "01212",
+                category: "vehicle",
+                type: "Heavy Vehicle",
+                image: "https://images.unsplash.com/photo-1519003722824-194d4455a60c?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Fire Truck",
+                code: "606",
+                category: "vehicle",
+                type: "Vehicle",
+                image: "https://images.unsplash.com/photo-1583225214464-9296029427aa?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Tank",
+                code: "4040",
+                category: "vehicle",
+                type: "Military Vehicle",
+                image: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Tractor",
+                code: "5643",
+                category: "vehicle",
+                type: "Vehicle",
+                image: "https://images.unsplash.com/photo-1592982537447-6f2a6a0a9b8a?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "JCB",
+                code: "6677",
+                category: "vehicle",
+                type: "Heavy Vehicle",
+                image: "https://images.unsplash.com/photo-1580901368919-7738efb0f87e?auto=format&fit=crop&w=800&q=80"
+            },
+
+
+            /* ================= AIRCRAFT ================= */
+
+            {
+                name: "Helicopter",
+                code: "8000",
+                category: "aircraft",
+                type: "Aircraft",
+                image: "https://images.unsplash.com/photo-1520437358207-323b43b50729?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Police Helicopter",
+                code: "8001",
+                category: "aircraft",
+                type: "Aircraft",
+                image: "https://images.unsplash.com/photo-1520437358207-323b43b50729?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Plane",
+                code: "555",
+                category: "aircraft",
+                type: "Aircraft",
+                image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Jetpack",
+                code: "320",
+                category: "aircraft",
+                type: "Special Aircraft",
+                image: "https://images.unsplash.com/photo-1517976547714-720226b864c1?auto=format&fit=crop&w=800&q=80"
+            },
+
+
+            /* ================= WATER VEHICLES ================= */
+
+            {
+                name: "Boat",
+                code: "3001",
+                category: "vehicle",
+                type: "Water Vehicle",
+                image: "https://images.unsplash.com/photo-1540946485063-a40da27545f8?auto=format&fit=crop&w=800&q=80"
+            },
+
+
+            /* ================= ANIMALS ================= */
+
+            {
+                name: "Buffalo",
+                code: "6",
+                category: "animal",
+                type: "Animal",
+                image: "https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Elephant",
+                code: "10",
+                category: "animal",
+                type: "Animal",
+                image: "https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Velociraptor",
+                code: "50",
+                category: "animal",
+                type: "Dinosaur",
+                image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "T-Rex",
+                code: "51",
+                category: "animal",
+                type: "Dinosaur",
+                image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Spinosaurus",
+                code: "52",
+                category: "animal",
+                type: "Dinosaur",
+                image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Brachiosaurus",
+                code: "53",
+                category: "animal",
+                type: "Dinosaur",
+                image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Dino",
+                code: "5050",
+                category: "animal",
+                type: "Dinosaur",
+                image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Horse",
+                code: "200",
+                category: "animal",
+                type: "Animal",
+                image: "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Dog",
+                code: "600",
+                category: "animal",
+                type: "Animal",
+                image: "https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Dragon",
+                code: "7222",
+                category: "animal",
+                type: "Special Animal",
+                image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80"
+            },
+
+
+            /* ================= POWERS ================= */
+
+            {
+                name: "Night Mode",
+                code: "9",
+                category: "power",
+                type: "Power",
+                image: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Gas Tank",
+                code: "0",
+                category: "power",
+                type: "Power",
+                image: "https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Fuel Tank",
+                code: "00",
+                category: "power",
+                type: "Power",
+                image: "https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Tattoo Skin",
+                code: "002",
+                category: "power",
+                type: "Special",
+                image: "https://images.unsplash.com/photo-1598371839696-5c5bb00bdc47?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Super Jump",
+                code: "1215",
+                category: "power",
+                type: "Power",
+                image: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Ultra Super Jump",
+                code: "1216",
+                category: "power",
+                type: "Power",
+                image: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Infinity Health",
+                code: "9129",
+                category: "power",
+                type: "Power",
+                image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Skyfall",
+                code: "1120",
+                category: "power",
+                type: "Power",
+                image: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Slow Motion",
+                code: "1112",
+                category: "power",
+                type: "Power",
+                image: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Moon Gravity",
+                code: "7112",
+                category: "power",
+                type: "Power",
+                image: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "More NPCs",
+                code: "12345",
+                category: "power",
+                type: "Game Effect",
+                image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "More Traffic Cars",
+                code: "54321",
+                category: "power",
+                type: "Game Effect",
+                image: "https://images.unsplash.com/photo-1504215680853-026ed2a45def?auto=format&fit=crop&w=800&q=80"
+            },
+
+            {
+                name: "Zombie Mode",
+                code: "2030",
+                category: "power",
+                type: "Game Mode",
+                image: "https://images.unsplash.com/photo-1509248961158-e54f6934749c?auto=format&fit=crop&w=800&q=80"
+            }
+
+        ];
+
+
+        /*
+        ==========================================
+        CREATE ALL CARDS AUTOMATICALLY
+        ==========================================
+        */
+
+        function loadCodes() {
+
+            const grid = document.getElementById("codeGrid");
+
+            grid.innerHTML = "";
+
+            cheatCodes.forEach(function(item) {
+
+                const card = document.createElement("div");
+
+                card.className = "card";
+
+                card.dataset.category = item.category;
+                card.dataset.name = item.name.toLowerCase();
+                card.dataset.code = item.code.toLowerCase();
+
+                card.innerHTML = `
+
+                    <img
+                        src="${item.image}"
+                        alt="${item.name}"
+                    >
+
+                    <div class="card-content">
+
+                        <h2>${item.name}</h2>
+
+                        <p>Category: ${item.type}</p>
+
+                        <div class="code">
+                            ${item.code}
+                        </div>
+
+                        <button
+                            class="copy-btn"
+                            onclick="copyCode('${item.code}')"
+                        >
+                            Copy Cheat Code
+                        </button>
+
+                    </div>
+
+                `;
+
+                grid.appendChild(card);
+
+            });
+
+        }
+
+
+        /*
+        ==========================================
+        SEARCH FUNCTION
+        ==========================================
+        */
+
+        function searchCodes() {
+
+            let input = document
+                .getElementById("searchInput")
+                .value
+                .toLowerCase()
+                .trim();
+
+            let cards = document.querySelectorAll(".card");
+
+            let found = 0;
+
+
+            cards.forEach(function(card) {
+
+                let name = card.dataset.name;
+                let code = card.dataset.code;
+                let category = card.dataset.category;
+
+
+                let searchMatch =
+                    name.includes(input) ||
+                    code.includes(input);
+
+
+                let categoryMatch =
+                    currentCategory === "all" ||
+                    category === currentCategory;
+
+
+                if (searchMatch && categoryMatch) {
+
+                    card.style.display = "block";
+
+                    found++;
+
+                } else {
+
+                    card.style.display = "none";
+
+                }
+
+            });
+
+
+            if (found === 0) {
+
+                document.getElementById("noResult").style.display = "block";
+
+            } else {
+
+                document.getElementById("noResult").style.display = "none";
+
+            }
+
+        }
+
+
+        /*
+        ==========================================
+        CATEGORY FILTER
+        ==========================================
+        */
+
+        function filterCategory(category, button) {
+
+            currentCategory = category;
+
+
+            document
+                .querySelectorAll(".categories button")
+                .forEach(function(btn) {
+
+                    btn.classList.remove("active");
+
+                });
+
+
+            button.classList.add("active");
+
+            searchCodes();
+
+        }
+
+
+        /*
+        ==========================================
+        COPY CODE
+        ==========================================
+        */
+
+        function copyCode(code) {
+
+            navigator.clipboard.writeText(code)
+                .then(function() {
+
+                    alert("Cheat code copied: " + code);
+
+                })
+                .catch(function() {
+
+                    alert("Cheat code: " + code);
+
+                });
+
+        }
+
+
+        /*
+        ==========================================
+        LOAD WEBSITE
+        ==========================================
+        */
+
+        loadCodes();
+
+    </script>
+
+</body>
+
+</html>

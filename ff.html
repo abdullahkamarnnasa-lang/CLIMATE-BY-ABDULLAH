@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>APEX STAR GAMER - Free Fire Hub</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #080808;
+            color: white;
+        }
+
+        /* HEADER */
+
+        header {
+            background: linear-gradient(90deg, #111, #ff5a00, #111);
+            padding: 30px 15px;
+            text-align: center;
+            box-shadow: 0 0 25px #ff5a00;
+        }
+
+        header h1 {
+            font-size: 40px;
+            text-shadow: 0 0 12px #ff5a00;
+        }
+
+        header p {
+            margin-top: 8px;
+            color: #eee;
+        }
+
+        /* SEARCH */
+
+        .search-box {
+            width: 90%;
+            max-width: 750px;
+            margin: 35px auto;
+            display: flex;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 17px;
+            background: #151515;
+            color: white;
+            border: 2px solid #ff5a00;
+            border-radius: 12px 0 0 12px;
+            outline: none;
+            font-size: 17px;
+        }
+
+        .search-box button {
+            padding: 0 25px;
+            border: none;
+            background: #ff5a00;
+            color: white;
+            font-size: 17px;
+            cursor: pointer;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .search-box button:hover {
+            background: #ff7b35;
+        }
+
+        /* CATEGORIES */
+
+        .categories {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .categories button {
+            padding: 10px 18px;
+            margin: 5px;
+            border: 1px solid #ff5a00;
+            border-radius: 20px;
+            background: #151515;
+            color: white;
+            cursor: pointer;
+        }
+
+        .categories button:hover,
+        .categories button.active {
+            background: #ff5a00;
+        }
+
+        /* CONTAINER */
+
+        .container {
+            width: 92%;
+            max-width: 1250px;
+            margin: auto;
+        }
+
+        /* GRID */
+
+        .grid {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(270px, 1fr));
+            gap: 25px;
+            padding-bottom: 50px;
+        }
+
+        /* CARD */
+
+        .card {
+            background: #151515;
+            border: 1px solid #333;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: #ff5a00;
+            box-shadow: 0 0 20px rgba(255, 90, 0, 0.5);
+        }
+
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #222;
+        }
+
+        .card-content {
+            padding: 18px;
+        }
+
+        .card h2 {
+            color: #ff7130;
+            margin-bottom: 8px;
+        }
+
+        .card p {
+            color: #bbb;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 6px 10px;
+            background: #252525;
+            color: #ff7130;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .ability {
+            background: #090909;
+            border: 1px dashed #ff5a00;
+            padding: 12px;
+            border-radius: 8px;
+            color: #ddd;
+            margin-top: 10px;
+        }
+
+        .ability strong {
+            color: #ff7130;
+        }
+
+        .copy-btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            border: none;
+            background: #ff5a00;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .copy-btn:hover {
+            background: #ff7b35;
+        }
+
+        /* NO RESULT */
+
+        #noResult {
+            display: none;
+            text-align: center;
+            padding: 50px;
+            color: #ff5a00;
+            font-size: 22px;
+        }
+
+        /* FOOTER */
+
+        footer {
+            background: #111;
+            text-align: center;
+            padding: 25px;
+            border-top: 1px solid #333;
+        }
+
+        footer span {
+            color: #ff5a00;
+            font-weight: bold;
+        }
+
+        /* MOBILE */
+
+        @media(max-width:600px) {
+
+            header h1 {
+                font-size: 28px;
+            }
+
+            .search-box {
+                width: 94%;
+            }
+
+            .card img {
+                height: 170px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- HEADER -->
+
+    <header>
+
+        <h1>APEX STAR GAMER</h1>
+
+        <p>
+            Free Fire Characters, Weapons, Pets & Maps
+        </p>
+
+    </header>
+
+
+    <!-- SEARCH -->
+
+    <div class="search-box">
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search character, gun, pet or map..."
+            onkeyup="searchItems()"
+        >
+
+        <button onclick="searchItems()">
+            Search
+        </button>
+
+    </div>
+
+
+    <!-- CATEGORIES -->
+
+    <div class="categories">
+
+        <button
+            class="active"
+            onclick="filterCategory('all', this)">
+            All
+        </button>
+
+        <button
+            onclick="filterCategory('character', this)">
+            Characters
+        </button>
+
+        <button
+            onclick="filterCategory('weapon', this)">
+            Weapons
+        </button>
+
+        <button
+            onclick="filterCategory('pet', this)">
+            Pets
+        </button>
+
+        <button
+            onclick="filterCategory('map', this)">
+            Maps
+        </button>
+
+        <button
+            onclick="filterCategory('tips', this)">
+            Tips
+        </button>
+
+    </div>
+
+
+    <!-- CONTENT -->
+
+    <div class="container">
+
+        <div
+            class="grid"
+            id="itemGrid">
+        </div>
+
+        <div id="noResult">
+            No Free Fire information found.
+        </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+            © 2026
+            <span>APEX STAR GAMER</span>
+            | Free Fire Hub
+        </p>
+
+    </footer>
+
+
+<script>
+
+
+    let currentCategory = "all";
+
+
+    /*
+    ==========================================
+    FREE FIRE DATABASE
+    ==========================================
+    */
+
+    const items = [
+
+        /* ================= CHARACTERS ================= */
+
+        {
+            name: "DJ Alok",
+            category: "character",
+            type: "Character",
+            description:
+            "A popular support character known for his movement and healing ability.",
+            ability:
+            "Drop the Beat - Creates an aura that can increase movement speed and provide HP recovery.",
+            image:
+            "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80"
+        },
+
+        {
+            name: "Chrono",
+            category: "character",
+            type: "Character",
+            description:
+            "A defensive character associated with futuristic combat.",
+            ability:
+            "Chrono's ability creates a protective force field that can provide temporary protection.",
+            image:
+            "https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?auto=format&fit=crop&w=900&q=80"
+        },
+
+        {
+            name: "K",
+            category: "character",
+            type: "Character",
+            description:
+            "A character focused on EP management and recovery.",
+            ability:
+            "Master of All - Provides different modes that affect EP and HP recovery.",
+            image:
+            "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=900&q=80"
+        },
+
+        {
+            name: "Hayato",
+            category: "character",
+            type: "Character",
+            description:
+            "A samurai-themed character designed for aggressive combat.",
+            ability:
+            "Bushido - Can increase armor penetration as HP decreases.",
+            image:
+            "https://images.unsplash.com/photo-1579373903781-fd5c0c30c4cd?auto=format&fit=crop&w=900&q=80"
+        },
+
+        {
+            name: "Kelly",
+            category: "character",
+            type: "Character",
+            description:
+            "A fast character suited for players who like quick movement.",
+            ability:
+            "Dash - Improves sprinting and movement-related performance.",
+            image:
+            "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=80"
+        },
+
+
+        /* ================= WEAPONS ================= */
+
+        {
+            name: "AWM",
+            category: "weapon",
+            type: "Sniper",
+            description:
+            "A powerful sniper rifle designed for long-range combat.",
+            ability:
+            "Best suited for accurate long-distance shots.",
+            image:
+            "https://images.unsplash.com/photo-1595590424283-b8f17842773f?auto=format&fit=crop&w=900&q=80"
+        },
+
+        {
+            name: "M1887",
+            category: "weapon",
+            type: "Shotgun",
+            description:
+            "A close-range shotgun popular for aggressive gameplay.",
+            ability:
+            "Very effective when fighting enemies at close range.",
+            image:
+            "https://images.unsplash.com/photo-1585598117791-1b0c5b3b6c8c?auto=format&fit=crop&w=900&q=80"
+        },
+
+        {
+            name: "MP40",
+            category: "weapon",
+            type: "SMG",
+            description:
+            "A fast-firing submachine gun designed for close combat.",
+            ability:
+            "High rate of fire makes it useful during fast close-range fights.",
+            image:
+            "https://images.unsplash.com/photo-1589254065878-42c9da997008?auto=format&fit=crop&w=900&q=80"
+        },
+
+        {
+            name: "SCAR",
+            category: "weapon",
+            type: "Assault Rifle",
+            description:
+            "A balanced assault rifle suitable for different ranges.",
+            ability:
+            "Good choice for players looking for a versatile weapon.",
+            image:
+            "https://images.unsplash.com/photo-1595590424283-b8f17842773f?auto=format&fit=crop&w=900&q=80"
+        },
+
+        {
+            name: "M1014",
+            category: "weapon",
+            type: "Shotgun",
+            description:
+            "A shotgun designed for powerful close-range attacks.",
+            ability:
+            "Useful for aggressive close-quarter battles.",
+            image:
+            "https://images.unsplash.com/photo-1563052498-7f6e2b9c8b5a?auto=format&fit=crop&w=900&q=80"
+        },
+
+
+        /* ================= PETS ================= */
+
+        {
+            name: "Falco",
+            category: "pet",
+            type: "Pet",
+            description:
+            "A flying pet associated with faster deployment at the beginning of a match.",
+            ability:
+            "Skyline Spree - Helps improve diving speed after jumping from the aircraft.",
+            image:
+            "https://images.unsplash.com/photo-1555169062-013468b47731?auto=format&fit=crop&w=900&q=80"
+        },
+
+        {
+            name: "Mr. Waggor",
+            category: "pet",
+            type: "Pet",
+            description:
+            "A penguin pet useful for players who rely on Gloo Walls.",
+            ability:
+            "Smooth Gloo - Can provide Gloo Wall-related utility over time.",
+            image:
+            "https://images.unsplash.com/photo-1551986782-d0169b3f8fa7?auto=format&fit=crop&w=900&q=80"
+        },
+
+        {
+            name: "Ottero",
+            category: "pet",
+            type: "Pet",
+            description:
+            "A pet focused on EP recovery when using certain healing items.",
+            ability:
+            "Double Blubber - Provides EP based on healing item usage.",
+            image:
+            "https://images.unsplash.com/photo-1604881988758-f76ad2f7aac1?auto=format&fit=crop&w=900&q=80"
+        },
+
+
+        /* ================= MAPS ================= */
+
+        {
+            name: "Bermuda",
+            category: "map",
+            type: "Battle Royale Map",
+            description:
+            "One of the most recognizable Free Fire battle royale maps.",
+            ability:
+            "Explore different locations, rotate between zones and use terrain for cover.",
+            image:
+            "https://images.unsplash.com/photo-1524666041070-9f8766e9b5c2?auto=format&fit=crop&w=900&q=80"
+        },
+
+        {
+            name: "Kalahari",
+            category: "map",
+            type: "Battle Royale Map",
+            description:
+            "A desert-themed map with different terrain and combat locations.",
+            ability:
+            "Use buildings, elevation and terrain to create strong positions.",
+            image:
+            "https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=900&q=80"
+        },
+
+        {
+            name: "Alpine",
+            category: "map",
+            type: "Battle Royale Map",
+            description:
+            "A winter-themed map with snowy and industrial environments.",
+            ability:
+            "Use structures and terrain to rotate safely between areas.",
+            image:
+            "https://images.unsplash.com/photo-1486911278844-a81c5267e227?auto=format&fit=crop&w=900&q=80"
+        },
+
+
+        /* ================= TIPS ================= */
+
+        {
+            name: "Headshot Tips",
+            category: "tips",
+            type: "Gameplay Tip",
+            description:
+            "Improve your aim by practicing crosshair placement and controlled movement.",
+            ability:
+            "Keep your crosshair near enemy head level and practice drag shots in training.",
+            image:
+            "https://images.unsplash.com/photo-1542751110-97427bbecf20?auto=format&fit=crop&w=900&q=80"
+        },
+
+        {
+            name: "Gloo Wall Tips",
+            category: "tips",
+            type: "Gameplay Tip",
+            description:
+            "Use Gloo Walls quickly to protect yourself during fights.",
+            ability:
+            "Practice placing walls while moving so you can create cover without stopping.",
+            image:
+            "https://images.unsplash.com/photo-1511882150382-421056c89033?auto=format&fit=crop&w=900&q=80"
+        },
+
+        {
+            name: "Rank Push Tips",
+            category: "tips",
+            type: "Gameplay Tip",
+            description:
+            "Play strategically when pushing rank instead of taking unnecessary fights.",
+            ability:
+            "Prioritize positioning, zone rotations, loot management and smart engagements.",
+            image:
+            "https://images.unsplash.com/photo-1547394765-185e1e68f34e?auto=format&fit=crop&w=900&q=80"
+        }
+
+    ];
+
+
+    /*
+    ==========================================
+    LOAD CARDS
+    ==========================================
+    */
+
+    function loadItems() {
+
+        const grid =
+            document.getElementById("itemGrid");
+
+        grid.innerHTML = "";
+
+
+        items.forEach(function(item, index) {
+
+            const card =
+                document.createElement("div");
+
+            card.className = "card";
+
+            card.dataset.category =
+                item.category;
+
+            card.dataset.name =
+                item.name.toLowerCase();
+
+            card.dataset.description =
+                item.description.toLowerCase();
+
+            card.innerHTML = `
+
+                <img
+                    src="${item.image}"
+                    alt="${item.name}"
+                    onerror="this.onerror=null; this.src='https://placehold.co/900x500/222/ffffff?text=Free+Fire';"
+                >
+
+                <div class="card-content">
+
+                    <h2>
+                        ${item.name}
+                    </h2>
+
+                    <span class="tag">
+                        ${item.type}
+                    </span>
+
+                    <p>
+                        ${item.description}
+                    </p>
+
+                    <div class="ability">
+
+                        <strong>
+                            Info:
+                        </strong>
+
+                        <br>
+
+                        ${item.ability}
+
+                    </div>
+
+                    <button
+                        class="copy-btn"
+                        onclick="copyInfo(${index})"
+                    >
+                        Copy Information
+                    </button>
+
+                </div>
+
+            `;
+
+            grid.appendChild(card);
+
+        });
+
+    }
+
+
+    /*
+    ==========================================
+    SEARCH
+    ==========================================
+    */
+
+    function searchItems() {
+
+        let input =
+            document
+                .getElementById("searchInput")
+                .value
+                .toLowerCase()
+                .trim();
+
+        let cards =
+            document.querySelectorAll(".card");
+
+        let found = 0;
+
+
+        cards.forEach(function(card) {
+
+            let name =
+                card.dataset.name;
+
+            let description =
+                card.dataset.description;
+
+            let category =
+                card.dataset.category;
+
+
+            let searchMatch =
+                name.includes(input) ||
+                description.includes(input);
+
+
+            let categoryMatch =
+                currentCategory === "all" ||
+                category === currentCategory;
+
+
+            if (searchMatch && categoryMatch) {
+
+                card.style.display = "block";
+
+                found++;
+
+            } else {
+
+                card.style.display = "none";
+
+            }
+
+        });
+
+
+        document.getElementById("noResult").style.display =
+            found === 0 ? "block" : "none";
+
+    }
+
+
+    /*
+    ==========================================
+    CATEGORY FILTER
+    ==========================================
+    */
+
+    function filterCategory(category, button) {
+
+        currentCategory = category;
+
+
+        document
+            .querySelectorAll(".categories button")
+            .forEach(function(btn) {
+
+                btn.classList.remove("active");
+
+            });
+
+
+        button.classList.add("active");
+
+        searchItems();
+
+    }
+
+
+    /*
+    ==========================================
+    COPY INFORMATION
+    ==========================================
+    */
+
+    function copyInfo(index) {
+
+        const item = items[index];
+
+
+        const text =
+
+`Free Fire Information
+
+Name: ${item.name}
+
+Type: ${item.type}
+
+Description:
+${item.description}
+
+Info:
+${item.ability}`;
+
+
+        navigator.clipboard
+            .writeText(text)
+            .then(function() {
+
+                alert(
+                    item.name +
+                    " information copied!"
+                );
+
+            })
+            .catch(function() {
+
+                alert(text);
+
+            });
+
+    }
+
+
+    /*
+    ==========================================
+    START
+    ==========================================
+    */
+
+    loadItems();
+
+</script>
+
+
+</body>
+
+</html>

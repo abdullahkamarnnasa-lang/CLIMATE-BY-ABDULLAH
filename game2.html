@@ -1,0 +1,3568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Climate City 3D - Future Life</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+html,body{
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#050912;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    position:relative;
+}
+
+canvas{
+    display:block;
+}
+
+/* ================= HUD ================= */
+
+#hud{
+    position:fixed;
+    left:18px;
+    top:18px;
+    width:290px;
+    padding:16px;
+    border:1px solid rgba(80,220,255,.4);
+    border-radius:18px;
+    background:rgba(4,10,20,.82);
+    backdrop-filter:blur(12px);
+    color:white;
+    z-index:20;
+    box-shadow:0 0 30px rgba(0,180,255,.12);
+}
+
+.title{
+    color:#65eaff;
+    font-size:22px;
+    font-weight:bold;
+    margin-bottom:12px;
+}
+
+#moneyDisplay{
+    color:#75ffad;
+    font-size:18px;
+    font-weight:bold;
+}
+
+#jobDisplay{
+    color:#ffd86b;
+    margin-top:6px;
+    font-size:14px;
+}
+
+.stat{
+    margin-top:10px;
+    font-size:13px;
+}
+
+.bar{
+    height:7px;
+    background:#172130;
+    border-radius:20px;
+    overflow:hidden;
+    margin-top:5px;
+}
+
+.fill{
+    height:100%;
+    width:50%;
+    border-radius:20px;
+}
+
+/* ================= MISSION ================= */
+
+#mission{
+    position:fixed;
+    right:18px;
+    top:18px;
+    width:315px;
+    padding:16px;
+    color:white;
+    background:rgba(4,10,20,.82);
+    border:1px solid rgba(80,220,255,.4);
+    border-radius:18px;
+    backdrop-filter:blur(12px);
+    z-index:20;
+}
+
+#location{
+    color:#66eaff;
+    font-size:20px;
+    font-weight:bold;
+}
+
+#missionText{
+    margin-top:9px;
+    color:#d6e6ef;
+    line-height:1.45;
+}
+
+/* ================= INTERACTION ================= */
+
+#interaction{
+    position:fixed;
+    left:50%;
+    bottom:35px;
+    transform:translateX(-50%);
+    padding:13px 23px;
+    border:1px solid #5ceaff;
+    border-radius:14px;
+    background:rgba(2,8,16,.93);
+    color:white;
+    z-index:40;
+    display:none;
+    box-shadow:0 0 35px rgba(0,220,255,.25);
+}
+
+/* ================= CROSSHAIR ================= */
+
+#crosshair{
+    position:fixed;
+    left:50%;
+    top:50%;
+    width:8px;
+    height:8px;
+    transform:translate(-50%,-50%);
+    border:1px solid white;
+    border-radius:50%;
+    z-index:15;
+    pointer-events:none;
+}
+
+/* ================= CONTROLS ================= */
+
+#controls{
+    position:fixed;
+    left:18px;
+    bottom:18px;
+    color:#b7cbd6;
+    background:rgba(3,8,15,.78);
+    padding:10px 14px;
+    border-radius:12px;
+    z-index:20;
+    font-size:12px;
+}
+
+/* ================= MAP ================= */
+
+#map{
+    position:fixed;
+    right:18px;
+    bottom:18px;
+    width:200px;
+    height:145px;
+    background:#07121c;
+    border:1px solid rgba(90,220,255,.35);
+    border-radius:15px;
+    z-index:20;
+}
+
+/* ================= BUSINESS PANEL ================= */
+
+#businessPanel{
+    position:fixed;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:400px;
+    max-width:90%;
+    padding:25px;
+    background:rgba(4,10,18,.97);
+    border:1px solid #5ceaff;
+    border-radius:22px;
+    color:white;
+    z-index:100;
+    display:none;
+    box-shadow:0 0 80px rgba(0,210,255,.25);
+}
+
+#businessPanel h2{
+    color:#62eaff;
+    margin-top:0;
+}
+
+.btn{
+    width:100%;
+    padding:12px;
+    margin-top:9px;
+    border:1px solid rgba(90,220,255,.25);
+    border-radius:11px;
+    background:#102938;
+    color:white;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.btn:hover{
+    background:#17516a;
+}
+
+/* ================= MOBILE SAFETY ================= */
+
+@media(max-width:700px){
+
+    #hud{
+        width:230px;
+        transform:scale(.8);
+        transform-origin:top left;
+    }
+
+    #mission{
+        width:230px;
+        transform:scale(.8);
+        transform-origin:top right;
+    }
+
+    #map{
+        display:none;
+    }
+
+    #controls{
+        font-size:10px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =====================================================
+     HUD
+===================================================== -->
+
+<div id="hud">
+
+    <div class="title">
+        🌍 CLIMATE CITY
+    </div>
+
+    <div id="moneyDisplay">
+        💰 $1000
+    </div>
+
+    <div id="jobDisplay">
+        💼 Job: Unemployed
+    </div>
+
+    <div class="stat">
+        🌳 Forest
+        <div class="bar">
+            <div
+                id="forestBar"
+                class="fill"
+                style="background:#42e477;width:72%">
+            </div>
+        </div>
+    </div>
+
+    <div class="stat">
+        🌫️ Pollution
+        <div class="bar">
+            <div
+                id="pollutionBar"
+                class="fill"
+                style="background:#ff6262;width:38%">
+            </div>
+        </div>
+    </div>
+
+    <div class="stat">
+        🌡️ Warming
+        <div class="bar">
+            <div
+                id="warmingBar"
+                class="fill"
+                style="background:#ffbc55;width:31%">
+            </div>
+        </div>
+    </div>
+
+    <div class="stat">
+        🌊 Sea Level
+        <div class="bar">
+            <div
+                id="seaBar"
+                class="fill"
+                style="background:#4fbaff;width:24%">
+            </div>
+        </div>
+    </div>
+
+    <div id="weather">
+        ☀️ Clear
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     MISSION
+===================================================== -->
+
+<div id="mission">
+
+    <div id="location">
+        FUTURE CITY
+    </div>
+
+    <div id="missionText">
+        Explore the city and visit a business.
+        <br><br>
+        Walk toward a building and press
+        <b>E</b> to enter.
+    </div>
+
+</div>
+
+
+<div id="interaction"></div>
+
+<div id="crosshair"></div>
+
+
+<div id="controls">
+    WASD Move • SHIFT Run • E Enter/Use • F Drive • Mouse Look
+</div>
+
+
+<canvas
+    id="map"
+    width="200"
+    height="145">
+</canvas>
+
+
+<!-- =====================================================
+     BUSINESS WINDOW
+===================================================== -->
+
+<div id="businessPanel">
+
+    <h2 id="businessTitle">
+        Business
+    </h2>
+
+    <p id="businessDescription"></p>
+
+    <p id="businessJob"></p>
+
+    <button
+        id="jobButton"
+        class="btn">
+        Take Job
+    </button>
+
+    <button
+        class="btn"
+        onclick="closeBusiness()">
+        Close
+    </button>
+
+</div>
+
+
+<!-- =====================================================
+     THREE.JS
+===================================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+<script>
+
+/* =========================================================
+   CHECK THREE.JS
+========================================================= */
+
+if(typeof THREE === "undefined"){
+
+    document.body.innerHTML = `
+        <div style="
+            color:white;
+            background:#050912;
+            width:100vw;
+            height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-family:Arial;
+            font-size:22px;
+        ">
+            Three.js failed to load. Check your internet connection.
+        </div>
+    `;
+
+    throw new Error("Three.js failed to load");
+}
+
+
+/* =========================================================
+   SCENE
+========================================================= */
+
+const scene = new THREE.Scene();
+
+scene.background =
+    new THREE.Color(0x07111d);
+
+scene.fog =
+    new THREE.FogExp2(
+        0x07111d,
+        0.0015
+    );
+
+
+/* =========================================================
+   CAMERA
+========================================================= */
+
+const camera =
+    new THREE.PerspectiveCamera(
+        65,
+        window.innerWidth /
+        window.innerHeight,
+        0.1,
+        3000
+    );
+
+camera.position.set(
+    0,
+    7,
+    130
+);
+
+
+/* =========================================================
+   RENDERER
+========================================================= */
+
+const renderer =
+    new THREE.WebGLRenderer({
+        antialias:true,
+        alpha:false,
+        powerPreference:"high-performance"
+    });
+
+renderer.setPixelRatio(
+    Math.min(
+        window.devicePixelRatio || 1,
+        2
+    )
+);
+
+renderer.setSize(
+    window.innerWidth,
+    window.innerHeight
+);
+
+renderer.setClearColor(
+    0x07111d,
+    1
+);
+
+renderer.shadowMap.enabled=true;
+
+renderer.shadowMap.type =
+    THREE.PCFSoftShadowMap;
+
+renderer.outputColorSpace =
+    THREE.SRGBColorSpace;
+
+renderer.toneMapping =
+    THREE.ACESFilmicToneMapping;
+
+renderer.toneMappingExposure =
+    1.15;
+
+renderer.domElement.style.position =
+    "fixed";
+
+renderer.domElement.style.left="0";
+renderer.domElement.style.top="0";
+renderer.domElement.style.width="100vw";
+renderer.domElement.style.height="100vh";
+
+renderer.domElement.style.zIndex="0";
+
+document.body.appendChild(
+    renderer.domElement
+);
+
+
+/* =========================================================
+   LIGHTS
+========================================================= */
+
+const hemisphere =
+    new THREE.HemisphereLight(
+        0x91dfff,
+        0x10151c,
+        1.7
+    );
+
+scene.add(hemisphere);
+
+
+const sun =
+    new THREE.DirectionalLight(
+        0xffffff,
+        2.2
+    );
+
+sun.position.set(
+    180,
+    240,
+    120
+);
+
+sun.castShadow=true;
+
+sun.shadow.mapSize.width=2048;
+sun.shadow.mapSize.height=2048;
+
+sun.shadow.camera.left=-600;
+sun.shadow.camera.right=600;
+sun.shadow.camera.top=600;
+sun.shadow.camera.bottom=-600;
+
+scene.add(sun);
+
+
+/* =========================================================
+   MATERIAL
+========================================================= */
+
+function makeMaterial(
+    color,
+    options={}
+){
+
+    return new THREE.MeshStandardMaterial({
+
+        color:color,
+
+        roughness:
+            options.roughness ?? .65,
+
+        metalness:
+            options.metalness ?? .15,
+
+        emissive:
+            options.emissive ?? 0x000000,
+
+        emissiveIntensity:
+            options.emissiveIntensity ?? 0
+
+    });
+}
+
+
+/* =========================================================
+   CUBE
+========================================================= */
+
+function addCube(
+    parent,
+    x,y,z,
+    sx,sy,sz,
+    material,
+    shadow=true
+){
+
+    const mesh =
+        new THREE.Mesh(
+            new THREE.BoxGeometry(
+                sx,sy,sz
+            ),
+            material
+        );
+
+    mesh.position.set(
+        x,y,z
+    );
+
+    if(shadow){
+
+        mesh.castShadow=true;
+        mesh.receiveShadow=true;
+    }
+
+    parent.add(mesh);
+
+    return mesh;
+}
+
+
+/* =========================================================
+   GROUND
+========================================================= */
+
+const ground =
+    addCube(
+        scene,
+        0,
+        -0.35,
+        0,
+        1800,
+        .5,
+        1800,
+        makeMaterial(
+            0x111b20,
+            {
+                roughness:.95
+            }
+        )
+    );
+
+
+/* =========================================================
+   ROADS
+========================================================= */
+
+const roadMaterial =
+    makeMaterial(
+        0x151a22,
+        {
+            roughness:.9
+        }
+    );
+
+const sidewalkMaterial =
+    makeMaterial(
+        0x303943,
+        {
+            roughness:.85
+        }
+    );
+
+const roadLineMaterial =
+    makeMaterial(
+        0xe5eef0,
+        {
+            roughness:.5
+        }
+    );
+
+
+for(
+    let p=-720;
+    p<=720;
+    p+=100
+){
+
+    /* horizontal road */
+
+    addCube(
+        scene,
+        0,
+        .01,
+        p,
+        24,
+        .08,
+        100,
+        roadMaterial
+    );
+
+    /* vertical road */
+
+    addCube(
+        scene,
+        p,
+        .012,
+        0,
+        100,
+        .08,
+        24,
+        roadMaterial
+    );
+
+
+    /* sidewalks */
+
+    addCube(
+        scene,
+        14,
+        .08,
+        p,
+        3,
+        .15,
+        100,
+        sidewalkMaterial
+    );
+
+    addCube(
+        scene,
+        -14,
+        .08,
+        p,
+        3,
+        .15,
+        100,
+        sidewalkMaterial
+    );
+
+    addCube(
+        scene,
+        p,
+        .08,
+        14,
+        100,
+        .15,
+        3,
+        sidewalkMaterial
+    );
+
+    addCube(
+        scene,
+        p,
+        .08,
+        -14,
+        100,
+        .15,
+        3,
+        sidewalkMaterial
+    );
+}
+
+
+/* =========================================================
+   ROAD MARKINGS
+========================================================= */
+
+for(
+    let p=-700;
+    p<=700;
+    p+=15
+){
+
+    addCube(
+        scene,
+        0,
+        .08,
+        p,
+        .3,
+        .04,
+        7,
+        roadLineMaterial,
+        false
+    );
+
+    addCube(
+        scene,
+        p,
+        .08,
+        0,
+        7,
+        .04,
+        .3,
+        roadLineMaterial,
+        false
+    );
+}
+
+
+/* =========================================================
+   TREES
+========================================================= */
+
+const trees=[];
+
+function createTree(x,z){
+
+    const group =
+        new THREE.Group();
+
+    group.position.set(
+        x,
+        0,
+        z
+    );
+
+    const trunk =
+        new THREE.Mesh(
+            new THREE.CylinderGeometry(
+                .25,
+                .34,
+                3.2,
+                10
+            ),
+            makeMaterial(0x63452c)
+        );
+
+    trunk.position.y=1.6;
+
+    trunk.castShadow=true;
+
+    group.add(trunk);
+
+
+    const crown =
+        new THREE.Mesh(
+            new THREE.SphereGeometry(
+                1.7,
+                14,
+                12
+            ),
+            makeMaterial(
+                0x147342,
+                {
+                    roughness:.9
+                }
+            )
+        );
+
+    crown.position.y=3.5;
+
+    crown.castShadow=true;
+
+    group.add(crown);
+
+    scene.add(group);
+
+    trees.push(group);
+}
+
+
+for(
+    let i=0;
+    i<130;
+    i++
+){
+
+    const x =
+        (Math.random()-.5)*1500;
+
+    const z =
+        (Math.random()-.5)*1500;
+
+    if(
+        Math.abs(x%100)<25 ||
+        Math.abs(z%100)<25
+    ){
+        continue;
+    }
+
+    createTree(x,z);
+}
+
+
+/* =========================================================
+   BUSINESS DATA
+========================================================= */
+
+const businessData=[
+
+    {
+        name:"GREEN CAFE",
+        type:"Cafe",
+        x:40,
+        z:40,
+        w:22,
+        d:18,
+        h:11,
+        job:"Cafe Manager",
+        salary:180,
+        description:
+        "A futuristic eco-friendly cafe."
+    },
+
+    {
+        name:"TECH CORP",
+        type:"Office",
+        x:-40,
+        z:40,
+        w:24,
+        d:22,
+        h:30,
+        job:"Office Worker",
+        salary:350,
+        description:
+        "A modern technology company."
+    },
+
+    {
+        name:"ECO ENERGY",
+        type:"Energy",
+        x:40,
+        z:-40,
+        w:26,
+        d:22,
+        h:19,
+        job:"Green Energy Technician",
+        salary:420,
+        description:
+        "Clean-energy operations center."
+    },
+
+    {
+        name:"CITY GARAGE",
+        type:"Garage",
+        x:-40,
+        z:-40,
+        w:26,
+        d:22,
+        h:12,
+        job:"Delivery Driver",
+        salary:300,
+        description:
+        "Vehicle garage and delivery company."
+    },
+
+    {
+        name:"CITY HALL",
+        type:"Government",
+        x:120,
+        z:40,
+        w:30,
+        d:25,
+        h:23,
+        job:"City Worker",
+        salary:390,
+        description:
+        "Administration center for Future City."
+    },
+
+    {
+        name:"CLIMATE LAB",
+        type:"Science",
+        x:-120,
+        z:40,
+        w:28,
+        d:23,
+        h:21,
+        job:"Climate Analyst",
+        salary:500,
+        description:
+        "Climate monitoring and research center."
+    }
+
+];
+
+
+/* =========================================================
+   BUSINESS ARRAY
+========================================================= */
+
+const businesses=[];
+
+
+/* =========================================================
+   BUILDING CREATOR
+   IMPORTANT:
+   NO SOLID BOX.
+   WALLS ARE SEPARATE SO INTERIOR CAN BE SEEN.
+========================================================= */
+
+function createBusiness(data){
+
+    const building =
+        new THREE.Group();
+
+    building.position.set(
+        data.x,
+        0,
+        data.z
+    );
+
+    building.userData.business=true;
+    building.userData.data=data;
+
+
+    const wallMaterial =
+        makeMaterial(
+            data.type==="Energy"
+            ? 0x16404b
+            : 0x172132,
+            {
+                metalness:.35,
+                roughness:.55
+            }
+        );
+
+
+    /* ==========================================
+       FLOOR
+    ========================================== */
+
+    addCube(
+        building,
+        0,
+        .1,
+        0,
+        data.w,
+        .2,
+        data.d,
+        makeMaterial(
+            0x1d2733,
+            {
+                roughness:.8
+            }
+        )
+    );
+
+
+    /* ==========================================
+       BACK WALL
+    ========================================== */
+
+    addCube(
+        building,
+        0,
+        data.h/2,
+        -data.d/2,
+        data.w,
+        data.h,
+        .5,
+        wallMaterial
+    );
+
+
+    /* ==========================================
+       LEFT WALL
+    ========================================== */
+
+    addCube(
+        building,
+        -data.w/2,
+        data.h/2,
+        0,
+        .5,
+        data.h,
+        data.d,
+        wallMaterial
+    );
+
+
+    /* ==========================================
+       RIGHT WALL
+    ========================================== */
+
+    addCube(
+        building,
+        data.w/2,
+        data.h/2,
+        0,
+        .5,
+        data.h,
+        data.d,
+        wallMaterial
+    );
+
+
+    /* ==========================================
+       FRONT WALL PARTS
+       Leaves center open for entrance
+    ========================================== */
+
+    addCube(
+        building,
+        -data.w/2+3,
+        data.h/2,
+        data.d/2,
+        6,
+        data.h,
+        .5,
+        wallMaterial
+    );
+
+    addCube(
+        building,
+        data.w/2-3,
+        data.h/2,
+        data.d/2,
+        6,
+        data.h,
+        .5,
+        wallMaterial
+    );
+
+
+    /* ==========================================
+       FRONT TOP SECTION
+    ========================================== */
+
+    addCube(
+        building,
+        0,
+        data.h-1.2,
+        data.d/2,
+        data.w-6,
+        2.4,
+        .5,
+        wallMaterial
+    );
+
+
+    /* ==========================================
+       GLASS WINDOWS
+    ========================================== */
+
+    const glassMaterial =
+        new THREE.MeshStandardMaterial({
+            color:0x62eaff,
+            emissive:0x0b4e61,
+            emissiveIntensity:.65,
+            metalness:.3,
+            roughness:.12
+        });
+
+
+    for(
+        let y=3;
+        y<data.h-2;
+        y+=3
+    ){
+
+        for(
+            let x=-data.w/2+3;
+            x<data.w/2-2;
+            x+=3
+        ){
+
+            /* front windows avoid door */
+
+            if(
+                Math.abs(x)<2 &&
+                y<4.5
+            ){
+                continue;
+            }
+
+            addCube(
+                building,
+                x,
+                y,
+                data.d/2+.28,
+                1.65,
+                1.65,
+                .08,
+                glassMaterial,
+                false
+            );
+        }
+    }
+
+
+    /* ==========================================
+       ENTRANCE FRAME
+    ========================================== */
+
+    const neonMaterial =
+        new THREE.MeshBasicMaterial({
+            color:0x5beaff
+        });
+
+
+    addCube(
+        building,
+        -1.5,
+        2.3,
+        data.d/2+.35,
+        .12,
+        4.6,
+        .12,
+        neonMaterial,
+        false
+    );
+
+    addCube(
+        building,
+        1.5,
+        2.3,
+        data.d/2+.35,
+        .12,
+        4.6,
+        .12,
+        neonMaterial,
+        false
+    );
+
+    addCube(
+        building,
+        0,
+        4.6,
+        data.d/2+.35,
+        3.12,
+        .12,
+        .12,
+        neonMaterial,
+        false
+    );
+
+
+    /* ==========================================
+       ROOF
+    ========================================== */
+
+    addCube(
+        building,
+        0,
+        data.h+.2,
+        0,
+        data.w+1,
+        .4,
+        data.d+1,
+        makeMaterial(
+            0x09111d,
+            {
+                metalness:.8,
+                roughness:.25
+            }
+        )
+    );
+
+
+    /* ==========================================
+       SIGN
+    ========================================== */
+
+    const signCanvas =
+        document.createElement("canvas");
+
+    signCanvas.width=700;
+    signCanvas.height=150;
+
+    const ctx=
+        signCanvas.getContext("2d");
+
+    ctx.fillStyle="#06111c";
+    ctx.fillRect(
+        0,
+        0,
+        700,
+        150
+    );
+
+    ctx.fillStyle="#64eaff";
+    ctx.font="bold 43px Arial";
+    ctx.textAlign="center";
+    ctx.textBaseline="middle";
+
+    ctx.fillText(
+        data.name,
+        350,
+        75
+    );
+
+    const signTexture =
+        new THREE.CanvasTexture(
+            signCanvas
+        );
+
+    const sign =
+        new THREE.Mesh(
+            new THREE.PlaneGeometry(
+                Math.min(data.w*.75,15),
+                2
+            ),
+            new THREE.MeshBasicMaterial({
+                map:signTexture,
+                transparent:true
+            })
+        );
+
+    sign.position.set(
+        0,
+        data.h+.9,
+        data.d/2+.5
+    );
+
+    building.add(sign);
+
+
+    /* ==========================================
+       ROOFTOP LIGHT
+    ========================================== */
+
+    const rooftopLight =
+        new THREE.PointLight(
+            0x48dcff,
+            1.8,
+            22
+        );
+
+    rooftopLight.position.set(
+        0,
+        data.h+2,
+        0
+    );
+
+    building.add(
+        rooftopLight
+    );
+
+
+    /* ==========================================
+       INTERIOR
+    ========================================== */
+
+    createInterior(
+        building,
+        data
+    );
+
+
+    scene.add(building);
+
+    businesses.push(
+        building
+    );
+}
+
+
+/* =========================================================
+   INTERIOR
+========================================================= */
+
+function createInterior(
+    building,
+    data
+){
+
+    const interior =
+        new THREE.Group();
+
+    interior.userData.interior=true;
+
+
+    /* ==========================================
+       INTERIOR FLOOR
+    ========================================== */
+
+    addCube(
+        interior,
+        0,
+        .22,
+        0,
+        data.w-1,
+        .12,
+        data.d-1,
+        makeMaterial(
+            0x283442,
+            {
+                roughness:.75
+            }
+        )
+    );
+
+
+    /* ==========================================
+       RECEPTION
+    ========================================== */
+
+    const deskWidth =
+        Math.min(
+            data.w*.55,
+            8
+        );
+
+    addCube(
+        interior,
+        0,
+        .75,
+        -data.d/2+3,
+        deskWidth,
+        1.35,
+        1.25,
+        makeMaterial(
+            0x304256,
+            {
+                metalness:.45,
+                roughness:.35
+            }
+        )
+    );
+
+
+    /* ==========================================
+       COMPUTER SCREEN
+    ========================================== */
+
+    addCube(
+        interior,
+        0,
+        1.65,
+        -data.d/2+2.55,
+        1.3,
+        .75,
+        .12,
+        makeMaterial(
+            0x07131c,
+            {
+                emissive:0x0c6d86,
+                emissiveIntensity:.9
+            }
+        ),
+        false
+    );
+
+
+    /* ==========================================
+       WORK DESKS
+    ========================================== */
+
+    for(
+        let x=-data.w/3;
+        x<=data.w/3;
+        x+=3.5
+    ){
+
+        addCube(
+            interior,
+            x,
+            .65,
+            1.5,
+            2.5,
+            1,
+            1.2,
+            makeMaterial(
+                0x34485c,
+                {
+                    metalness:.3
+                }
+            )
+        );
+    }
+
+
+    /* ==========================================
+       CHAIRS
+    ========================================== */
+
+    for(
+        let x=-data.w/3;
+        x<=data.w/3;
+        x+=3.5
+    ){
+
+        addCube(
+            interior,
+            x,
+            .42,
+            3.1,
+            .8,
+            .8,
+            .8,
+            makeMaterial(
+                0x182332
+            )
+        );
+    }
+
+
+    /* ==========================================
+       JOB TERMINAL
+    ========================================== */
+
+    const terminal =
+        new THREE.Group();
+
+    terminal.position.set(
+        data.w/2-2.2,
+        0,
+        1
+    );
+
+    terminal.userData.jobTerminal=true;
+
+    addCube(
+        terminal,
+        0,
+        .8,
+        0,
+        1.4,
+        1.5,
+        .7,
+        makeMaterial(
+            0x0b202a,
+            {
+                metalness:.6,
+                emissive:0x0b5e72,
+                emissiveIntensity:.7
+            }
+        )
+    );
+
+
+    addCube(
+        terminal,
+        0,
+        1.7,
+        -.2,
+        1,
+        .6,
+        .08,
+        new THREE.MeshBasicMaterial({
+            color:0x66eaff
+        }),
+        false
+    );
+
+    interior.add(
+        terminal
+    );
+
+
+    /* ==========================================
+       NPC
+    ========================================== */
+
+    createNPC(
+        interior,
+        -2,
+        0
+    );
+
+
+    /* ==========================================
+       LIGHTS
+    ========================================== */
+
+    for(
+        let x=-data.w/3;
+        x<=data.w/3;
+        x+=data.w/3
+    ){
+
+        addCube(
+            interior,
+            x,
+            data.h-.6,
+            0,
+            2,
+            .08,
+            .35,
+            new THREE.MeshBasicMaterial({
+                color:0xbaf7ff
+            }),
+            false
+        );
+
+
+        const light =
+            new THREE.PointLight(
+                0x91eaff,
+                1.5,
+                18
+            );
+
+        light.position.set(
+            x,
+            data.h-1,
+            0
+        );
+
+        interior.add(light);
+    }
+
+
+    building.add(
+        interior
+    );
+}
+
+
+/* =========================================================
+   NPC
+========================================================= */
+
+function createNPC(
+    parent,
+    x,
+    z
+){
+
+    const npc =
+        new THREE.Group();
+
+    npc.position.set(
+        x,
+        0,
+        z
+    );
+
+
+    const skin =
+        makeMaterial(0xd59b73);
+
+    const shirt =
+        makeMaterial(0x3979a8);
+
+    const pants =
+        makeMaterial(0x192536);
+
+
+    const body =
+        new THREE.Mesh(
+            new THREE.CapsuleGeometry(
+                .42,
+                .8,
+                5,
+                10
+            ),
+            shirt
+        );
+
+    body.position.y=1;
+
+    npc.add(body);
+
+
+    const head =
+        new THREE.Mesh(
+            new THREE.SphereGeometry(
+                .37,
+                12,
+                10
+            ),
+            skin
+        );
+
+    head.position.y=2;
+
+    npc.add(head);
+
+
+    const hair =
+        new THREE.Mesh(
+            new THREE.SphereGeometry(
+                .39,
+                12,
+                8,
+                0,
+                Math.PI*2,
+                0,
+                Math.PI*.5
+            ),
+            makeMaterial(0x17120f)
+        );
+
+    hair.position.y=2.13;
+
+    npc.add(hair);
+
+
+    for(
+        const side of [-1,1]
+    ){
+
+        const leg =
+            new THREE.Mesh(
+                new THREE.BoxGeometry(
+                    .22,
+                    .8,
+                    .25
+                ),
+                pants
+            );
+
+        leg.position.set(
+            side*.18,
+            .2,
+            0
+        );
+
+        npc.add(leg);
+    }
+
+
+    parent.add(npc);
+}
+
+
+/* =========================================================
+   CREATE BUILDINGS
+========================================================= */
+
+businessData.forEach(
+    data=>{
+        createBusiness(data);
+    }
+);
+
+
+/* =========================================================
+   PLAYER
+========================================================= */
+
+const player =
+    new THREE.Group();
+
+player.position.set(
+    0,
+    0,
+    130
+);
+
+scene.add(player);
+
+
+const playerBody =
+    new THREE.Mesh(
+        new THREE.CapsuleGeometry(
+            .43,
+            1.05,
+            6,
+            10
+        ),
+        makeMaterial(
+            0x3c8cff,
+            {
+                roughness:.55,
+                metalness:.1
+            }
+        )
+    );
+
+playerBody.position.y=1;
+
+playerBody.castShadow=true;
+
+player.add(
+    playerBody
+);
+
+
+const playerHead =
+    new THREE.Mesh(
+        new THREE.SphereGeometry(
+            .38,
+            12,
+            10
+        ),
+        makeMaterial(0xd69b73)
+    );
+
+playerHead.position.y=2;
+
+playerHead.castShadow=true;
+
+player.add(
+    playerHead
+);
+
+
+/* =========================================================
+   CONTROLS
+========================================================= */
+
+const keys={};
+
+window.addEventListener(
+    "keydown",
+    function(e){
+
+        const key=
+            e.key.toLowerCase();
+
+        keys[key]=true;
+
+        if(key==="e"){
+
+            if(
+                e.shiftKey &&
+                insideBusiness
+            ){
+
+                exitBusiness();
+
+            }else{
+
+                interact();
+            }
+        }
+
+        if(key==="f"){
+            toggleVehicle();
+        }
+
+        if(key==="escape"){
+            closeBusiness();
+        }
+    }
+);
+
+
+window.addEventListener(
+    "keyup",
+    function(e){
+
+        keys[
+            e.key.toLowerCase()
+        ]=false;
+    }
+);
+
+
+/* =========================================================
+   MOUSE LOOK
+========================================================= */
+
+let yaw=0;
+let pitch=-.12;
+let mouseLooking=false;
+
+renderer.domElement.addEventListener(
+    "mousedown",
+    ()=>{
+        mouseLooking=true;
+    }
+);
+
+window.addEventListener(
+    "mouseup",
+    ()=>{
+        mouseLooking=false;
+    }
+);
+
+window.addEventListener(
+    "mousemove",
+    e=>{
+
+        if(!mouseLooking)
+            return;
+
+        yaw-=e.movementX*.0025;
+
+        pitch-=e.movementY*.0018;
+
+        pitch=
+            THREE.MathUtils.clamp(
+                pitch,
+                -.7,
+                .4
+            );
+    }
+);
+
+
+/* =========================================================
+   MONEY / JOB
+========================================================= */
+
+let playerMoney=1000;
+
+let currentJob=null;
+
+let jobProgress=0;
+
+
+/* =========================================================
+   CLIMATE VALUES
+========================================================= */
+
+let forest=72;
+let pollution=38;
+let warming=31;
+let seaLevel=24;
+
+
+/* =========================================================
+   HUD UPDATE
+========================================================= */
+
+function updateHUD(){
+
+    const moneyElement =
+        document.getElementById(
+            "moneyDisplay"
+        );
+
+    if(moneyElement){
+
+        moneyElement.innerText =
+            "💰 $" +
+            Math.floor(playerMoney);
+    }
+
+
+    const jobElement =
+        document.getElementById(
+            "jobDisplay"
+        );
+
+    if(jobElement){
+
+        jobElement.innerText =
+            "💼 Job: " +
+            (
+                currentJob
+                ? currentJob.name
+                : "Unemployed"
+            );
+    }
+
+
+    document.getElementById(
+        "forestBar"
+    ).style.width =
+        forest+"%";
+
+
+    document.getElementById(
+        "pollutionBar"
+    ).style.width =
+        pollution+"%";
+
+
+    document.getElementById(
+        "warmingBar"
+    ).style.width =
+        warming+"%";
+
+
+    document.getElementById(
+        "seaBar"
+    ).style.width =
+        seaLevel+"%";
+}
+
+updateHUD();
+
+
+/* =========================================================
+   BUSINESS DISTANCE
+========================================================= */
+
+function nearestBusiness(){
+
+    let best=null;
+
+    let bestDistance=Infinity;
+
+    for(
+        const business of businesses
+    ){
+
+        const dx=
+            player.position.x-
+            business.position.x;
+
+        const dz=
+            player.position.z-
+            business.position.z;
+
+        const distance=
+            Math.sqrt(
+                dx*dx+
+                dz*dz
+            );
+
+        if(
+            distance<bestDistance
+        ){
+
+            bestDistance=
+                distance;
+
+            best=business;
+        }
+    }
+
+    return {
+        business:best,
+        distance:bestDistance
+    };
+}
+
+
+/* =========================================================
+   ENTER BUILDING
+========================================================= */
+
+let insideBusiness=false;
+let activeBusiness=null;
+
+
+function enterBusiness(
+    business
+){
+
+    insideBusiness=true;
+
+    activeBusiness=
+        business;
+
+
+    /*
+       Put player inside the open front
+       entrance.
+    */
+
+    player.position.set(
+        business.position.x,
+        0,
+        business.position.z+
+        business.userData.data.d/2-
+        4
+    );
+
+
+    document.getElementById(
+        "location"
+    ).innerText =
+        business.userData.data.name;
+
+
+    document.getElementById(
+        "missionText"
+    ).innerHTML =
+        "🏢 You are inside the building."+
+        "<br><br>"+
+        "Explore the interior."+
+        "<br>"+
+        "Go to the terminal and press <b>E</b>."+
+        "<br><br>"+
+        "Press <b>SHIFT + E</b> to exit.";
+
+
+    notify(
+        "Entered "+
+        business.userData.data.name
+    );
+}
+
+
+/* =========================================================
+   EXIT BUILDING
+========================================================= */
+
+function exitBusiness(){
+
+    if(!activeBusiness)
+        return;
+
+
+    const data=
+        activeBusiness.userData.data;
+
+
+    player.position.set(
+        activeBusiness.position.x,
+        0,
+        activeBusiness.position.z+
+        data.d/2+
+        7
+    );
+
+
+    insideBusiness=false;
+
+    activeBusiness=null;
+
+
+    document.getElementById(
+        "location"
+    ).innerText=
+        "FUTURE CITY";
+
+
+    document.getElementById(
+        "missionText"
+    ).innerHTML =
+        "Explore the city and visit a business."+
+        "<br><br>"+
+        "Walk toward a building and press <b>E</b> to enter.";
+}
+
+
+/* =========================================================
+   INTERACT
+========================================================= */
+
+function interact(){
+
+    if(
+        insideBusiness &&
+        activeBusiness
+    ){
+
+        openBusiness(
+            activeBusiness
+        );
+
+        return;
+    }
+
+
+    if(driving){
+
+        return;
+    }
+
+
+    const near=
+        nearestBusiness();
+
+
+    if(
+        near.business &&
+        near.distance<
+        28
+    ){
+
+        enterBusiness(
+            near.business
+        );
+
+    }else{
+
+        notify(
+            "Find a business building"
+        );
+    }
+}
+
+
+/* =========================================================
+   BUSINESS WINDOW
+========================================================= */
+
+function openBusiness(
+    business
+){
+
+    const data=
+        business.userData.data;
+
+
+    document.getElementById(
+        "businessTitle"
+    ).innerText=
+        data.name;
+
+
+    document.getElementById(
+        "businessDescription"
+    ).innerText=
+        data.description;
+
+
+    document.getElementById(
+        "businessJob"
+    ).innerHTML=
+        "💼 Job: <b>"+
+        data.job+
+        "</b><br>"+
+        "💰 Salary: <b>$"+
+        data.salary+
+        "</b>";
+
+
+    const button=
+        document.getElementById(
+            "jobButton"
+        );
+
+
+    if(
+        currentJob &&
+        currentJob.business===
+        data.name
+    ){
+
+        button.innerText=
+            jobProgress>=100
+            ? "Complete Job"
+            : "Job In Progress";
+
+    }else{
+
+        button.innerText=
+            "Take Job";
+    }
+
+
+    button.onclick=
+        function(){
+
+            if(
+                currentJob &&
+                currentJob.business===
+                data.name
+            ){
+
+                if(
+                    jobProgress<100
+                ){
+
+                    notify(
+                        "Finish your job first"
+                    );
+
+                    return;
+                }
+
+
+                playerMoney+=
+                    data.salary;
+
+                currentJob=null;
+
+                jobProgress=0;
+
+                updateHUD();
+
+                notify(
+                    "Job complete! +$"+
+                    data.salary
+                );
+
+                closeBusiness();
+
+                return;
+            }
+
+
+            currentJob={
+                name:data.job,
+                business:data.name,
+                salary:data.salary
+            };
+
+
+            jobProgress=0;
+
+            updateHUD();
+
+            notify(
+                "Job accepted: "+
+                data.job
+            );
+
+            closeBusiness();
+        };
+
+
+    document.getElementById(
+        "businessPanel"
+    ).style.display=
+        "block";
+}
+
+
+/* =========================================================
+   CLOSE BUSINESS
+========================================================= */
+
+function closeBusiness(){
+
+    document.getElementById(
+        "businessPanel"
+    ).style.display=
+        "none";
+}
+
+
+/* =========================================================
+   JOB PROGRESS
+========================================================= */
+
+function updateJob(dt){
+
+    if(!currentJob)
+        return;
+
+
+    if(
+        jobProgress<100
+    ){
+
+        jobProgress+=
+            dt*3;
+
+        if(
+            jobProgress>100
+        ){
+            jobProgress=100;
+        }
+    }
+}
+
+
+/* =========================================================
+   CARS
+========================================================= */
+
+const cars=[];
+
+let driving=false;
+
+let currentCar=null;
+
+
+function createCar(
+    x,
+    z
+){
+
+    const car=
+        new THREE.Group();
+
+    car.position.set(
+        x,
+        .5,
+        z
+    );
+
+
+    const bodyMaterial=
+        makeMaterial(
+            Math.random()>.5
+            ? 0x236cff
+            : 0x1ec39b,
+            {
+                metalness:.7,
+                roughness:.22
+            }
+        );
+
+
+    /* body */
+
+    addCube(
+        car,
+        0,
+        .45,
+        0,
+        4,
+        .8,
+        7,
+        bodyMaterial
+    );
+
+
+    /* roof */
+
+    addCube(
+        car,
+        0,
+        1.05,
+        -.25,
+        3,
+        .7,
+        3.2,
+        makeMaterial(
+            0x07141f,
+            {
+                metalness:.55,
+                roughness:.08
+            }
+        )
+    );
+
+
+    /* lights */
+
+    const headlightMaterial=
+        new THREE.MeshBasicMaterial({
+            color:0xffffff
+        });
+
+
+    addCube(
+        car,
+        -1.35,
+        .65,
+        -3.55,
+        .55,
+        .3,
+        .08,
+        headlightMaterial,
+        false
+    );
+
+    addCube(
+        car,
+        1.35,
+        .65,
+        -3.55,
+        .55,
+        .3,
+        .08,
+        headlightMaterial,
+        false
+    );
+
+
+    /* wheels */
+
+    const wheelMaterial=
+        makeMaterial(
+            0x050608,
+            {
+                roughness:.95
+            }
+        );
+
+
+    for(
+        const side of [-1,1]
+    ){
+
+        for(
+            const frontBack of [-2.3,2.3]
+        ){
+
+            const wheel=
+                new THREE.Mesh(
+                    new THREE.CylinderGeometry(
+                        .58,
+                        .58,
+                        .42,
+                        16
+                    ),
+                    wheelMaterial
+                );
+
+            wheel.rotation.z=
+                Math.PI/2;
+
+            wheel.position.set(
+                side*1.7,
+                0,
+                frontBack
+            );
+
+            wheel.castShadow=true;
+
+            car.add(wheel);
+        }
+    }
+
+
+    scene.add(car);
+
+    cars.push(car);
+}
+
+
+for(
+    let i=0;
+    i<14;
+    i++
+){
+
+    createCar(
+        (Math.random()-.5)*650,
+        (Math.random()-.5)*650
+    );
+}
+
+
+/* =========================================================
+   NEAREST CAR
+========================================================= */
+
+function nearestCar(){
+
+    let best=null;
+
+    let distance=Infinity;
+
+
+    for(
+        const car of cars
+    ){
+
+        const d=
+            player.position.distanceTo(
+                car.position
+            );
+
+        if(
+            d<distance
+        ){
+
+            distance=d;
+            best=car;
+        }
+    }
+
+
+    return {
+        car:best,
+        distance
+    };
+}
+
+
+/* =========================================================
+   ENTER / EXIT CAR
+========================================================= */
+
+function toggleVehicle(){
+
+    if(
+        driving &&
+        currentCar
+    ){
+
+        driving=false;
+
+        player.visible=true;
+
+        player.position.copy(
+            currentCar.position
+        );
+
+        player.position.x+=4;
+
+        currentCar=null;
+
+        notify(
+            "Exited vehicle"
+        );
+
+        return;
+    }
+
+
+    const near=
+        nearestCar();
+
+
+    if(
+        near.car &&
+        near.distance<8
+    ){
+
+        currentCar=
+            near.car;
+
+        driving=true;
+
+        player.visible=false;
+
+        notify(
+            "Vehicle ready • WASD drive"
+        );
+
+    }else{
+
+        notify(
+            "No vehicle nearby"
+        );
+    }
+}
+
+
+/* =========================================================
+   PLAYER MOVEMENT
+========================================================= */
+
+function updatePlayer(dt){
+
+    if(
+        insideBusiness &&
+        activeBusiness
+    ){
+
+        const data=
+            activeBusiness.userData.data;
+
+
+        if(!driving){
+
+            const speed=
+                keys["shift"]
+                ? 13
+                : 7;
+
+
+            const forward=
+                new THREE.Vector3(
+                    Math.sin(yaw),
+                    0,
+                    Math.cos(yaw)
+                );
+
+
+            const right=
+                new THREE.Vector3(
+                    Math.cos(yaw),
+                    0,
+                    -Math.sin(yaw)
+                );
+
+
+            if(keys["w"]){
+
+                player.position.addScaledVector(
+                    forward,
+                    -speed*dt
+                );
+            }
+
+
+            if(keys["s"]){
+
+                player.position.addScaledVector(
+                    forward,
+                    speed*dt
+                );
+            }
+
+
+            if(keys["a"]){
+
+                player.position.addScaledVector(
+                    right,
+                    -speed*dt
+                );
+            }
+
+
+            if(keys["d"]){
+
+                player.position.addScaledVector(
+                    right,
+                    speed*dt
+                );
+            }
+
+
+            /* keep player inside */
+
+            player.position.x=
+                THREE.MathUtils.clamp(
+                    player.position.x,
+                    activeBusiness.position.x-
+                    data.w/2+1.2,
+                    activeBusiness.position.x+
+                    data.w/2-1.2
+                );
+
+
+            player.position.z=
+                THREE.MathUtils.clamp(
+                    player.position.z,
+                    activeBusiness.position.z-
+                    data.d/2+1.2,
+                    activeBusiness.position.z+
+                    data.d/2-1.2
+                );
+        }
+
+
+        return;
+    }
+
+
+    if(driving){
+
+        if(!currentCar)
+            return;
+
+
+        const speed=
+            keys["shift"]
+            ? 38
+            : 22;
+
+
+        if(keys["w"]){
+
+            currentCar.translateZ(
+                -speed*dt
+            );
+        }
+
+
+        if(keys["s"]){
+
+            currentCar.translateZ(
+                speed*.55*dt
+            );
+        }
+
+
+        if(keys["a"]){
+
+            currentCar.rotation.y+=
+                1.5*dt;
+        }
+
+
+        if(keys["d"]){
+
+            currentCar.rotation.y-=
+                1.5*dt;
+        }
+
+
+        return;
+    }
+
+
+    const speed=
+        keys["shift"]
+        ? 14
+        : 7;
+
+
+    const forward=
+        new THREE.Vector3(
+            Math.sin(yaw),
+            0,
+            Math.cos(yaw)
+        );
+
+
+    const right=
+        new THREE.Vector3(
+            Math.cos(yaw),
+            0,
+            -Math.sin(yaw)
+        );
+
+
+    if(keys["w"]){
+
+        player.position.addScaledVector(
+            forward,
+            -speed*dt
+        );
+    }
+
+
+    if(keys["s"]){
+
+        player.position.addScaledVector(
+            forward,
+            speed*dt
+        );
+    }
+
+
+    if(keys["a"]){
+
+        player.position.addScaledVector(
+            right,
+            -speed*dt
+        );
+    }
+
+
+    if(keys["d"]){
+
+        player.position.addScaledVector(
+            right,
+            speed*dt
+        );
+    }
+
+
+    player.rotation.y=yaw;
+}
+
+
+/* =========================================================
+   CAMERA
+========================================================= */
+
+function updateCamera(){
+
+    if(
+        driving &&
+        currentCar
+    ){
+
+        const target=
+            currentCar.position.clone();
+
+        target.y+=1.8;
+
+
+        const desired=
+            new THREE.Vector3(
+                currentCar.position.x+
+                Math.sin(yaw)*10,
+
+                currentCar.position.y+6,
+
+                currentCar.position.z+
+                Math.cos(yaw)*10
+            );
+
+
+        camera.position.lerp(
+            desired,
+            .08
+        );
+
+
+        camera.lookAt(
+            target
+        );
+
+        return;
+    }
+
+
+    const target=
+        player.position.clone();
+
+    target.y+=1.6;
+
+
+    const distance=
+        insideBusiness
+        ? 5.5
+        : 8;
+
+
+    const desired=
+        new THREE.Vector3(
+
+            target.x+
+            Math.sin(yaw)*distance,
+
+            target.y+
+            3.1,
+
+            target.z+
+            Math.cos(yaw)*distance
+        );
+
+
+    camera.position.lerp(
+        desired,
+        .08
+    );
+
+
+    camera.lookAt(
+        target
+    );
+}
+
+
+/* =========================================================
+   INTERACTION UI
+========================================================= */
+
+function updateInteraction(){
+
+    const box=
+        document.getElementById(
+            "interaction"
+        );
+
+
+    if(
+        document.getElementById(
+            "businessPanel"
+        ).style.display==="block"
+    ){
+
+        box.style.display="none";
+
+        return;
+    }
+
+
+    if(
+        insideBusiness
+    ){
+
+        box.style.display=
+            "block";
+
+        box.innerHTML=
+            "🏢 <b>E</b> Use Business Terminal"+
+            " &nbsp; • &nbsp; "+
+            "<b>SHIFT + E</b> Exit";
+
+        return;
+    }
+
+
+    if(driving){
+
+        box.style.display=
+            "block";
+
+        box.innerHTML=
+            "🚗 <b>F</b> Exit Vehicle";
+
+        return;
+    }
+
+
+    const near=
+        nearestBusiness();
+
+
+    if(
+        near.business &&
+        near.distance<28
+    ){
+
+        box.style.display=
+            "block";
+
+        box.innerHTML=
+            "🏢 <b>"+
+            near.business.userData.data.name+
+            "</b> • Press <b>E</b> to Enter";
+
+    }else{
+
+        const car=
+            nearestCar();
+
+
+        if(
+            car.car &&
+            car.distance<8
+        ){
+
+            box.style.display=
+                "block";
+
+            box.innerHTML=
+                "🚗 Press <b>F</b> to Drive";
+
+        }else{
+
+            box.style.display=
+                "none";
+        }
+    }
+}
+
+
+/* =========================================================
+   NOTIFICATION
+========================================================= */
+
+function notify(text){
+
+    const notification=
+        document.createElement("div");
+
+
+    notification.innerText=text;
+
+
+    Object.assign(
+        notification.style,
+        {
+            position:"fixed",
+            left:"50%",
+            top:"43%",
+            transform:
+                "translate(-50%,-50%)",
+            padding:"14px 24px",
+            background:
+                "rgba(3,12,20,.96)",
+            border:
+                "1px solid #5ceaff",
+            borderRadius:"14px",
+            color:"white",
+            zIndex:"500",
+            fontWeight:"bold",
+            boxShadow:
+                "0 0 40px rgba(0,220,255,.25)"
+        }
+    );
+
+
+    document.body.appendChild(
+        notification
+    );
+
+
+    setTimeout(
+        ()=>{
+            notification.remove();
+        },
+        1800
+    );
+}
+
+
+/* =========================================================
+   MAP
+========================================================= */
+
+const mapCanvas=
+    document.getElementById(
+        "map"
+    );
+
+const mapCtx=
+    mapCanvas.getContext("2d");
+
+
+const hotspots=[
+
+    {
+        x:120,
+        z:40,
+        pollution:90
+    },
+
+    {
+        x:-120,
+        z:40,
+        pollution:72
+    },
+
+    {
+        x:40,
+        z:-40,
+        pollution:48
+    },
+
+    {
+        x:-40,
+        z:-40,
+        pollution:35
+    },
+
+    {
+        x:300,
+        z:260,
+        pollution:88
+    },
+
+    {
+        x:-320,
+        z:-230,
+        pollution:65
+    }
+
+];
+
+
+function drawMap(){
+
+    mapCtx.clearRect(
+        0,
+        0,
+        200,
+        145
+    );
+
+
+    mapCtx.fillStyle="#07121c";
+
+    mapCtx.fillRect(
+        0,
+        0,
+        200,
+        145
+    );
+
+
+    /* grid */
+
+    mapCtx.strokeStyle="#1c3441";
+
+    mapCtx.lineWidth=1;
+
+
+    for(
+        let x=0;
+        x<=200;
+        x+=20
+    ){
+
+        mapCtx.beginPath();
+
+        mapCtx.moveTo(
+            x,
+            0
+        );
+
+        mapCtx.lineTo(
+            x,
+            145
+        );
+
+        mapCtx.stroke();
+    }
+
+
+    for(
+        let y=0;
+        y<=145;
+        y+=20
+    ){
+
+        mapCtx.beginPath();
+
+        mapCtx.moveTo(
+            0,
+            y
+        );
+
+        mapCtx.lineTo(
+            200,
+            y
+        );
+
+        mapCtx.stroke();
+    }
+
+
+    /* pollution hotspots */
+
+    hotspots.forEach(
+        h=>{
+
+            const px=
+                100+
+                (
+                    h.x-
+                    player.position.x
+                )*.11;
+
+
+            const py=
+                72+
+                (
+                    h.z-
+                    player.position.z
+                )*.11;
+
+
+            if(
+                px<0 ||
+                px>200 ||
+                py<0 ||
+                py>145
+            ){
+                return;
+            }
+
+
+            const radius=
+                4+
+                h.pollution*.055;
+
+
+            mapCtx.beginPath();
+
+            mapCtx.arc(
+                px,
+                py,
+                radius,
+                0,
+                Math.PI*2
+            );
+
+
+            mapCtx.fillStyle=
+                `rgba(255,60,60,${
+                    .16+
+                    h.pollution/180
+                })`;
+
+            mapCtx.fill();
+
+
+            mapCtx.beginPath();
+
+            mapCtx.arc(
+                px,
+                py,
+                3,
+                0,
+                Math.PI*2
+            );
+
+            mapCtx.fillStyle=
+                "#ff5353";
+
+            mapCtx.fill();
+        }
+    );
+
+
+    /* player */
+
+    mapCtx.beginPath();
+
+    mapCtx.arc(
+        100,
+        72,
+        4,
+        0,
+        Math.PI*2
+    );
+
+    mapCtx.fillStyle=
+        "#63eaff";
+
+    mapCtx.fill();
+
+
+    mapCtx.font=
+        "bold 10px Arial";
+
+    mapCtx.fillStyle=
+        "#c7f6ff";
+
+    mapCtx.fillText(
+        "POLLUTION MAP",
+        8,
+        13
+    );
+}
+
+
+/* =========================================================
+   WEATHER
+========================================================= */
+
+let weather="Clear";
+
+let rainParticles=null;
+
+
+function createRain(){
+
+    const geometry=
+        new THREE.BufferGeometry();
+
+
+    const positions=[];
+
+
+    for(
+        let i=0;
+        i<3000;
+        i++
+    ){
+
+        positions.push(
+            (Math.random()-.5)*700,
+            Math.random()*150,
+            (Math.random()-.5)*700
+        );
+    }
+
+
+    geometry.setAttribute(
+        "position",
+        new THREE.Float32BufferAttribute(
+            positions,
+            3
+        )
+    );
+
+
+    rainParticles=
+        new THREE.Points(
+            geometry,
+            new THREE.PointsMaterial({
+                color:0x79cfff,
+                size:.23,
+                transparent:true,
+                opacity:.7
+            })
+        );
+
+
+    scene.add(
+        rainParticles
+    );
+}
+
+
+function setWeather(type){
+
+    weather=type;
+
+
+    document.getElementById(
+        "weather"
+    ).innerText=
+        type==="Rain"
+        ? "🌧️ Rain"
+        : type==="Storm"
+        ? "⛈️ Storm"
+        : "☀️ Clear";
+
+
+    if(
+        type==="Rain" ||
+        type==="Storm"
+    ){
+
+        if(!rainParticles)
+            createRain();
+
+        rainParticles.visible=true;
+
+    }else{
+
+        if(rainParticles)
+            rainParticles.visible=false;
+    }
+}
+
+
+/* =========================================================
+   CITY LIGHTS
+========================================================= */
+
+const cityLights=[];
+
+
+for(
+    let x=-700;
+    x<=700;
+    x+=100
+){
+
+    for(
+        let z=-700;
+        z<=700;
+        z+=100
+    ){
+
+        const light=
+            new THREE.PointLight(
+                0x55dfff,
+                .55,
+                25
+            );
+
+
+        light.position.set(
+            x,
+            5,
+            z
+        );
+
+
+        scene.add(
+            light
+        );
+
+
+        cityLights.push(
+            light
+        );
+    }
+}
+
+
+/* =========================================================
+   DAY NIGHT
+========================================================= */
+
+let dayTime=0;
+
+
+function updateDayNight(dt){
+
+    dayTime+=dt*.025;
+
+
+    const day=
+        (
+            Math.sin(dayTime)+1
+        )/2;
+
+
+    sun.intensity=
+        .4+
+        day*1.9;
+
+
+    hemisphere.intensity=
+        .45+
+        day*1.2;
+
+
+    for(
+        const light of cityLights
+    ){
+
+        light.intensity=
+            day<.45
+            ? 1.7
+            : .4;
+    }
+}
+
+
+/* =========================================================
+   MAIN GAME LOOP
+========================================================= */
+
+const clock=
+    new THREE.Clock();
+
+
+function animate(){
+
+    requestAnimationFrame(
+        animate
+    );
+
+
+    const dt=
+        Math.min(
+            clock.getDelta(),
+            .05
+        );
+
+
+    updatePlayer(dt);
+
+    updateCamera();
+
+    updateInteraction();
+
+    updateJob(dt);
+
+    updateDayNight(dt);
+
+    drawMap();
+
+
+    /* rain */
+
+    if(rainParticles){
+
+        const positions=
+            rainParticles.geometry
+            .attributes
+            .position
+            .array;
+
+
+        for(
+            let i=1;
+            i<positions.length;
+            i+=3
+        ){
+
+            positions[i]-=
+                45*dt;
+
+
+            if(
+                positions[i]<0
+            ){
+
+                positions[i]=150;
+            }
+        }
+
+
+        rainParticles.geometry
+            .attributes
+            .position
+            .needsUpdate=true;
+    }
+
+
+    renderer.render(
+        scene,
+        camera
+    );
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+updateHUD();
+
+setWeather(
+    "Clear"
+);
+
+setTimeout(
+    ()=>{
+        notify(
+            "Welcome to Climate City 🌍"
+        );
+    },
+    800
+);
+
+animate();
+
+
+/* =========================================================
+   RESIZE
+========================================================= */
+
+window.addEventListener(
+    "resize",
+    function(){
+
+        camera.aspect=
+            window.innerWidth /
+            window.innerHeight;
+
+        camera.updateProjectionMatrix();
+
+
+        renderer.setSize(
+            window.innerWidth,
+            window.innerHeight
+        );
+
+        renderer.setPixelRatio(
+            Math.min(
+                window.devicePixelRatio || 1,
+                2
+            )
+        );
+    }
+);
+
+
+/* =========================================================
+   RANDOM WEATHER
+========================================================= */
+
+setInterval(
+    ()=>{
+        const r=Math.random();
+
+        if(r<.18){
+
+            setWeather("Storm");
+
+        }else if(r<.45){
+
+            setWeather("Rain");
+
+        }else{
+
+            setWeather("Clear");
+        }
+
+    },
+    45000
+);
+
+</script>
+
+</body>
+</html>

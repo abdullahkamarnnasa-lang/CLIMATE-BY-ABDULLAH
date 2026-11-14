@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Climate Pollution Dashboard</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#071411;
+    color:white;
+}
+
+.pollution-section{
+    width:100%;
+    padding:70px 7%;
+    background:
+        radial-gradient(circle at 20% 10%, #123d31 0%, transparent 35%),
+        radial-gradient(circle at 90% 80%, #15352d 0%, transparent 35%),
+        #071411;
+}
+
+.badge{
+    display:inline-block;
+    padding:8px 16px;
+    border-radius:30px;
+    background:#123e32;
+    color:#4ff0b2;
+    font-size:13px;
+    font-weight:bold;
+    letter-spacing:1px;
+    margin-bottom:18px;
+}
+
+.main-title{
+    font-size:clamp(35px,5vw,68px);
+    line-height:1.05;
+    margin-bottom:18px;
+}
+
+.main-title span{
+    color:#43e6a4;
+}
+
+.intro{
+    max-width:850px;
+    color:#b9c9c4;
+    font-size:18px;
+    line-height:1.7;
+    margin-bottom:45px;
+}
+
+/* CARDS */
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+    margin-bottom:50px;
+}
+
+.stat-card{
+    padding:25px;
+    border:1px solid #21473b;
+    border-radius:20px;
+    background:rgba(15,39,32,.75);
+    transition:.3s;
+}
+
+.stat-card:hover{
+    transform:translateY(-7px);
+    border-color:#43e6a4;
+    box-shadow:0 15px 40px rgba(0,0,0,.3);
+}
+
+.stat-number{
+    font-size:32px;
+    font-weight:bold;
+    color:#43e6a4;
+    margin-bottom:8px;
+}
+
+.stat-label{
+    color:#aabbb5;
+    line-height:1.5;
+}
+
+/* DASHBOARD */
+
+.dashboard{
+    display:grid;
+    grid-template-columns:1.1fr .9fr;
+    gap:25px;
+    margin-bottom:50px;
+}
+
+.panel{
+    background:#0c211b;
+    border:1px solid #1c4035;
+    border-radius:24px;
+    padding:30px;
+    overflow:hidden;
+}
+
+.panel h2{
+    font-size:26px;
+    margin-bottom:10px;
+}
+
+.panel p{
+    color:#9fb1aa;
+    line-height:1.6;
+    margin-bottom:25px;
+}
+
+/* BAR GRAPH */
+
+.chart{
+    display:flex;
+    align-items:flex-end;
+    gap:18px;
+    height:290px;
+    padding:20px 5px 0;
+    border-bottom:1px solid #34544a;
+}
+
+.bar-box{
+    flex:1;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    align-items:center;
+}
+
+.bar{
+    width:70%;
+    max-width:55px;
+    border-radius:9px 9px 0 0;
+    background:linear-gradient(to top,#19a978,#57f2b5);
+    box-shadow:0 0 20px rgba(67,230,164,.18);
+    animation:grow 1.2s ease forwards;
+    transform-origin:bottom;
+}
+
+@keyframes grow{
+    from{transform:scaleY(0);}
+    to{transform:scaleY(1);}
+}
+
+.bar-value{
+    font-size:12px;
+    color:#d9eee8;
+    margin-bottom:6px;
+}
+
+.bar-year{
+    font-size:12px;
+    color:#839891;
+    margin-top:9px;
+}
+
+/* DONUT */
+
+.donut-wrap{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:290px;
+}
+
+.donut{
+    width:220px;
+    height:220px;
+    border-radius:50%;
+    background:
+        conic-gradient(
+            #43e6a4 0 60%,
+            #238b68 60% 93%,
+            #31544a 93% 100%
+        );
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.donut::after{
+    content:"ROAD";
+    width:145px;
+    height:145px;
+    border-radius:50%;
+    background:#0c211b;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
+    font-weight:bold;
+    color:#43e6a4;
+}
+
+/* TOP COMPANIES */
+
+.company-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    margin-bottom:25px;
+}
+
+.search{
+    width:250px;
+    padding:13px 16px;
+    border-radius:12px;
+    border:1px solid #31584c;
+    background:#081812;
+    color:white;
+    outline:none;
+}
+
+.search:focus{
+    border-color:#43e6a4;
+}
+
+.table-container{
+    overflow-x:auto;
+    border-radius:16px;
+    border:1px solid #1d4035;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:800px;
+}
+
+th{
+    background:#112d25;
+    color:#6df0ba;
+    text-align:left;
+    padding:17px;
+    font-size:13px;
+}
+
+td{
+    padding:16px;
+    border-top:1px solid #19362e;
+    color:#c5d4cf;
+}
+
+tr:hover td{
+    background:#102a22;
+}
+
+.rank{
+    font-weight:bold;
+    color:#43e6a4;
+}
+
+.emission{
+    font-weight:bold;
+    color:#fff;
+}
+
+.progress{
+    width:130px;
+    height:7px;
+    background:#1a342d;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.progress span{
+    display:block;
+    height:100%;
+    background:#43e6a4;
+    border-radius:20px;
+}
+
+/* INFO */
+
+.info-box{
+    margin-top:30px;
+    padding:25px;
+    border-radius:18px;
+    background:#102a22;
+    border-left:4px solid #43e6a4;
+}
+
+.info-box h3{
+    margin-bottom:10px;
+}
+
+.info-box p{
+    color:#aebfb9;
+    line-height:1.7;
+    margin:0;
+}
+
+.source{
+    margin-top:25px;
+    font-size:13px;
+    color:#758982;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1000px){
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .dashboard{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:600px){
+    .pollution-section{
+        padding:50px 5%;
+    }
+
+    .stats{
+        grid-template-columns:1fr;
+    }
+
+    .company-header{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .search{
+        width:100%;
+    }
+
+    .chart{
+        gap:7px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<section class="pollution-section">
+
+    <div class="badge">GLOBAL CLIMATE DATA</div>
+
+    <h1 class="main-title">
+        The World’s <span>Pollution</span> Dashboard
+    </h1>
+
+    <p class="intro">
+        How much pollution comes from road transport?
+        Which major industrial producers are linked to the largest
+        carbon emissions? Explore the data below.
+    </p>
+
+
+    <!-- STAT CARDS -->
+
+    <div class="stats">
+
+        <div class="stat-card">
+            <div class="stat-number">6+ Gt</div>
+            <div class="stat-label">
+                CO₂ emitted by road transport in 2024
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-number">60%+</div>
+            <div class="stat-label">
+                Of road emissions came from passenger cars and vans
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-number">34.7 Gt</div>
+            <div class="stat-label">
+                2024 emissions attributed to active Carbon Majors entities
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-number">166</div>
+            <div class="stat-label">
+                Active entities tracked in the 2024 Carbon Majors dataset
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- GRAPHS -->
+
+    <div class="dashboard">
+
+        <div class="panel">
+
+            <h2>Road Transport CO₂</h2>
+
+            <p>
+                Road-sector emissions were just over 6 Gt CO₂ in 2024.
+                The sector was about 8% higher than in 2015.
+            </p>
+
+            <div class="chart">
+
+                <div class="bar-box">
+                    <div class="bar-value">5.6</div>
+                    <div class="bar" style="height:88%;"></div>
+                    <div class="bar-year">2015</div>
+                </div>
+
+                <div class="bar-box">
+                    <div class="bar-value">5.8</div>
+                    <div class="bar" style="height:91%;"></div>
+                    <div class="bar-year">2017</div>
+                </div>
+
+                <div class="bar-box">
+                    <div class="bar-value">5.9</div>
+                    <div class="bar" style="height:93%;"></div>
+                    <div class="bar-year">2019</div>
+                </div>
+
+                <div class="bar-box">
+                    <div class="bar-value">5.4</div>
+                    <div class="bar" style="height:85%;"></div>
+                    <div class="bar-year">2021</div>
+                </div>
+
+                <div class="bar-box">
+                    <div class="bar-value">6.0+</div>
+                    <div class="bar" style="height:100%;"></div>
+                    <div class="bar-year">2024</div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="panel">
+
+            <h2>Where Road Emissions Come From</h2>
+
+            <p>
+                Passenger cars and vans make up more than 60% of road
+                transport emissions. Trucks contribute about one-third.
+            </p>
+
+            <div class="donut-wrap">
+                <div class="donut"></div>
+            </div>
+
+            <div class="info-box">
+                <h3>🚗 Passenger cars & vans</h3>
+                <p>
+                    More than 60% of road-sector emissions.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- TOP EMITTERS -->
+
+    <div class="panel">
+
+        <div class="company-header">
+
+            <div>
+                <h2>Top Carbon-Emitting Entities</h2>
+                <p style="margin-bottom:0;">
+                    2024 Carbon Majors data — ranked by attributed total emissions.
+                </p>
+            </div>
+
+            <input
+                type="text"
+                id="companySearch"
+                class="search"
+                placeholder="Search company..."
+                onkeyup="searchCompanies()"
+            >
+
+        </div>
+
+
+        <div class="table-container">
+
+            <table id="companyTable">
+
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Entity</th>
+                        <th>Emissions</th>
+                        <th>Share of global CO₂</th>
+                        <th>Relative scale</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td class="rank">01</td>
+                        <td>Saudi Aramco</td>
+                        <td class="emission">1,786 MtCO₂e</td>
+                        <td>4.28%</td>
+                        <td>
+                            <div class="progress">
+                                <span style="width:100%"></span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">02</td>
+                        <td>Coal India</td>
+                        <td class="emission">1,684 MtCO₂e</td>
+                        <td>3.92%</td>
+                        <td>
+                            <div class="progress">
+                                <span style="width:94%"></span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">03</td>
+                        <td>CHN Energy</td>
+                        <td class="emission">1,679 MtCO₂e</td>
+                        <td>3.91%</td>
+                        <td>
+                            <div class="progress">
+                                <span style="width:94%"></span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">04</td>
+                        <td>National Iranian Oil Company</td>
+                        <td class="emission">1,387 MtCO₂e</td>
+                        <td>3.13%</td>
+                        <td>
+                            <div class="progress">
+                                <span style="width:78%"></span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">05</td>
+                        <td>Gazprom</td>
+                        <td class="emission">1,293 MtCO₂e</td>
+                        <td>2.76%</td>
+                        <td>
+                            <div class="progress">
+                                <span style="width:72%"></span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">06</td>
+                        <td>Jinneng Group</td>
+                        <td class="emission">1,129 MtCO₂e</td>
+                        <td>2.63%</td>
+                        <td>
+                            <div class="progress">
+                                <span style="width:63%"></span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">07</td>
+                        <td>China — Cement</td>
+                        <td class="emission">950 MtCO₂e</td>
+                        <td>2.46%</td>
+                        <td>
+                            <div class="progress">
+                                <span style="width:53%"></span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">08</td>
+                        <td>Rosneft</td>
+                        <td class="emission">763 MtCO₂e</td>
+                        <td>1.79%</td>
+                        <td>
+                            <div class="progress">
+                                <span style="width:43%"></span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">09</td>
+                        <td>CNPC</td>
+                        <td class="emission">750 MtCO₂e</td>
+                        <td>1.70%</td>
+                        <td>
+                            <div class="progress">
+                                <span style="width:42%"></span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">10</td>
+                        <td>Shandong Energy</td>
+                        <td class="emission">750 MtCO₂e</td>
+                        <td>1.74%</td>
+                        <td>
+                            <div class="progress">
+                                <span style="width:42%"></span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">11</td>
+                        <td>China National Coal Group</td>
+                        <td class="emission">732 MtCO₂e</td>
+                        <td>1.70%</td>
+                        <td>
+                            <div class="progress">
+                                <span style="width:41%"></span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">12</td>
+                        <td>Shaanxi Coal & Chemical Industry Group</td>
+                        <td class="emission">694 MtCO₂e</td>
+                        <td>1.62%</td>
+                        <td>
+                            <div class="progress">
+                                <span style="width:39%"></span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">13</td>
+                        <td>ExxonMobil</td>
+                        <td class="emission">677 MtCO₂e</td>
+                        <td>1.58%</td>
+                        <td>
+                            <div class="progress">
+                                <span style="width:38%"></span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">14</td>
+                        <td>ADNOC</td>
+                        <td class="emission">622 MtCO₂e</td>
+                        <td>1.46%</td>
+                        <td>
+                            <div class="progress">
+                                <span style="width:35%"></span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">15</td>
+                        <td>Chevron</td>
+                        <td class="emission">577 MtCO₂e</td>
+                        <td>1.33%</td>
+                        <td>
+                            <div class="progress">
+                                <span style="width:32%"></span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">16</td>
+                        <td>Sonatrach</td>
+                        <td class="emission">576 MtCO₂e</td>
+                        <td>1.26%</td>
+                        <td>
+                            <div class="progress">
+                                <span style="width:32%"></span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">17</td>
+                        <td>Iraq National Oil Company</td>
+                        <td class="emission">549 MtCO₂e</td>
+                        <td>1.34%</td>
+                        <td>
+                            <div class="progress">
+                                <span style="width:31%"></span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">18</td>
+                        <td>Shanxi Coking Coal Group</td>
+                        <td class="emission">540 MtCO₂e</td>
+                        <td>1.26%</td>
+                        <td>
+                            <div class="progress">
+                                <span style="width:30%"></span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">19</td>
+                        <td>QatarEnergy</td>
+                        <td class="emission">446 MtCO₂e</td>
+                        <td>0.96%</td>
+                        <td>
+                            <div class="progress">
+                                <span style="width:25%"></span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="rank">20</td>
+                        <td>Shell</td>
+                        <td class="emission">426 MtCO₂e</td>
+                        <td>0.97%</td>
+                        <td>
+                            <div class="progress">
+                                <span style="width:24%"></span>
+                            </div>
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <div class="info-box">
+
+            <h3>⚠️ What does this ranking actually mean?</h3>
+
+            <p>
+                These figures are not simply the pollution produced inside
+                a company's buildings. Carbon Majors attributes emissions
+                connected with fossil-fuel and cement production, including
+                emissions from the combustion of marketed products under its
+                methodology. Therefore this ranking should be described as
+                an emissions-attribution dataset, not a simple factory
+                pollution ranking.
+            </p>
+
+        </div>
+
+        <div class="source">
+            Data reference: Carbon Majors 2024 Data Update.
+            Road transport reference: International Energy Agency,
+            Breakthrough Agenda Report 2025.
+        </div>
+
+    </div>
+
+</section>
+
+
+<script>
+
+function searchCompanies(){
+
+    let input =
+        document.getElementById("companySearch")
+        .value
+        .toLowerCase();
+
+    let rows =
+        document.querySelectorAll("#companyTable tbody tr");
+
+    rows.forEach(function(row){
+
+        let company =
+            row.cells[1].textContent.toLowerCase();
+
+        if(company.includes(input)){
+            row.style.display = "";
+        }
+        else{
+            row.style.display = "none";
+        }
+
+    });
+
+}
+
+</script>
+
+</body>
+</html>

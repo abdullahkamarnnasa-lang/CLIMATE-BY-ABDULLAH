@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Neptune | Planet Explorer</title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #020817;
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        .navbar {
+            background: rgba(1, 8, 25, 0.9);
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar-brand {
+            color: #6fa8ff !important;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .nav-link {
+            color: white !important;
+            transition: 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #71a9ff !important;
+        }
+
+        /* ================= STARS ================= */
+
+        .stars,
+        .stars2,
+        .stars3 {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .stars {
+            background-image:
+                radial-gradient(white 1px, transparent 1px);
+            background-size: 75px 75px;
+            opacity: 0.35;
+            animation: starsMove 35s linear infinite;
+        }
+
+        .stars2 {
+            background-image:
+                radial-gradient(#6fa8ff 1px, transparent 1px);
+            background-size: 120px 120px;
+            opacity: 0.2;
+            animation: starsMove 50s linear infinite reverse;
+        }
+
+        .stars3 {
+            background-image:
+                radial-gradient(white 1px, transparent 1px);
+            background-size: 180px 180px;
+            opacity: 0.25;
+        }
+
+        @keyframes starsMove {
+
+            from {
+                transform: translateY(0);
+            }
+
+            to {
+                transform: translateY(160px);
+            }
+        }
+
+        /* ================= HERO ================= */
+
+        .hero {
+            min-height: 100vh;
+            padding-top: 80px;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-title {
+            font-size: clamp(48px, 8vw, 95px);
+            font-weight: 800;
+            color: #72a9ff;
+            text-shadow:
+                0 0 20px rgba(70, 130, 255, 0.8),
+                0 0 50px rgba(40, 100, 255, 0.4);
+        }
+
+        .hero-text {
+            color: #c7d8f4;
+            font-size: 20px;
+            line-height: 1.8;
+        }
+
+        /* ================= NEPTUNE VISUAL ================= */
+
+        .planet-area {
+            height: 520px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .neptune {
+            width: 340px;
+            height: 340px;
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle at 35% 28%,
+                    #8db8ff 0%,
+                    #4f8cff 22%,
+                    #2460d8 50%,
+                    #123996 78%,
+                    #081b5a 100%
+                );
+
+            box-shadow:
+                0 0 35px #4d8dff,
+                0 0 80px rgba(57, 117, 255, 0.55),
+                inset -40px -30px 55px rgba(0, 0, 50, 0.5);
+
+            position: relative;
+            overflow: hidden;
+
+            animation:
+                neptuneFloat 5s ease-in-out infinite,
+                neptuneRotate 22s linear infinite;
+        }
+
+        /* Planet cloud bands */
+
+        .neptune::before {
+            content: "";
+            position: absolute;
+            width: 115%;
+            height: 28px;
+            top: 105px;
+            left: -8%;
+            border-radius: 50%;
+            background: rgba(190, 220, 255, 0.18);
+            box-shadow:
+                0 50px rgba(160, 200, 255, 0.12),
+                0 105px rgba(180, 215, 255, 0.15),
+                0 155px rgba(130, 175, 255, 0.10);
+            transform: rotate(-8deg);
+        }
+
+        /* Great Dark Spot style feature */
+
+        .neptune::after {
+            content: "";
+            position: absolute;
+            width: 95px;
+            height: 55px;
+            right: 55px;
+            top: 145px;
+            border-radius: 50%;
+            background: rgba(5, 20, 75, 0.75);
+            box-shadow: 0 0 15px rgba(130, 175, 255, 0.2);
+            transform: rotate(-12deg);
+        }
+
+        @keyframes neptuneFloat {
+
+            0%, 100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-18px);
+            }
+        }
+
+        @keyframes neptuneRotate {
+
+            from {
+                filter: brightness(1);
+            }
+
+            50% {
+                filter: brightness(1.08);
+            }
+
+            to {
+                filter: brightness(1);
+            }
+        }
+
+        /* ================= SECTION ================= */
+
+        .section-title {
+            color: #74aaff;
+            font-weight: bold;
+            margin-bottom: 40px;
+        }
+
+        /* ================= CARDS ================= */
+
+        .info-card {
+            height: 100%;
+            padding: 30px;
+
+            background: rgba(13, 35, 75, 0.65);
+
+            border:
+                1px solid rgba(110, 165, 255, 0.25);
+
+            border-radius: 20px;
+
+            transition: 0.3s;
+        }
+
+        .info-card:hover {
+            transform: translateY(-8px);
+
+            border-color: #70a5ff;
+
+            box-shadow:
+                0 0 30px rgba(70, 125, 255, 0.25);
+        }
+
+        .info-card i {
+            font-size: 36px;
+            color: #79adff;
+            margin-bottom: 20px;
+        }
+
+        .info-card h4 {
+            color: #a6c7ff;
+        }
+
+        .info-card p {
+            color: #c9d8ef;
+            line-height: 1.7;
+        }
+
+        /* ================= FACTS ================= */
+
+        .fact-box {
+            background: rgba(7, 24, 55, 0.85);
+
+            border-radius: 20px;
+
+            overflow: hidden;
+
+            border:
+                1px solid rgba(95, 150, 255, 0.25);
+        }
+
+        .fact-row {
+            display: flex;
+            justify-content: space-between;
+
+            padding: 18px 25px;
+
+            border-bottom:
+                1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .fact-row:last-child {
+            border-bottom: none;
+        }
+
+        .fact-name {
+            color: #8db6ff;
+        }
+
+        .fact-value {
+            font-weight: bold;
+        }
+
+        /* ================= EXPLORE ================= */
+
+        .explore-box {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(35, 77, 165, 0.4),
+                    rgba(3, 10, 30, 0.9)
+                );
+
+            border-radius: 25px;
+
+            padding: 50px;
+
+            border:
+                1px solid rgba(100, 160, 255, 0.2);
+        }
+
+        .btn-neptune {
+
+            background: #6ea5ff;
+
+            color: #061333;
+
+            font-weight: bold;
+
+            border: none;
+
+            padding: 12px 25px;
+
+            border-radius: 30px;
+
+            transition: 0.3s;
+        }
+
+        .btn-neptune:hover {
+
+            background: white;
+
+            color: #081a47;
+
+            transform: scale(1.05);
+        }
+
+        /* ================= FOOTER ================= */
+
+        footer {
+
+            margin-top: 80px;
+
+            padding: 30px;
+
+            text-align: center;
+
+            background: #010611;
+
+            color: #8098bd;
+        }
+
+        /* ================= TOP BUTTON ================= */
+
+        #topBtn {
+
+            position: fixed;
+
+            right: 25px;
+
+            bottom: 25px;
+
+            width: 48px;
+
+            height: 48px;
+
+            border: none;
+
+            border-radius: 50%;
+
+            background: #6ea5ff;
+
+            color: #071333;
+
+            display: none;
+
+            z-index: 1000;
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 768px) {
+
+            .planet-area {
+                height: 400px;
+            }
+
+            .neptune {
+                width: 250px;
+                height: 250px;
+            }
+
+            .explore-box {
+                padding: 30px 20px;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- STARS -->
+
+    <div class="stars"></div>
+    <div class="stars2"></div>
+    <div class="stars3"></div>
+
+
+    <!-- ================= NAVBAR ================= -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+
+        <div class="container">
+
+            <a class="navbar-brand" href="index.html">
+
+                <i class="fa-solid fa-globe"></i>
+
+                Planet Explorer
+
+            </a>
+
+
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#menu">
+
+                <span class="navbar-toggler-icon"></span>
+
+            </button>
+
+
+            <div
+                class="collapse navbar-collapse"
+                id="menu">
+
+                <ul class="navbar-nav ms-auto">
+
+                    <li class="nav-item">
+
+                        <a
+                            class="nav-link"
+                            href="index.html">
+
+                            Home
+
+                        </a>
+
+                    </li>
+
+                    <li class="nav-item">
+
+                        <a
+                            class="nav-link"
+                            href="#about">
+
+                            About
+
+                        </a>
+
+                    </li>
+
+                    <li class="nav-item">
+
+                        <a
+                            class="nav-link"
+                            href="#facts">
+
+                            Facts
+
+                        </a>
+
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+    <!-- ================= HERO ================= -->
+
+    <section class="hero">
+
+        <div class="container">
+
+            <div class="row align-items-center">
+
+                <div class="col-lg-6">
+
+                    <p class="text-info">
+
+                        <i class="fa-solid fa-satellite"></i>
+
+                        SOLAR SYSTEM EXPLORER
+
+                    </p>
+
+
+                    <h1 class="hero-title">
+
+                        NEPTUNE
+
+                    </h1>
+
+
+                    <p class="hero-text">
+
+                        Neptune is a distant blue ice giant known
+                        for its powerful winds, deep blue appearance,
+                        faint rings and dramatic atmosphere.
+
+                    </p>
+
+
+                    <a
+                        href="#facts"
+                        class="btn btn-neptune">
+
+                        Explore Neptune
+
+                        <i class="fa-solid fa-arrow-down"></i>
+
+                    </a>
+
+                </div>
+
+
+                <!-- PLANET -->
+
+                <div class="col-lg-6">
+
+                    <div class="planet-area">
+
+                        <div class="neptune"></div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= ABOUT ================= -->
+
+    <section
+        id="about"
+        class="py-5">
+
+        <div class="container">
+
+            <h2 class="text-center section-title">
+
+                <i class="fa-solid fa-circle-info"></i>
+
+                About Neptune
+
+            </h2>
+
+
+            <div class="row g-4">
+
+
+                <!-- CARD 1 -->
+
+                <div class="col-md-4">
+
+                    <div class="info-card">
+
+                        <i class="fa-solid fa-snowflake"></i>
+
+                        <h4>Ice Giant</h4>
+
+                        <p>
+
+                            Neptune is one of the Solar System's
+                            two ice giants. Its interior contains
+                            materials such as water, ammonia and
+                            methane under enormous pressure.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CARD 2 -->
+
+                <div class="col-md-4">
+
+                    <div class="info-card">
+
+                        <i class="fa-solid fa-wind"></i>
+
+                        <h4>Powerful Winds</h4>
+
+                        <p>
+
+                            Neptune has some of the fastest winds
+                            measured on a planet in our Solar System,
+                            creating a dynamic atmosphere.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CARD 3 -->
+
+                <div class="col-md-4">
+
+                    <div class="info-card">
+
+                        <i class="fa-solid fa-ring"></i>
+
+                        <h4>Faint Rings</h4>
+
+                        <p>
+
+                            Neptune has a faint ring system made
+                            from dark material. Several distinct
+                            rings are known around the planet.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= FACTS ================= -->
+
+    <section
+        id="facts"
+        class="py-5">
+
+        <div class="container">
+
+            <h2 class="text-center section-title">
+
+                <i class="fa-solid fa-chart-simple"></i>
+
+                Neptune Facts
+
+            </h2>
+
+
+            <div class="fact-box">
+
+
+                <div class="fact-row">
+
+                    <span class="fact-name">
+                        Planet Type
+                    </span>
+
+                    <span class="fact-value">
+                        Ice Giant
+                    </span>
+
+                </div>
+
+
+                <div class="fact-row">
+
+                    <span class="fact-name">
+                        Diameter
+                    </span>
+
+                    <span class="fact-value">
+                        49,244 km
+                    </span>
+
+                </div>
+
+
+                <div class="fact-row">
+
+                    <span class="fact-name">
+                        Day Length
+                    </span>
+
+                    <span class="fact-value">
+                        About 16 hours
+                    </span>
+
+                </div>
+
+
+                <div class="fact-row">
+
+                    <span class="fact-name">
+                        Year Length
+                    </span>
+
+                    <span class="fact-value">
+                        About 165 Earth years
+                    </span>
+
+                </div>
+
+
+                <div class="fact-row">
+
+                    <span class="fact-name">
+                        Atmosphere
+                    </span>
+
+                    <span class="fact-value">
+                        Hydrogen & Helium
+                    </span>
+
+                </div>
+
+
+                <div class="fact-row">
+
+                    <span class="fact-name">
+                        Color
+                    </span>
+
+                    <span class="fact-value">
+                        Deep Blue
+                    </span>
+
+                </div>
+
+
+                <div class="fact-row">
+
+                    <span class="fact-name">
+                        Known Moons
+                    </span>
+
+                    <span class="fact-value">
+                        16
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= ATMOSPHERE ================= -->
+
+    <section class="py-5">
+
+        <div class="container">
+
+            <div class="row g-4">
+
+
+                <div class="col-lg-6">
+
+                    <div class="info-card">
+
+                        <i class="fa-solid fa-cloud"></i>
+
+                        <h4>Blue Atmosphere</h4>
+
+                        <p>
+
+                            Methane in Neptune's atmosphere absorbs
+                            some wavelengths of red light, contributing
+                            to its rich blue appearance.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-lg-6">
+
+                    <div class="info-card">
+
+                        <i class="fa-solid fa-wind"></i>
+
+                        <h4>Extreme Weather</h4>
+
+                        <p>
+
+                            Neptune's atmosphere contains changing
+                            clouds, storms and extremely strong winds,
+                            making it one of the most active atmospheres
+                            among the outer planets.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= EXPLORE ================= -->
+
+    <section class="py-5">
+
+        <div class="container">
+
+            <div class="explore-box text-center">
+
+                <h2 class="section-title mb-3">
+
+                    Explore More Planets
+
+                </h2>
+
+
+                <p class="lead mb-4">
+
+                    Continue your journey through the Solar System.
+
+                </p>
+
+
+                <a
+                    href="index.html"
+                    class="btn btn-neptune">
+
+                    <i class="fa-solid fa-house"></i>
+
+                    Back Home
+
+                </a>
+
+
+                <a
+                    href="uranus.html"
+                    class="btn btn-outline-light ms-2">
+
+                    <i class="fa-solid fa-arrow-left"></i>
+
+                    Uranus
+
+                </a>
+
+
+                <a
+                    href="saturn.html"
+                    class="btn btn-outline-light ms-2">
+
+                    Saturn
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <p class="mb-0">
+
+            🚀 Planet Explorer |
+            Explore the Solar System
+
+        </p>
+
+    </footer>
+
+
+    <!-- ================= TOP BUTTON ================= -->
+
+    <button id="topBtn">
+
+        <i class="fa-solid fa-arrow-up"></i>
+
+    </button>
+
+
+    <!-- ================= BOOTSTRAP JS ================= -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script>
+
+        const topBtn =
+            document.getElementById("topBtn");
+
+
+        window.addEventListener(
+            "scroll",
+            function () {
+
+                if (window.scrollY > 400) {
+
+                    topBtn.style.display = "block";
+
+                } else {
+
+                    topBtn.style.display = "none";
+
+                }
+
+            }
+        );
+
+
+        topBtn.addEventListener(
+            "click",
+            function () {
+
+                window.scrollTo({
+
+                    top: 0,
+
+                    behavior: "smooth"
+
+                });
+
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>,

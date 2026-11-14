@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saturn — The Ringed World</title>
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,Arial,sans-serif;background:#05040a;color:#f7f2e8;overflow-x:hidden}
+:root{--gold:#e6bd72;--cream:#fff4d6;--muted:#b9b0a1;--panel:rgba(20,16,20,.72)}
+body:before{content:"";position:fixed;inset:0;z-index:-3;background:radial-gradient(circle at 50% 20%,#241b24 0,#0b0810 35%,#020207 75%)}
+.stars{position:fixed;inset:0;z-index:-2;background-image:
+radial-gradient(2px 2px at 12% 20%,#fff,transparent),
+radial-gradient(1px 1px at 27% 70%,#fff,transparent),
+radial-gradient(2px 2px at 45% 15%,#fff,transparent),
+radial-gradient(1px 1px at 68% 32%,#fff,transparent),
+radial-gradient(2px 2px at 83% 75%,#fff,transparent),
+radial-gradient(1px 1px at 91% 14%,#fff,transparent),
+radial-gradient(1px 1px at 5% 88%,#fff,transparent),
+radial-gradient(2px 2px at 58% 82%,#fff,transparent);
+opacity:.75}
+nav{position:fixed;top:0;left:0;right:0;z-index:50;padding:16px 5%;display:flex;justify-content:space-between;align-items:center;background:rgba(4,3,8,.72);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.08)}
+.logo{font-weight:900;letter-spacing:1px;color:var(--cream);font-size:20px}
+.logo span{color:var(--gold)}
+nav a{color:#ddd5c8;text-decoration:none;margin-left:22px;font-size:14px}
+nav a:hover{color:var(--gold)}
+.hero{min-height:100vh;display:grid;place-items:center;text-align:center;padding:100px 20px 50px;position:relative}
+.hero h1{font-size:clamp(52px,10vw,120px);margin:0;letter-spacing:-4px;background:linear-gradient(90deg,#fff4d6,#d7a95c,#fff4d6);-webkit-background-clip:text;color:transparent}
+.hero p{max-width:760px;margin:18px auto;color:var(--muted);font-size:18px;line-height:1.7}
+.badge{display:inline-block;padding:8px 14px;border:1px solid rgba(230,189,114,.35);border-radius:999px;color:var(--gold);background:rgba(230,189,114,.08);font-size:13px}
+.saturn{width:min(420px,75vw);aspect-ratio:1;position:relative;margin:35px auto 0;animation:float 5s ease-in-out infinite}
+.planet{position:absolute;inset:17%;border-radius:50%;background:
+repeating-linear-gradient(0deg,#8e7357 0 10px,#b99b75 10px 18px,#d2b68d 18px 27px,#7f674f 27px 34px,#c4a77d 34px 43px);
+box-shadow:inset -45px -20px 60px #2b1e1a, inset 25px 5px 35px #fff1c2,0 0 70px rgba(218,177,108,.35)}
+.ring{position:absolute;left:-7%;right:-7%;top:37%;height:27%;border:20px solid rgba(211,181,132,.72);border-left-color:rgba(120,98,76,.65);border-right-color:rgba(237,211,160,.78);border-radius:50%;transform:rotate(-11deg);box-shadow:0 0 12px rgba(255,230,177,.2)}
+.ring2{position:absolute;left:-18%;right:-18%;top:34%;height:34%;border:7px solid rgba(122,104,87,.55);border-radius:50%;transform:rotate(-11deg)}
+.ringback{position:absolute;left:-8%;right:-8%;top:37%;height:27%;border-top:20px solid rgba(226,198,153,.8);border-radius:50%;transform:rotate(-11deg);clip-path:polygon(0 0,100% 0,100% 42%,0 42%)}
+@keyframes float{50%{transform:translateY(-12px) rotate(.5deg)}}
+section{padding:95px 7%;max-width:1250px;margin:auto}
+.section-title{text-align:center;font-size:42px;margin:0 0 12px;color:var(--cream)}
+.section-sub{text-align:center;color:var(--muted);max-width:760px;margin:0 auto 45px;line-height:1.7}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
+.card{padding:25px;border:1px solid rgba(255,255,255,.09);background:var(--panel);border-radius:20px;box-shadow:0 12px 35px rgba(0,0,0,.2);transition:.25s}
+.card:hover{transform:translateY(-6px);border-color:rgba(230,189,114,.38)}
+.card h3{margin-top:0;color:var(--gold)}
+.card p{color:#c8c0b4;line-height:1.65}
+.big-number{font-size:40px;font-weight:900;color:var(--cream)}
+.fact{font-size:13px;color:#aaa194}
+.timeline{border-left:2px solid rgba(230,189,114,.45);padding-left:25px}
+.event{margin:0 0 30px;position:relative}
+.event:before{content:"";position:absolute;left:-34px;top:5px;width:15px;height:15px;border-radius:50%;background:var(--gold);box-shadow:0 0 15px var(--gold)}
+.event h3{margin:0;color:var(--gold)}
+.event p{color:var(--muted);line-height:1.6}
+.planet-table{width:100%;border-collapse:collapse;background:rgba(255,255,255,.03);border-radius:16px;overflow:hidden}
+.planet-table th,.planet-table td{padding:15px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left}
+.planet-table th{color:var(--gold)}
+.planet-table td{color:#d1c9bd}
+.quiz{max-width:800px;margin:auto}
+.question{padding:22px;margin-bottom:15px;border-radius:16px;background:rgba(255,255,255,.05)}
+.question button{margin:6px;padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:#17121a;color:#eee;cursor:pointer}
+.question button:hover{background:#604d2f}
+#score{text-align:center;font-size:22px;color:var(--gold);margin-top:20px}
+footer{text-align:center;padding:50px 20px;border-top:1px solid rgba(255,255,255,.08);color:#8f887d}
+@media(max-width:700px){nav a{display:none}.hero h1{letter-spacing:-2px}.section-title{font-size:32px}}
+</style>
+</head>
+<body>
+<div class="stars"></div>
+
+<nav>
+  <div class="logo">🪐 <span>SATURN</span> EXPLORER</div>
+  <div>
+    <a href="#facts">Facts</a><a href="#rings">Rings</a><a href="#moons">Moons</a><a href="#history">History</a><a href="#quiz">Quiz</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div>
+    <span class="badge">THE SIXTH PLANET FROM THE SUN</span>
+    <h1>SATURN</h1>
+    <p>The spectacular gas giant famous for its enormous ring system. Explore its atmosphere, storms, rings, moons, history and the missions that revealed this extraordinary world.</p>
+    <div class="saturn" aria-label="Stylized Saturn illustration">
+      <div class="ring2"></div>
+      <div class="ring"></div>
+      <div class="planet"></div>
+      <div class="ringback"></div>
+    </div>
+  </div>
+</header>
+
+<section id="facts">
+<h2 class="section-title">Saturn at a Glance</h2>
+<p class="section-sub">Saturn is a giant world made mostly of hydrogen and helium. It is the second-largest planet in our Solar System and has a density lower than water.</p>
+<div class="grid">
+<div class="card"><div class="big-number">6th</div><div class="fact">Planet from the Sun</div><p>Saturn orbits far beyond Jupiter, at an average distance of about 1.4 billion km from the Sun.</p></div>
+<div class="card"><div class="big-number">~120,536 km</div><div class="fact">Equatorial diameter</div><p>Its wide equator and rapid rotation make Saturn noticeably flattened at the poles.</p></div>
+<div class="card"><div class="big-number">~29.5 years</div><div class="fact">One Saturn year</div><p>Saturn takes almost three decades to complete one trip around the Sun.</p></div>
+<div class="card"><div class="big-number">~10.7 h</div><div class="fact">Approximate day</div><p>Its rapid rotation drives powerful winds and helps create its banded atmosphere.</p></div>
+</div>
+</section>
+
+<section>
+<h2 class="section-title">A Giant World of Gas</h2>
+<p class="section-sub">There is no solid surface like Earth's. As you descend through Saturn, gas becomes denser and eventually behaves like a deep, hot fluid under immense pressure.</p>
+<div class="grid">
+<div class="card"><h3>☁️ Atmosphere</h3><p>Hydrogen dominates Saturn's atmosphere, with helium and smaller amounts of other compounds. Pale cloud bands wrap around the planet.</p></div>
+<div class="card"><h3>🌪️ Extreme Weather</h3><p>Saturn has powerful jet streams, enormous storms and a famous hexagonal pattern around its north pole.</p></div>
+<div class="card"><h3>🧊 Deep Interior</h3><p>Pressure rises dramatically toward the center. Models indicate a dense core surrounded by metallic hydrogen and molecular hydrogen layers.</p></div>
+<div class="card"><h3>💨 Fast Winds</h3><p>Upper-atmosphere winds can reach hundreds of meters per second, far faster than typical winds on Earth.</p></div>
+</div>
+</section>
+
+<section id="rings">
+<h2 class="section-title">The Famous Rings</h2>
+<p class="section-sub">Saturn's rings are not a single solid disk. They are made of countless particles of water ice and rocky material, ranging from tiny grains to much larger pieces.</p>
+<div class="grid">
+<div class="card"><h3>💍 A, B & C Rings</h3><p>The bright A and B rings are separated by the Cassini Division. The dimmer C ring lies closer to Saturn.</p></div>
+<div class="card"><h3>🧊 Mostly Ice</h3><p>Ring particles are dominated by water ice, which makes the rings exceptionally reflective and bright.</p></div>
+<div class="card"><h3>🌑 Gaps & Waves</h3><p>Saturn's moons gravitationally shape the rings, opening gaps and creating waves and intricate patterns.</p></div>
+<div class="card"><h3>🔭 Changing View</h3><p>Because Saturn is tilted, the rings appear to change angle from Earth's perspective during its orbit.</p></div>
+</div>
+</section>
+
+<section id="moons">
+<h2 class="section-title">A Family of Moons</h2>
+<p class="section-sub">Saturn has a remarkable collection of moons, including worlds with oceans, thick atmospheres, active geology and strange landscapes.</p>
+<div class="grid">
+<div class="card"><h3>🌊 Titan</h3><p>Saturn's largest moon has a thick nitrogen-rich atmosphere and lakes and seas of liquid hydrocarbons on its surface.</p></div>
+<div class="card"><h3>💧 Enceladus</h3><p>A bright icy moon that sprays plumes of water-rich material into space. Evidence points to a subsurface ocean.</p></div>
+<div class="card"><h3>🪨 Iapetus</h3><p>Known for its dramatic two-tone appearance, with one hemisphere much darker than the other.</p></div>
+<div class="card"><h3>⚪ Rhea</h3><p>A heavily cratered icy moon with a bright, reflective surface and a complex history.</p></div>
+</div>
+</section>
+
+<section>
+<h2 class="section-title">Saturn Compared With Earth</h2>
+<table class="planet-table">
+<tr><th>Property</th><th>Earth</th><th>Saturn</th></tr>
+<tr><td>Type</td><td>Rocky planet</td><td>Gas giant</td></tr>
+<tr><td>Equatorial diameter</td><td>~12,742 km</td><td>~120,536 km</td></tr>
+<tr><td>Length of year</td><td>365.25 days</td><td>~29.5 Earth years</td></tr>
+<tr><td>Atmosphere</td><td>Mainly nitrogen & oxygen</td><td>Mainly hydrogen & helium</td></tr>
+<tr><td>Rings</td><td>No prominent planetary rings</td><td>Extensive ring system</td></tr>
+</table>
+</section>
+
+<section id="history">
+<h2 class="section-title">Exploring Saturn</h2>
+<p class="section-sub">Humans have studied Saturn for centuries with telescopes and spacecraft. Robotic missions transformed it from a distant point of light into a complex planetary system.</p>
+<div class="timeline">
+<div class="event"><h3>1610 — Galileo observes Saturn</h3><p>Early telescopic observations revealed unusual structures around Saturn, although the rings could not yet be understood.</p></div>
+<div class="event"><h3>1655 — Titan discovered</h3><p>Saturn's largest moon was discovered during the early era of telescopic astronomy.</p></div>
+<div class="event"><h3>1979–1981 — Pioneer 11 & Voyagers</h3><p>Flybys returned close-up observations of Saturn, its rings, atmosphere and moons.</p></div>
+<div class="event"><h3>1997 — Cassini–Huygens launches</h3><p>The international mission began a journey to Saturn and arrived in 2004.</p></div>
+<div class="event"><h3>2004–2017 — Cassini era</h3><p>Cassini orbited Saturn for more than a decade, while the Huygens probe landed on Titan in 2005.</p></div>
+<div class="event"><h3>2017 — Grand Finale</h3><p>Cassini completed a series of close dives between Saturn and its innermost rings before the mission ended.</p></div>
+</div>
+</section>
+
+<section>
+<h2 class="section-title">The North-Pole Hexagon</h2>
+<p class="section-sub">One of Saturn's strangest atmospheric features is a long-lived six-sided jet-stream pattern surrounding the north pole. Its enormous scale makes it unlike ordinary weather systems on Earth.</p>
+<div class="card" style="max-width:850px;margin:auto;text-align:center">
+<h3>⬡ A Giant Atmospheric Pattern</h3>
+<p>The hexagon is a persistent wave in Saturn's polar jet stream. Different spacecraft and telescope observations have shown changes in its colors and surrounding atmospheric conditions over time.</p>
+</div>
+</section>
+
+<section id="quiz">
+<h2 class="section-title">🧠 Saturn Quiz</h2>
+<p class="section-sub">Test what you learned.</p>
+<div class="quiz">
+<div class="question"><b>1. Saturn is what type of planet?</b><br>
+<button onclick="answer(this,true)">Gas giant</button><button onclick="answer(this,false)">Rocky planet</button><button onclick="answer(this,false)">Dwarf planet</button></div>
+<div class="question"><b>2. What are Saturn's rings mostly made of?</b><br>
+<button onclick="answer(this,true)">Water ice and rocky material</button><button onclick="answer(this,false)">Liquid water</button><button onclick="answer(this,false)">Pure metal</button></div>
+<div class="question"><b>3. Which moon has a thick atmosphere and hydrocarbon lakes?</b><br>
+<button onclick="answer(this,true)">Titan</button><button onclick="answer(this,false)">Rhea</button><button onclick="answer(this,false)">Iapetus</button></div>
+<div class="question"><b>4. Which mission orbited Saturn for many years?</b><br>
+<button onclick="answer(this,true)">Cassini</button><button onclick="answer(this,false)">Apollo 11</button><button onclick="answer(this,false)">New Horizons</button></div>
+<div id="score">Score: 0 / 4</div>
+</div>
+</section>
+
+<footer>
+  <div style="font-size:28px">🪐</div>
+  <p>Saturn Explorer — an educational interactive webpage about the ringed planet.</p>
+  <p>Explore the Solar System. Keep looking up.</p>
+</footer>
+
+<script>
+let score=0, answered=0;
+function answer(btn,correct){
+  const q=btn.parentElement;
+  if(q.dataset.done)return;
+  q.dataset.done="1"; answered++;
+  if(correct){score++;btn.style.background="#6d5730";btn.textContent="✓ "+btn.textContent}
+  else{btn.style.background="#40272a";btn.textContent="✕ "+btn.textContent}
+  document.getElementById("score").textContent=`Score: ${score} / 4`;
+  if(answered===4) setTimeout(()=>alert(`Saturn Quiz complete! You scored ${score}/4.`),100);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Global Temperature</title>
+
+    <link rel="stylesheet" href="bootstrap.css">
+
+    <style>
+        body {
+            background-color: #f4f7f9;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #7b1e1e, #d9480f);
+            color: white;
+            padding: 60px 20px;
+        }
+
+        .info-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .temperature {
+            font-size: 50px;
+            font-weight: bold;
+            color: #dc3545;
+        }
+
+        .image-box {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+
+        /* GRAPH */
+        .chart {
+            height: 300px;
+            display: flex;
+            align-items: end;
+            gap: 12px;
+            padding: 20px;
+            border-left: 2px solid #333;
+            border-bottom: 2px solid #333;
+        }
+
+        .bar {
+            flex: 1;
+            background: #dc3545;
+            border-radius: 6px 6px 0 0;
+        }
+
+        .bar:hover {
+            background: #a71d2a;
+        }
+
+        footer {
+            background: #212529;
+            color: white;
+            padding: 25px;
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <!-- HERO -->
+    <div class="hero text-center">
+
+        <h1 class="display-4">
+            Global Temperature 🌍
+        </h1>
+
+        <p class="lead">
+            Understanding Earth's Changing Temperature
+        </p>
+
+    </div>
+
+
+    <div class="container my-5">
+
+
+        <!-- INTRODUCTION -->
+        <div class="row align-items-center mb-5">
+
+            <div class="col-md-6">
+
+                <img src="temperature.jpg"
+                     class="image-box"
+                     alt="Global Temperature">
+
+            </div>
+
+            <div class="col-md-6 mt-4 mt-md-0">
+
+                <h2>What is Global Temperature?</h2>
+
+                <p>
+                    Global temperature refers to the average temperature
+                    of Earth's surface, including both land and oceans.
+                </p>
+
+                <p>
+                    Scientists track global temperature over many years
+                    to understand how Earth's climate is changing.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- TEMPERATURE -->
+        <div class="card info-card p-4 text-center mb-5">
+
+            <h2>Current Global Temperature Change</h2>
+
+            <div class="temperature">
+                +1.5°C
+            </div>
+
+            <p>
+                Recent global temperatures have been around
+                1.5°C above the pre-industrial average in some
+                recent years.
+            </p>
+
+            <small class="text-muted">
+                Values vary by year and dataset.
+            </small>
+
+        </div>
+
+
+        <!-- GRAPH -->
+        <div class="card info-card p-4 mb-5">
+
+            <h2 class="text-center">
+                Global Temperature Trend
+            </h2>
+
+            <p class="text-center text-muted">
+                Simplified visualization of the long-term warming trend.
+            </p>
+
+
+            <div class="chart">
+
+                <div class="bar" style="height: 20%;"></div>
+
+                <div class="bar" style="height: 25%;"></div>
+
+                <div class="bar" style="height: 32%;"></div>
+
+                <div class="bar" style="height: 40%;"></div>
+
+                <div class="bar" style="height: 52%;"></div>
+
+                <div class="bar" style="height: 65%;"></div>
+
+                <div class="bar" style="height: 78%;"></div>
+
+                <div class="bar" style="height: 90%;"></div>
+
+            </div>
+
+
+            <div class="d-flex justify-content-between mt-2">
+
+                <span>1880</span>
+                <span>1900</span>
+                <span>1920</span>
+                <span>1940</span>
+                <span>1960</span>
+                <span>1980</span>
+                <span>2000</span>
+                <span>2020+</span>
+
+            </div>
+
+        </div>
+
+
+        <!-- CAUSES -->
+        <h2 class="text-center mb-4">
+            Why Is Earth Getting Warmer?
+        </h2>
+
+
+        <div class="row g-4 mb-5">
+
+            <div class="col-md-4">
+
+                <div class="card info-card p-4 text-center">
+
+                    <h4>🏭 Greenhouse Gases</h4>
+
+                    <p>
+                        CO₂, methane and other greenhouse gases
+                        trap heat in Earth's atmosphere.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="card info-card p-4 text-center">
+
+                    <h4>🚗 Fossil Fuels</h4>
+
+                    <p>
+                        Burning coal, oil and gas releases
+                        greenhouse gases into the atmosphere.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="card info-card p-4 text-center">
+
+                    <h4>🌳 Deforestation</h4>
+
+                    <p>
+                        Removing forests reduces the amount of
+                        CO₂ that ecosystems can absorb.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- EFFECTS -->
+        <div class="row align-items-center mb-5">
+
+            <div class="col-md-6 order-md-2">
+
+                <img src="global-warming.jpg"
+                     class="image-box"
+                     alt="Global Warming">
+
+            </div>
+
+
+            <div class="col-md-6 order-md-1">
+
+                <h2>Effects of Rising Temperature</h2>
+
+                <ul class="list-group">
+
+                    <li class="list-group-item">
+                        🌊 Rising sea levels
+                    </li>
+
+                    <li class="list-group-item">
+                        🔥 More extreme heat
+                    </li>
+
+                    <li class="list-group-item">
+                        🧊 Melting glaciers and ice sheets
+                    </li>
+
+                    <li class="list-group-item">
+                        🌲 Changes in ecosystems
+                    </li>
+
+                    <li class="list-group-item">
+                        🌾 Effects on agriculture
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+
+        <!-- WARMING STATUS -->
+        <div class="card info-card p-4 mb-5">
+
+            <h2 class="text-center">
+                Global Warming Status
+            </h2>
+
+            <div class="progress mt-4"
+                 style="height: 30px;">
+
+                <div class="progress-bar bg-danger"
+                     style="width: 80%;">
+
+                    Rising Temperature
+
+                </div>
+
+            </div>
+
+            <p class="text-center mt-3">
+                Long-term global temperatures are increasing.
+            </p>
+
+        </div>
+
+
+        <!-- SOLUTIONS -->
+        <div class="card info-card p-4 mb-5">
+
+            <h2>
+                How Can We Help?
+            </h2>
+
+            <ul class="list-group list-group-flush">
+
+                <li class="list-group-item">
+                    ☀️ Use renewable energy
+                </li>
+
+                <li class="list-group-item">
+                    🚲 Walk, cycle or use public transport
+                </li>
+
+                <li class="list-group-item">
+                    🌳 Protect and restore forests
+                </li>
+
+                <li class="list-group-item">
+                    ⚡ Save electricity and improve efficiency
+                </li>
+
+                <li class="list-group-item">
+                    ♻️ Reduce waste and recycle
+                </li>
+
+            </ul>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- FOOTER -->
+    <footer class="text-center">
+
+        <h4>Global Temperature 🌍</h4>
+
+        <p class="mb-0">
+            Learn • Understand • Protect Our Planet
+        </p>
+
+    </footer>
+
+
+</body>
+
+</html>

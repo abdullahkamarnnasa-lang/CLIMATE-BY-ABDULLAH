@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BlockWorld 3D</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+    margin:0;
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+    background:#000;
+    color:white;
+}
+button,input{font:inherit}
+
+#menu{
+    position:fixed;
+    inset:0;
+    z-index:100;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+      linear-gradient(#0007,#000b),
+      radial-gradient(circle at center,#356b32,#111 65%);
+}
+.menuBox{
+    width:min(500px,92vw);
+    padding:30px;
+    border:2px solid #777;
+    border-radius:12px;
+    background:#202020f5;
+    box-shadow:0 20px 70px #000;
+}
+.logo{
+    text-align:center;
+    font-size:42px;
+    font-weight:900;
+    text-shadow:4px 4px #000;
+    margin-bottom:25px;
+}
+.menuBox label{
+    display:block;
+    margin:12px 0 6px;
+    color:#ddd;
+}
+input{
+    width:100%;
+    padding:12px;
+    border:2px solid #555;
+    background:#111;
+    color:white;
+    border-radius:6px;
+}
+.modes{
+    display:flex;
+    gap:10px;
+}
+.mode{
+    flex:1;
+    padding:15px;
+    background:#333;
+    border:2px solid #666;
+    color:white;
+    border-radius:7px;
+    cursor:pointer;
+}
+.mode.selected{
+    border-color:#7cff68;
+    background:#31562c;
+}
+#create{
+    width:100%;
+    margin-top:22px;
+    padding:15px;
+    border:0;
+    border-radius:7px;
+    background:#55b83e;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    box-shadow:0 4px #28651e;
+}
+#create:active{transform:translateY(3px);box-shadow:none}
+
+#hud{
+    display:none;
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:10;
+}
+#stats{
+    position:absolute;
+    left:12px;
+    top:12px;
+    padding:10px;
+    background:#0008;
+    border-radius:7px;
+}
+#crosshair{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    font-size:25px;
+    text-shadow:0 0 4px #000;
+}
+#info{
+    position:absolute;
+    top:12px;
+    right:12px;
+    padding:10px;
+    background:#0008;
+    border-radius:7px;
+    text-align:right;
+}
+#hotbar{
+    position:absolute;
+    bottom:16px;
+    left:50%;
+    transform:translateX(-50%);
+    display:flex;
+    gap:4px;
+    pointer-events:auto;
+}
+.slot{
+    width:58px;
+    height:58px;
+    border:3px solid #555;
+    background:#222d;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    cursor:pointer;
+    font-size:25px;
+}
+.slot.selected{
+    border-color:white;
+    box-shadow:0 0 10px white;
+}
+.count{
+    position:absolute;
+    right:3px;
+    bottom:0;
+    font-size:13px;
+    font-weight:bold;
+}
+
+/* INVENTORY */
+#inventory{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:50;
+    background:#0009;
+    align-items:center;
+    justify-content:center;
+}
+.invPanel{
+    width:min(900px,95vw);
+    max-height:92vh;
+    overflow:auto;
+    padding:20px;
+    background:#282828;
+    border:4px solid #555;
+    box-shadow:0 20px 80px #000;
+}
+.invTitle{
+    font-size:25px;
+    font-weight:bold;
+    margin-bottom:15px;
+}
+.invGrid{
+    display:grid;
+    grid-template-columns:repeat(9,1fr);
+    gap:5px;
+}
+.invGrid .slot{
+    width:auto;
+    height:58px;
+}
+.section{
+    margin-top:18px;
+    margin-bottom:8px;
+    color:#ddd;
+    font-weight:bold;
+}
+#craftArea{
+    display:flex;
+    align-items:center;
+    gap:35px;
+    padding:15px;
+    background:#181818;
+    border-radius:8px;
+}
+.craftGrid{
+    display:grid;
+    grid-template-columns:repeat(3,58px);
+    gap:5px;
+}
+.craftSlot{
+    width:58px;
+    height:58px;
+    border:2px solid #666;
+    background:#333;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:25px;
+    cursor:pointer;
+}
+.arrow{
+    font-size:35px;
+}
+.output{
+    width:70px;
+    height:70px;
+    border:3px solid #aaa;
+    background:#111;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:30px;
+    cursor:pointer;
+}
+#recipeText{
+    margin-top:8px;
+    color:#aaa;
+    min-height:20px;
+}
+.enchants{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+.enchants button{
+    background:#3c315f;
+    color:white;
+    border:1px solid #8065bb;
+    padding:9px;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+#message{
+    position:fixed;
+    left:50%;
+    top:70%;
+    transform:translateX(-50%);
+    padding:10px 18px;
+    background:#000c;
+    border-radius:8px;
+    opacity:0;
+    transition:.3s;
+    z-index:200;
+}
+</style>
+</head>
+
+<body>
+
+<div id="menu">
+    <div class="menuBox">
+        <div class="logo">BLOCKWORLD</div>
+
+        <label>World Name</label>
+        <input id="worldName" value="My World">
+
+        <label>Seed</label>
+        <input id="seed" placeholder="Leave empty for random">
+
+        <label>Game Mode</label>
+        <div class="modes">
+            <button class="mode selected" data-mode="survival">
+                🗡️ Survival
+            </button>
+            <button class="mode" data-mode="creative">
+                🧱 Creative
+            </button>
+        </div>
+
+        <button id="create">CREATE NEW WORLD</button>
+    </div>
+</div>
+
+<div id="hud">
+    <div id="stats">
+        ❤️ <span id="health">20</span>/20<br>
+        🍖 <span id="hunger">20</span>/20
+    </div>
+
+    <div id="info">
+        <b id="worldLabel">World</b><br>
+        Mode: <span id="modeLabel">Survival</span>
+    </div>
+
+    <div id="crosshair">+</div>
+    <div id="hotbar"></div>
+</div>
+
+<div id="inventory">
+    <div class="invPanel">
+        <div class="invTitle">Inventory</div>
+
+        <div class="section">Items</div>
+        <div id="inventoryGrid" class="invGrid"></div>
+
+        <div class="section">Crafting Table — 3×3</div>
+
+        <div id="craftArea">
+            <div id="craftGrid" class="craftGrid"></div>
+            <div class="arrow">➜</div>
+            <div id="craftOutput" class="output">?</div>
+        </div>
+
+        <div id="recipeText"></div>
+
+        <div class="section">Enchantments</div>
+        <div class="enchants">
+            <button onclick="enchant('Sharpness I')">⚔ Sharpness I</button>
+            <button onclick="enchant('Efficiency I')">⛏ Efficiency I</button>
+            <button onclick="enchant('Fortune I')">💎 Fortune I</button>
+            <button onclick="enchant('Protection I')">🛡 Protection I</button>
+        </div>
+
+        <div style="margin-top:15px;color:#aaa">
+            Press <b>E</b> to close inventory.
+        </div>
+    </div>
+</div>
+
+<div id="message"></div>
+
+<script type="module">
+
+import * as THREE from
+"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
+
+/* =========================
+   GAME VARIABLES
+========================= */
+
+let gameStarted=false;
+let gameMode="survival";
+let worldSeed=0;
+let selected=0;
+let inventoryOpen=false;
+
+let health=20;
+let hunger=20;
+
+const blocks={
+    grass:{emoji:"🌿",color:0x55aa45},
+    dirt:{emoji:"🟫",color:0x795548},
+    stone:{emoji:"⬜",color:0x777777},
+    sand:{emoji:"🟨",color:0xd8c27a},
+    wood:{emoji:"🪵",color:0x8b5a2b},
+    leaves:{emoji:"🍃",color:0x287a35},
+    glass:{emoji:"🔷",color:0x75c9d8},
+    coal:{emoji:"⚫",color:0x252525},
+    iron:{emoji:"🔩",color:0xb8b8b8},
+    diamond:{emoji:"💎",color:0x39d9ff},
+    crafting_table:{emoji:"🛠️",color:0x9b642e}
+};
+
+const items=[
+    {id:"grass",name:"Grass",count:64},
+    {id:"dirt",name:"Dirt",count:64},
+    {id:"stone",name:"Stone",count:64},
+    {id:"wood",name:"Wood",count:32},
+    {id:"sand",name:"Sand",count:32},
+    {id:"glass",name:"Glass",count:16},
+    {id:"crafting_table",name:"Crafting Table",count:4},
+    {id:"stick",name:"Stick",count:16},
+    {id:"wooden_pickaxe",name:"Wooden Pickaxe",count:1},
+    {id:"wooden_axe",name:"Wooden Axe",count:1},
+    {id:"wooden_sword",name:"Wooden Sword",count:1},
+    {id:"stone_pickaxe",name:"Stone Pickaxe",count:1},
+    {id:"iron",name:"Iron",count:8},
+    {id:"diamond",name:"Diamond",count:4},
+    {id:"iron_sword",name:"Iron Sword",count:1},
+    {id:"diamond_sword",name:"Diamond Sword",count:1},
+    {id:"shield",name:"Shield",count:1}
+];
+
+let inv=Array(36).fill(null);
+
+if(!gameStarted){
+    /* inventory remains closed */
+}
+
+/* =========================
+   MENU
+========================= */
+
+document.querySelectorAll(".mode").forEach(btn=>{
+    btn.onclick=()=>{
+        document.querySelectorAll(".mode")
+        .forEach(x=>x.classList.remove("selected"));
+
+        btn.classList.add("selected");
+        gameMode=btn.dataset.mode;
+    };
+});
+
+document.getElementById("create").onclick=()=>{
+    const seedText=document.getElementById("seed").value.trim();
+
+    if(seedText){
+        worldSeed=hashSeed(seedText);
+    }else{
+        worldSeed=Math.floor(Math.random()*999999999);
+    }
+
+    document.getElementById("menu").style.display="none";
+    document.getElementById("hud").style.display="block";
+
+    document.getElementById("worldLabel").textContent=
+        document.getElementById("worldName").value || "My World";
+
+    document.getElementById("modeLabel").textContent=
+        gameMode==="creative" ? "Creative" : "Survival";
+
+    startGame();
+};
+
+/* =========================
+   THREE.JS
+========================= */
+
+let scene,camera,renderer;
+let velocityY=0;
+let canJump=false;
+
+const keys={};
+const world=[];
+const mobs=[];
+
+const player={
+    x:0,
+    y:5,
+    z:0,
+    speed:.09
+};
+
+function startGame(){
+
+    gameStarted=true;
+
+    scene=new THREE.Scene();
+    scene.background=new THREE.Color(0x87ceeb);
+
+    scene.fog=new THREE.Fog(0x87ceeb,20,90);
+
+    camera=new THREE.PerspectiveCamera(
+        75,
+        innerWidth/innerHeight,
+        .1,
+        150
+    );
+
+    camera.position.set(0,6,0);
+
+    renderer=new THREE.WebGLRenderer({
+        antialias:true
+    });
+
+    renderer.setSize(innerWidth,innerHeight);
+    renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+
+    document.body.appendChild(renderer.domElement);
+
+    const hemi=new THREE.HemisphereLight(
+        0xffffff,
+        0x557755,
+        1.8
+    );
+
+    scene.add(hemi);
+
+    const sun=new THREE.DirectionalLight(
+        0xffffff,
+        2
+    );
+
+    sun.position.set(30,60,20);
+    scene.add(sun);
+
+    generateWorld();
+    setupPlayer();
+    setupInventory();
+
+    if(gameMode==="survival"){
+        spawnMobs();
+    }
+
+    animate();
+}
+
+/* =========================
+   SEEDED WORLD
+========================= */
+
+function hashSeed(str){
+    let h=2166136261;
+
+    for(let i=0;i<str.length;i++){
+        h^=str.charCodeAt(i);
+        h=Math.imul(h,16777619);
+    }
+
+    return Math.abs(h);
+}
+
+function random2(x,z){
+    const n=Math.sin(
+        x*127.1+
+        z*311.7+
+        worldSeed*.0001
+    )*43758.5453;
+
+    return n-Math.floor(n);
+}
+
+function heightAt(x,z){
+
+    const a=Math.sin((x+worldSeed)*.18);
+    const b=Math.cos((z-worldSeed)*.15);
+    const c=Math.sin((x+z)*.08);
+
+    return Math.floor(
+        3+(a+b+c)*1.7
+    );
+}
+
+function addBlock(x,y,z,type){
+
+    const data=blocks[type];
+
+    const geo=new THREE.BoxGeometry(1,1,1);
+
+    const mat=new THREE.MeshLambertMaterial({
+        color:data.color,
+        transparent:type==="glass",
+        opacity:type==="glass" ? .55 : 1
+    });
+
+    const mesh=new THREE.Mesh(geo,mat);
+
+    mesh.position.set(
+        x+.5,
+        y+.5,
+        z+.5
+    );
+
+    mesh.userData={
+        x,y,z,type
+    };
+
+    scene.add(mesh);
+    world.push(mesh);
+
+    return mesh;
+}
+
+function generateWorld(){
+
+    const size=45;
+
+    for(let x=-size;x<size;x++){
+
+        for(let z=-size;z<size;z++){
+
+            const h=heightAt(x,z);
+
+            for(let y=0;y<=h;y++){
+
+                let type="stone";
+
+                if(y===h) type="grass";
+                else if(y>=h-2) type="dirt";
+
+                if(h<2 && y===h)
+                    type="sand";
+
+                addBlock(x,y,z,type);
+            }
+
+            /* trees */
+            if(
+                random2(x,z)>.91 &&
+                Math.abs(x)>3 &&
+                Math.abs(z)>3 &&
+                h>2
+            ){
+                makeTree(x,h+1,z);
+            }
+        }
+    }
+
+    /* water */
+    for(let x=-45;x<45;x++){
+        for(let z=-45;z<45;z++){
+
+            if(heightAt(x,z)<2){
+
+                const geo=new THREE.BoxGeometry(
+                    1,.25,1
+                );
+
+                const mat=new THREE.MeshLambertMaterial({
+                    color:0x2488d8,
+                    transparent:true,
+                    opacity:.55
+                });
+
+                const water=new THREE.Mesh(
+                    geo,mat
+                );
+
+                water.position.set(
+                    x+.5,2.05,z+.5
+                );
+
+                scene.add(water);
+            }
+        }
+    }
+}
+
+function makeTree(x,y,z){
+
+    for(let i=0;i<4;i++){
+        addBlock(x,y+i,z,"wood");
+    }
+
+    for(let dx=-2;dx<=2;dx++){
+        for(let dz=-2;dz<=2;dz++){
+
+            for(let dy=2;dy<=4;dy++){
+
+                if(
+                    Math.abs(dx)+
+                    Math.abs(dz)+
+                    dy<7
+                ){
+                    addBlock(
+                        x+dx,
+                        y+dy,
+                        z+dz,
+                        "leaves"
+                    );
+                }
+            }
+        }
+    }
+}
+
+/* =========================
+   PLAYER
+========================= */
+
+let yaw=0;
+let pitch=0;
+
+function setupPlayer(){
+
+    document.addEventListener("keydown",e=>{
+        keys[e.code]=true;
+
+        if(e.code==="KeyE" && gameStarted){
+            toggleInventory();
+        }
+
+        if(e.code==="Space"){
+            if(gameMode==="creative"){
+                velocityY=.25;
+            }else if(canJump){
+                velocityY=.22;
+                canJump=false;
+            }
+        }
+
+        if(e.code.startsWith("Digit")){
+            const n=Number(e.code.slice(5))-1;
+
+            if(n>=0 && n<9){
+                selected=n;
+                renderHotbar();
+            }
+        }
+    });
+
+    document.addEventListener("keyup",e=>{
+        keys[e.code]=false;
+    });
+
+    document.addEventListener("mousemove",e=>{
+
+        if(
+            document.pointerLockElement===renderer.domElement &&
+            !inventoryOpen
+        ){
+
+            yaw-=e.movementX*.002;
+            pitch-=e.movementY*.002;
+
+            pitch=Math.max(
+                -Math.PI/2,
+                Math.min(Math.PI/2,pitch)
+            );
+        }
+    });
+
+    renderer.domElement.onclick=()=>{
+        if(!inventoryOpen)
+            renderer.domElement.requestPointerLock();
+    };
+
+    renderer.domElement.addEventListener(
+        "mousedown",
+        e=>{
+            if(inventoryOpen)return;
+
+            if(e.button===0)
+                mine();
+
+            if(e.button===2)
+                placeBlock();
+        }
+    );
+
+    renderer.domElement.oncontextmenu=e=>e.preventDefault();
+}
+
+/* =========================
+   MOVEMENT
+========================= */
+
+function updatePlayer(){
+
+    const forward=new THREE.Vector3(
+        -Math.sin(yaw),
+        0,
+        -Math.cos(yaw)
+    );
+
+    const right=new THREE.Vector3(
+        Math.cos(yaw),
+        0,
+        -Math.sin(yaw)
+    );
+
+    if(keys.KeyW || keys.ArrowUp)
+        player.x+=forward.x*player.speed,
+        player.z+=forward.z*player.speed;
+
+    if(keys.KeyS || keys.ArrowDown)
+        player.x-=forward.x*player.speed,
+        player.z-=forward.z*player.speed;
+
+    if(keys.KeyA || keys.ArrowLeft)
+        player.x-=right.x*player.speed,
+        player.z-=right.z*player.speed;
+
+    if(keys.KeyD || keys.ArrowRight)
+        player.x+=right.x*player.speed,
+        player.z+=right.z*player.speed;
+
+    if(gameMode==="creative"){
+        if(keys.Space) player.y+=.13;
+        if(keys.ShiftLeft) player.y-=.13;
+    }else{
+
+        velocityY-=.012;
+        player.y+=velocityY;
+
+        const ground=
+            heightAt(
+                Math.floor(player.x),
+                Math.floor(player.z)
+            )+1.7;
+
+        if(player.y<ground){
+            player.y=ground;
+            velocityY=0;
+            canJump=true;
+        }
+
+        if(player.y<0){
+            player.y=6;
+            player.x=0;
+            player.z=0;
+            damage(5);
+        }
+    }
+
+    camera.position.set(
+        player.x,
+        player.y,
+        player.z
+    );
+
+    camera.rotation.order="YXZ";
+    camera.rotation.y=yaw;
+    camera.rotation.x=pitch;
+}
+
+/* =========================
+   BLOCK MINING
+========================= */
+
+const raycaster=new THREE.Raycaster();
+
+function getTarget(){
+
+    raycaster.setFromCamera(
+        new THREE.Vector2(0,0),
+        camera
+    );
+
+    return raycaster.intersectObjects(
+        world,
+        false
+    )[0];
+}
+
+function mine(){
+
+    const hit=getTarget();
+
+    if(!hit)return;
+
+    const block=hit.object;
+
+    const type=block.userData.type;
+
+    scene.remove(block);
+
+    const index=world.indexOf(block);
+
+    if(index>=0)
+        world.splice(index,1);
+
+    if(gameMode==="survival"){
+        addItem(type,1);
+    }
+
+    showMessage("Mined "+type);
+}
+
+/* =========================
+   BLOCK PLACING
+========================= */
+
+function placeBlock(){
+
+    const hit=getTarget();
+
+    if(!hit)return;
+
+    const stack=inv[selected];
+
+    if(!stack)return;
+
+    if(!blocks[stack.id])return;
+
+    const p=hit.object.userData;
+    const normal=hit.face.normal;
+
+    const x=p.x+Math.round(normal.x);
+    const y=p.y+Math.round(normal.y);
+    const z=p.z+Math.round(normal.z);
+
+    if(
+        Math.abs(x-player.x)<1 &&
+        Math.abs(y-player.y)<2 &&
+        Math.abs(z-player.z)<1
+    )return;
+
+    addBlock(x,y,z,stack.id);
+
+    if(gameMode==="survival"){
+        stack.count--;
+
+        if(stack.count<=0)
+            inv[selected]=null;
+
+        renderInventory();
+        renderHotbar();
+    }
+}
+
+/* =========================
+   INVENTORY
+========================= */
+
+function setupInventory(){
+
+    /* starter items */
+    inv[0]={
+        id:"grass",
+        name:"Grass",
+        count:64
+    };
+
+    inv[1]={
+        id:"dirt",
+        name:"Dirt",
+        count:64
+    };
+
+    inv[2]={
+        id:"wood",
+        name:"Wood",
+        count:32
+    };
+
+    inv[3]={
+        id:"stone",
+        name:"Stone",
+        count:64
+    };
+
+    inv[4]={
+        id:"stick",
+        name:"Stick",
+        count:16
+    };
+
+    inv[5]={
+        id:"crafting_table",
+        name:"Crafting Table",
+        count:4
+    };
+
+    inv[6]={
+        id:"wooden_pickaxe",
+        name:"Wooden Pickaxe",
+        count:1
+    };
+
+    inv[7]={
+        id:"wooden_sword",
+        name:"Wooden Sword",
+        count:1
+    };
+
+    renderInventory();
+    renderHotbar();
+}
+
+function toggleInventory(){
+
+    inventoryOpen=!inventoryOpen;
+
+    document.getElementById("inventory").style.display=
+        inventoryOpen ? "flex" : "none";
+
+    if(inventoryOpen){
+        document.exitPointerLock();
+    }
+}
+
+function itemIcon(item){
+
+    if(!item)return "";
+
+    if(blocks[item.id])
+        return blocks[item.id].emoji;
+
+    const icons={
+        stick:"🪵",
+        wooden_pickaxe:"⛏️",
+        wooden_axe:"🪓",
+        wooden_sword:"🗡️",
+        stone_pickaxe:"⛏️",
+        iron_sword:"⚔️",
+        diamond_sword:"💎⚔️",
+        shield:"🛡️"
+    };
+
+    return icons[item.id]||"❔";
+}
+
+function makeSlot(item,index){
+
+    const s=document.createElement("div");
+    s.className="slot";
+
+    if(item){
+        s.innerHTML=
+            itemIcon(item)+
+            `<span class="count">${
+                gameMode==="creative" ? "∞" : item.count
+            }</span>`;
+
+        s.title=item.name;
+    }
+
+    s.onclick=()=>{
+        selected=index;
+        renderHotbar();
+    };
+
+    return s;
+}
+
+function renderHotbar(){
+
+    const bar=document.getElementById("hotbar");
+    bar.innerHTML="";
+
+    for(let i=0;i<9;i++){
+
+        const s=makeSlot(inv[i],i);
+
+        if(i===selected)
+            s.classList.add("selected");
+
+        bar.appendChild(s);
+    }
+}
+
+function renderInventory(){
+
+    const grid=
+        document.getElementById("inventoryGrid");
+
+    grid.innerHTML="";
+
+    for(let i=0;i<36;i++){
+        grid.appendChild(
+            makeSlot(inv[i],i)
+        );
+    }
+}
+
+/* =========================
+   ITEM SYSTEM
+========================= */
+
+function addItem(id,count){
+
+    if(gameMode==="creative")
+        return;
+
+    let existing=
+        inv.find(x=>x && x.id===id);
+
+    if(existing){
+        existing.count+=count;
+        renderInventory();
+        renderHotbar();
+        return;
+    }
+
+    const empty=
+        inv.findIndex(x=>!x);
+
+    if(empty!==-1){
+
+        inv[empty]={
+            id,
+            name:id.replaceAll("_"," "),
+            count
+        };
+
+        renderInventory();
+        renderHotbar();
+    }
+}
+
+/* =========================
+   CRAFTING
+========================= */
+
+const craftSlots=Array(9).fill(null);
+
+function setupCrafting(){
+
+    const grid=
+        document.getElementById("craftGrid");
+
+    grid.innerHTML="";
+
+    for(let i=0;i<9;i++){
+
+        const s=document.createElement("div");
+        s.className="craftSlot";
+
+        s.onclick=()=>{
+            if(craftSlots[i]){
+                addItem(craftSlots[i].id,1);
+                craftSlots[i]=null;
+                updateCraft();
+            }
+        };
+
+        grid.appendChild(s);
+    }
+
+    updateCraft();
+}
+
+setupCrafting();
+
+function updateCraft(){
+
+    const slots=
+        document.querySelectorAll(".craftSlot");
+
+    slots.forEach((s,i)=>{
+        s.textContent=
+            craftSlots[i]
+            ? itemIcon(craftSlots[i])
+            : "";
+    });
+
+    const recipe=checkRecipe();
+
+    const out=
+        document.getElementById("craftOutput");
+
+    if(recipe){
+        out.textContent=itemIcon(recipe);
+        out.title="Click to craft "+recipe.name;
+
+        out.onclick=()=>{
+            craft(recipe);
+        };
+
+        document.getElementById("recipeText").textContent=
+            "Recipe found: "+recipe.name;
+    }else{
+        out.textContent="?";
+        out.onclick=null;
+        document.getElementById("recipeText").textContent=
+            "Put ingredients in the 3×3 grid.";
+    }
+}
+
+function ids(){
+
+    return craftSlots.map(
+        x=>x?.id||null
+    );
+}
+
+function checkRecipe(){
+
+    const a=ids();
+
+    /* 2 wood -> planks */
+    if(
+        a.filter(x=>x==="wood").length===1
+    ){
+        return {
+            id:"planks",
+            name:"Planks",
+            count:4
+        };
+    }
+
+    /* 2 planks vertical -> sticks */
+    if(
+        a.filter(x=>x==="planks").length===2
+    ){
+        return {
+            id:"stick",
+            name:"Stick",
+            count:4
+        };
+    }
+
+    /* Crafting table */
+    if(
+        a.filter(x=>x==="planks").length===4
+    ){
+        return {
+            id:"crafting_table",
+            name:"Crafting Table",
+            count:1
+        };
+    }
+
+    /* Wooden sword */
+    if(
+        a.filter(x=>x==="planks").length===2 &&
+        a.filter(x=>x==="stick").length===1
+    ){
+        return {
+            id:"wooden_sword",
+            name:"Wooden Sword",
+            count:1
+        };
+    }
+
+    /* Wooden pickaxe */
+    if(
+        a.filter(x=>x==="planks").length===3 &&
+        a.filter(x=>x==="stick").length===2
+    ){
+        return {
+            id:"wooden_pickaxe",
+            name:"Wooden Pickaxe",
+            count:1
+        };
+    }
+
+    /* Wooden axe */
+    if(
+        a.filter(x=>x==="planks").length===3 &&
+        a.filter(x=>x==="stick").length===2
+    ){
+        return {
+            id:"wooden_axe",
+            name:"Wooden Axe",
+            count:1
+        };
+    }
+
+    /* Stone pickaxe */
+    if(
+        a.filter(x=>x==="stone").length===3 &&
+        a.filter(x=>x==="stick").length===2
+    ){
+        return {
+            id:"stone_pickaxe",
+            name:"Stone Pickaxe",
+            count:1
+        };
+    }
+
+    /* Iron sword */
+    if(
+        a.filter(x=>x==="iron").length===2 &&
+        a.filter(x=>x==="stick").length===1
+    ){
+        return {
+            id:"iron_sword",
+            name:"Iron Sword",
+            count:1
+        };
+    }
+
+    /* Diamond sword */
+    if(
+        a.filter(x=>x==="diamond").length===2 &&
+        a.filter(x=>x==="stick").length===1
+    ){
+        return {
+            id:"diamond_sword",
+            name:"Diamond Sword",
+            count:1
+        };
+    }
+
+    /* Shield */
+    if(
+        a.filter(x=>x==="iron").length===1 &&
+        a.filter(x=>x==="wood").length>=3
+    ){
+        return {
+            id:"shield",
+            name:"Shield",
+            count:1
+        };
+    }
+
+    return null;
+}
+
+function craft(recipe){
+
+    if(!recipe)return;
+
+    /* consume ingredients */
+    if(gameMode==="survival"){
+
+        for(let i=0;i<craftSlots.length;i++){
+
+            if(craftSlots[i]){
+
+                removeItem(
+                    craftSlots[i].id,
+                    1
+                );
+
+                craftSlots[i]=null;
+            }
+        }
+    }else{
+        craftSlots.fill(null);
+    }
+
+    addItem(
+        recipe.id,
+        recipe.count
+    );
+
+    updateCraft();
+    renderInventory();
+    renderHotbar();
+
+    showMessage(
+        "Crafted "+recipe.name
+    );
+}
+
+function removeItem(id,count){
+
+    let item=inv.find(
+        x=>x && x.id===id
+    );
+
+    if(!item)return false;
+
+    item.count-=count;
+
+    if(item.count<=0){
+        const index=inv.indexOf(item);
+        inv[index]=null;
+    }
+
+    return true;
+}
+
+/* =========================
+   ENCHANTMENTS
+========================= */
+
+let enchantments=[];
+
+function enchant(name){
+
+    if(!gameStarted)return;
+
+    enchantments.push(name);
+
+    showMessage(
+        "Enchantment applied: "+name
+    );
+}
+
+/* =========================
+   MOBS
+========================= */
+
+function spawnMobs(){
+
+    for(let i=0;i<8;i++){
+
+        const x=
+            Math.floor(Math.random()*40)-20;
+
+        const z=
+            Math.floor(Math.random()*40)-20;
+
+        makeMob(x,z);
+    }
+}
+
+function makeMob(x,z){
+
+    const group=new THREE.Group();
+
+    const body=new THREE.Mesh(
+        new THREE.BoxGeometry(.7,1.1,.45),
+        new THREE.MeshLambertMaterial({
+            color:0x347b35
+        })
+    );
+
+    body.position.y=.7;
+
+    const head=new THREE.Mesh(
+        new THREE.BoxGeometry(.65,.65,.65),
+        new THREE.MeshLambertMaterial({
+            color:0x5fa64d
+        })
+    );
+
+    head.position.y=1.55;
+
+    group.add(body);
+    group.add(head);
+
+    group.position.set(
+        x+.5,
+        heightAt(x,z)+1,
+        z+.5
+    );
+
+    group.userData={
+        hp:10,
+        speed:.015
+    };
+
+    scene.add(group);
+    mobs.push(group);
+}
+
+/* =========================
+   MOB AI
+========================= */
+
+function updateMobs(){
+
+    if(gameMode!=="survival")
+        return;
+
+    for(const mob of mobs){
+
+        const dx=player.x-mob.position.x;
+        const dz=player.z-mob.position.z;
+
+        const distance=Math.hypot(dx,dz);
+
+        if(distance<15 && distance>1.5){
+
+            mob.position.x+=
+                dx/distance*mob.userData.speed;
+
+            mob.position.z+=
+                dz/distance*mob.userData.speed;
+
+            mob.rotation.y=
+                Math.atan2(dx,dz);
+        }
+
+        if(distance<1.7){
+
+            if(Math.random()<.01)
+                damage(1);
+        }
+    }
+}
+
+function damage(amount){
+
+    if(gameMode==="creative")
+        return;
+
+    health-=amount;
+
+    if(health<0)
+        health=0;
+
+    document.getElementById(
+        "health"
+    ).textContent=health;
+
+    if(health<=0){
+        respawn();
+    }
+}
+
+function respawn(){
+
+    showMessage("You died! Respawning...");
+
+    health=20;
+    hunger=20;
+
+    player.x=0;
+    player.y=7;
+    player.z=0;
+}
+
+/* =========================
+   MESSAGE
+========================= */
+
+let msgTimer;
+
+function showMessage(text){
+
+    const m=document.getElementById("message");
+
+    m.textContent=text;
+    m.style.opacity=1;
+
+    clearTimeout(msgTimer);
+
+    msgTimer=setTimeout(()=>{
+        m.style.opacity=0;
+    },1800);
+}
+
+/* =========================
+   GAME LOOP
+========================= */
+
+function animate(){
+
+    requestAnimationFrame(animate);
+
+    if(gameStarted && !inventoryOpen){
+
+        updatePlayer();
+        updateMobs();
+    }
+
+    renderer.render(
+        scene,
+        camera
+    );
+}
+
+/* =========================
+   RESIZE
+========================= */
+
+window.addEventListener("resize",()=>{
+
+    if(!camera)return;
+
+    camera.aspect=
+        innerWidth/innerHeight;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+        innerWidth,
+        innerHeight
+    );
+});
+
+</script>
+</body>
+</html>

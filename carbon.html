@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Carbon Dioxide - Climate Information</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="bootstrap.css">
+
+    <style>
+        body {
+            background-color: #f4f7f5;
+        }
+
+        .hero {
+            background: #173d2b;
+            color: white;
+            padding: 60px 20px;
+        }
+
+        .info-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .co2-number {
+            font-size: 45px;
+            font-weight: bold;
+            color: #198754;
+        }
+
+        .chart {
+            height: 300px;
+            display: flex;
+            align-items: end;
+            gap: 15px;
+            padding: 20px;
+            border-left: 2px solid #333;
+            border-bottom: 2px solid #333;
+        }
+
+        .bar {
+            flex: 1;
+            background: #198754;
+            border-radius: 6px 6px 0 0;
+        }
+
+        .bar:hover {
+            background: #146c43;
+        }
+
+        .image-box {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+
+        footer {
+            background: #173d2b;
+            color: white;
+            padding: 25px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HERO -->
+    <div class="hero text-center">
+        <h1 class="display-4">Carbon Dioxide (CO₂)</h1>
+
+        <p class="lead">
+            Understanding Carbon Dioxide and Its Role in Climate Change
+        </p>
+    </div>
+
+
+    <!-- MAIN CONTENT -->
+    <div class="container my-5">
+
+        <!-- ABOUT CO2 -->
+        <div class="row mb-5">
+
+            <div class="col-md-6">
+                <img src="co2.jpg"
+                     class="image-box"
+                     alt="Carbon Dioxide">
+            </div>
+
+            <div class="col-md-6 mt-4 mt-md-0">
+
+                <h2>What is Carbon Dioxide?</h2>
+
+                <p>
+                    Carbon dioxide (CO₂) is a colorless gas that naturally
+                    exists in Earth's atmosphere. Plants use CO₂ during
+                    photosynthesis to produce food and oxygen.
+                </p>
+
+                <p>
+                    However, human activities such as burning coal, oil
+                    and natural gas have greatly increased the amount of
+                    CO₂ in the atmosphere.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- CURRENT CO2 -->
+        <div class="card info-card p-4 mb-5 text-center">
+
+            <h2>Atmospheric CO₂</h2>
+
+            <div class="co2-number">
+                ~430 ppm
+            </div>
+
+            <p>
+                Atmospheric carbon dioxide concentration is now
+                roughly around 430 parts per million.
+            </p>
+
+            <small class="text-muted">
+                Approximate modern value; concentration changes over time.
+            </small>
+
+        </div>
+
+
+        <!-- SOURCES -->
+        <h2 class="text-center mb-4">
+            Main Sources of CO₂
+        </h2>
+
+        <div class="row g-4 mb-5">
+
+            <div class="col-md-3">
+                <div class="card info-card p-4 text-center">
+                    <h4>🚗 Transport</h4>
+                    <p>
+                        Cars, trucks, ships and airplanes
+                        burn fossil fuels.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card info-card p-4 text-center">
+                    <h4>🏭 Industry</h4>
+                    <p>
+                        Factories and industrial processes
+                        release large amounts of CO₂.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card info-card p-4 text-center">
+                    <h4>⚡ Energy</h4>
+                    <p>
+                        Coal, oil and natural gas are major
+                        sources of carbon emissions.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card info-card p-4 text-center">
+                    <h4>🌳 Land Use</h4>
+                    <p>
+                        Deforestation reduces the Earth's
+                        ability to absorb CO₂.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- GRAPH -->
+        <div class="card info-card p-4 mb-5">
+
+            <h2 class="text-center">
+                CO₂ Concentration Trend
+            </h2>
+
+            <p class="text-center text-muted">
+                Example visualization showing the long-term increase.
+            </p>
+
+            <div class="chart">
+
+                <div class="bar" style="height: 25%;"></div>
+                <div class="bar" style="height: 32%;"></div>
+                <div class="bar" style="height: 42%;"></div>
+                <div class="bar" style="height: 53%;"></div>
+                <div class="bar" style="height: 65%;"></div>
+                <div class="bar" style="height: 78%;"></div>
+                <div class="bar" style="height: 90%;"></div>
+
+            </div>
+
+            <div class="d-flex justify-content-between mt-2">
+                <span>1960</span>
+                <span>1970</span>
+                <span>1980</span>
+                <span>1990</span>
+                <span>2000</span>
+                <span>2010</span>
+                <span>2020+</span>
+            </div>
+
+        </div>
+
+
+        <!-- SECOND IMAGE -->
+        <div class="row align-items-center mb-5">
+
+            <div class="col-md-6 order-md-2">
+
+                <img src="climate.jpg"
+                     class="image-box"
+                     alt="Climate Change">
+
+            </div>
+
+            <div class="col-md-6 order-md-1">
+
+                <h2>Why Does CO₂ Matter?</h2>
+
+                <p>
+                    Carbon dioxide is a greenhouse gas. It absorbs and
+                    re-emits infrared radiation, helping keep Earth warm.
+                </p>
+
+                <p>
+                    Increasing CO₂ levels contribute to long-term
+                    global warming and climate change.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- EFFECTS -->
+        <h2 class="text-center mb-4">
+            Effects of Increasing CO₂
+        </h2>
+
+        <div class="row g-4 mb-5">
+
+            <div class="col-md-4">
+                <div class="card info-card p-4">
+                    <h4>🌡️ Global Warming</h4>
+                    <p>
+                        Higher greenhouse gas concentrations contribute
+                        to rising global temperatures.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card info-card p-4">
+                    <h4>🌊 Ocean Changes</h4>
+                    <p>
+                        Oceans absorb CO₂, which increases ocean
+                        acidity and affects marine ecosystems.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card info-card p-4">
+                    <h4>🌳 Ecosystems</h4>
+                    <p>
+                        Climate changes can affect forests,
+                        agriculture and wildlife.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- REDUCTION -->
+        <div class="card info-card p-4 mb-5">
+
+            <h2>How Can We Reduce CO₂?</h2>
+
+            <ul class="list-group list-group-flush">
+
+                <li class="list-group-item">
+                    🌞 Use renewable energy such as solar and wind.
+                </li>
+
+                <li class="list-group-item">
+                    🚲 Use public transport, cycling and walking.
+                </li>
+
+                <li class="list-group-item">
+                    🌳 Protect forests and plant trees.
+                </li>
+
+                <li class="list-group-item">
+                    ⚡ Improve energy efficiency.
+                </li>
+
+                <li class="list-group-item">
+                    🏭 Reduce emissions from industrial processes.
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <!-- SIMPLE STATUS -->
+        <div class="card info-card p-4 text-center mb-5">
+
+            <h2>CO₂ Situation</h2>
+
+            <div class="progress mt-4" style="height: 30px;">
+
+                <div class="progress-bar bg-danger"
+                     style="width: 85%;">
+                    Increasing
+                </div>
+
+            </div>
+
+            <p class="mt-3">
+                CO₂ levels have risen significantly since the
+                pre-industrial era.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+    <footer class="text-center">
+
+        <h4>Carbon Dioxide & Climate</h4>
+
+        <p class="mb-0">
+            Learn • Understand • Protect Our Planet
+        </p>
+
+    </footer>
+
+</body>
+
+</html>

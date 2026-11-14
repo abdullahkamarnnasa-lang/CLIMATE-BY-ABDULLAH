@@ -1,0 +1,3213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Climate World 3D — Ultra Edition</title>
+
+<style>
+*{box-sizing:border-box}
+
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+    background:#020711;
+}
+
+canvas{display:block}
+
+#loading{
+    position:fixed;
+    inset:0;
+    z-index:1000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    background:#020711;
+    color:white;
+    font-size:26px;
+    font-weight:bold;
+}
+
+.loader{
+    width:300px;
+    height:8px;
+    background:#172235;
+    border-radius:20px;
+    overflow:hidden;
+    margin-top:16px;
+}
+
+.loader div{
+    width:0;
+    height:100%;
+    background:#35e0a1;
+    animation:load 2s forwards;
+}
+
+@keyframes load{to{width:100%}}
+
+#hud{
+    position:fixed;
+    top:15px;
+    left:15px;
+    z-index:10;
+    width:305px;
+    color:white;
+    background:rgba(3,10,20,.80);
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:18px;
+    padding:15px;
+    backdrop-filter:blur(14px);
+    box-shadow:0 12px 45px rgba(0,0,0,.35);
+}
+
+#hud h2{
+    margin:0 0 12px;
+    font-size:19px;
+}
+
+.stat{margin:9px 0}
+
+.statTop{
+    display:flex;
+    justify-content:space-between;
+    font-size:12px;
+    margin-bottom:5px;
+}
+
+.bar{
+    height:7px;
+    background:#182438;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.fill{
+    height:100%;
+    width:50%;
+    border-radius:20px;
+    transition:.4s;
+}
+
+#healthFill{background:#4ade80}
+#forestFill{background:#22c55e}
+#pollutionFill{background:#f97316}
+#tempFill{background:#ef4444}
+#waterFill{background:#38bdf8}
+
+#location{
+    position:fixed;
+    top:15px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:10;
+    color:white;
+    background:rgba(3,10,20,.72);
+    border:1px solid rgba(255,255,255,.15);
+    padding:10px 22px;
+    border-radius:30px;
+    backdrop-filter:blur(12px);
+    font-weight:bold;
+}
+
+#mission{
+    position:fixed;
+    top:80px;
+    right:15px;
+    z-index:10;
+    width:280px;
+    color:white;
+    background:rgba(3,10,20,.74);
+    padding:15px;
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,.12);
+    backdrop-filter:blur(10px);
+}
+
+#mission b{color:#54e6ad}
+
+#weather{
+    position:fixed;
+    top:155px;
+    right:15px;
+    z-index:10;
+    color:white;
+    padding:9px 15px;
+    border-radius:20px;
+    background:rgba(3,10,20,.68);
+}
+
+#vehicle{
+    position:fixed;
+    bottom:78px;
+    left:50%;
+    transform:translateX(-50%);
+    color:white;
+    background:rgba(3,10,20,.82);
+    padding:10px 20px;
+    border-radius:22px;
+    display:none;
+    z-index:12;
+}
+
+#crosshair{
+    position:fixed;
+    z-index:9;
+    top:50%;
+    left:50%;
+    width:11px;
+    height:11px;
+    margin:-5px;
+    border:1px solid rgba(255,255,255,.9);
+    border-radius:50%;
+}
+
+#controls{
+    position:fixed;
+    bottom:15px;
+    left:15px;
+    z-index:10;
+    color:#dce9f7;
+    background:rgba(3,10,20,.72);
+    padding:10px 14px;
+    border-radius:12px;
+    font-size:12px;
+}
+
+#actions{
+    position:fixed;
+    bottom:17px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:10;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:8px;
+    max-width:900px;
+}
+
+button{
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:12px;
+    padding:10px 13px;
+    color:white;
+    background:rgba(10,24,40,.92);
+    cursor:pointer;
+    transition:.18s;
+    font-weight:bold;
+}
+
+button:hover{
+    transform:translateY(-2px);
+    background:#17324b;
+}
+
+#toast{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    z-index:30;
+    color:white;
+    background:rgba(3,10,20,.9);
+    padding:14px 24px;
+    border-radius:15px;
+    opacity:0;
+    pointer-events:none;
+    transition:.25s;
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div id="loading">
+    <div>🌍 CLIMATE WORLD 3D</div>
+    <div style="font-size:14px;color:#8fa6bd;margin-top:8px">
+        Loading advanced world...
+    </div>
+    <div class="loader"><div></div></div>
+</div>
+
+<div id="hud">
+    <h2>🌍 Climate Status</h2>
+
+    <div class="stat">
+        <div class="statTop">
+            <span>❤️ Planet Health</span>
+            <span id="healthText">78%</span>
+        </div>
+        <div class="bar"><div id="healthFill" class="fill"></div></div>
+    </div>
+
+    <div class="stat">
+        <div class="statTop">
+            <span>🌳 Forest</span>
+            <span id="forestText">65%</span>
+        </div>
+        <div class="bar"><div id="forestFill" class="fill"></div></div>
+    </div>
+
+    <div class="stat">
+        <div class="statTop">
+            <span>🏭 Pollution</span>
+            <span id="pollutionText">18%</span>
+        </div>
+        <div class="bar"><div id="pollutionFill" class="fill"></div></div>
+    </div>
+
+    <div class="stat">
+        <div class="statTop">
+            <span>🌡 Warming</span>
+            <span id="tempText">1.2°C</span>
+        </div>
+        <div class="bar"><div id="tempFill" class="fill"></div></div>
+    </div>
+
+    <div class="stat">
+        <div class="statTop">
+            <span>🌊 Sea Level</span>
+            <span id="waterText">12%</span>
+        </div>
+        <div class="bar"><div id="waterFill" class="fill"></div></div>
+    </div>
+</div>
+
+<div id="location">📍 Green Valley</div>
+
+<div id="mission">
+    <b>MISSION</b>
+    <p id="missionText">Plant trees and improve the city's climate.</p>
+</div>
+
+<div id="weather">☀️ Clear</div>
+
+<div id="vehicle">🚗 Press E to exit vehicle</div>
+
+<div id="crosshair"></div>
+
+<div id="controls">
+    WASD Move · Shift Run · Mouse Drag Look · E Enter/Exit Car
+</div>
+
+<div id="actions">
+    <button onclick="plantTree()">🌳 Plant Tree</button>
+    <button onclick="cutTree()">🪓 Cut Tree</button>
+    <button onclick="cleanWaste()">♻ Clean Waste</button>
+    <button onclick="cleanEnergy()">⚡ Clean Energy</button>
+    <button onclick="addPollution()">🏭 Factory</button>
+    <button onclick="startRain()">🌧 Rain</button>
+    <button onclick="startStorm()">⛈ Storm</button>
+    <button onclick="startDrought()">☀ Drought</button>
+    <button onclick="flood()">🌊 Flood</button>
+    <button onclick="toggleNight()">🌙 Day/Night</button>
+    <button onclick="spawnCar()">🚗 Spawn Car</button>
+</div>
+
+<div id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+<script>
+"use strict";
+
+/* =========================================================
+   CLIMATE DATA
+========================================================= */
+
+let health=78;
+let forest=65;
+let pollution=18;
+let temperature=1.2;
+let seaLevel=12;
+let plantedTrees=0;
+
+let keys={};
+
+let yaw=Math.PI;
+let pitch=-0.18;
+
+let trees=[];
+let wastes=[];
+let citizens=[];
+let cars=[];
+let rain=[];
+
+let player;
+let currentCar=null;
+let inCar=false;
+let carSpeed=0;
+let night=false;
+
+const clock=new THREE.Clock();
+
+
+/* =========================================================
+   SCENE
+========================================================= */
+
+const scene=new THREE.Scene();
+
+scene.background=new THREE.Color(0x83d8ff);
+
+scene.fog=new THREE.FogExp2(
+    0x83d8ff,
+    .0016
+);
+
+const camera=new THREE.PerspectiveCamera(
+    68,
+    innerWidth/innerHeight,
+    .1,
+    2500
+);
+
+const renderer=new THREE.WebGLRenderer({
+    antialias:true,
+    powerPreference:"high-performance"
+});
+
+renderer.setSize(innerWidth,innerHeight);
+
+renderer.setPixelRatio(
+    Math.min(devicePixelRatio,2)
+);
+
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=
+    THREE.PCFSoftShadowMap;
+
+renderer.outputColorSpace=
+    THREE.SRGBColorSpace;
+
+renderer.toneMapping=
+    THREE.ACESFilmicToneMapping;
+
+renderer.toneMappingExposure=1.18;
+
+document.body.appendChild(renderer.domElement);
+
+
+/* =========================================================
+   LIGHTS
+========================================================= */
+
+const hemi=new THREE.HemisphereLight(
+    0xbfeeff,
+    0x31412e,
+    2.4
+);
+
+scene.add(hemi);
+
+const sun=new THREE.DirectionalLight(
+    0xffffff,
+    3.6
+);
+
+sun.position.set(
+    120,
+    220,
+    80
+);
+
+sun.castShadow=true;
+
+sun.shadow.mapSize.width=4096;
+sun.shadow.mapSize.height=4096;
+
+sun.shadow.camera.left=-500;
+sun.shadow.camera.right=500;
+sun.shadow.camera.top=500;
+sun.shadow.camera.bottom=-500;
+
+sun.shadow.bias=-.0001;
+
+scene.add(sun);
+
+
+/* extra fill */
+
+const fillLight=new THREE.DirectionalLight(
+    0xb9dcff,
+    .8
+);
+
+fillLight.position.set(
+    -100,
+    80,
+    -120
+);
+
+scene.add(fillLight);
+
+
+/* =========================================================
+   MATERIAL HELPERS
+========================================================= */
+
+function material(color,rough=.65,metal=0){
+
+    return new THREE.MeshStandardMaterial({
+        color,
+        roughness:rough,
+        metalness:metal
+    });
+}
+
+function physical(color,rough=.5,metal=0){
+
+    return new THREE.MeshPhysicalMaterial({
+        color,
+        roughness:rough,
+        metalness:metal,
+        clearcoat:.35,
+        clearcoatRoughness:.18
+    });
+}
+
+function cube(x,y,z,color,rough=.65,metal=0){
+
+    const m=new THREE.Mesh(
+        new THREE.BoxGeometry(x,y,z),
+        material(color,rough,metal)
+    );
+
+    m.castShadow=true;
+    m.receiveShadow=true;
+
+    return m;
+}
+
+
+/* =========================================================
+   GROUND
+========================================================= */
+
+const ground=new THREE.Mesh(
+    new THREE.PlaneGeometry(1600,1600,80,80),
+    new THREE.MeshStandardMaterial({
+        color:0x476d3d,
+        roughness:1
+    })
+);
+
+ground.rotation.x=-Math.PI/2;
+ground.receiveShadow=true;
+
+scene.add(ground);
+
+
+/* =========================================================
+   ROADS
+========================================================= */
+
+function road(x,z,w,d){
+
+    const r=new THREE.Mesh(
+        new THREE.BoxGeometry(w,.08,d),
+        material(0x20252a,.94)
+    );
+
+    r.position.set(x,.04,z);
+    r.receiveShadow=true;
+
+    scene.add(r);
+}
+
+road(0,0,40,500);
+road(0,0,500,40);
+road(0,-160,500,18);
+road(0,160,500,18);
+road(-170,0,18,500);
+road(170,0,18,500);
+
+
+/* =========================================================
+   ROAD MARKINGS
+========================================================= */
+
+function roadLine(x,z,w,d){
+
+    const line=cube(
+        w,.035,d,
+        0xf5e9a9,
+        .9
+    );
+
+    line.position.set(x,.1,z);
+    scene.add(line);
+}
+
+for(let z=-240;z<=240;z+=18)
+    roadLine(0,z,1,.8);
+
+for(let x=-240;x<=240;x+=18)
+    roadLine(x,0,.8,1);
+
+
+/* =========================================================
+   SIDEWALKS
+========================================================= */
+
+function sidewalk(x,z,w,d){
+
+    const s=cube(
+        w,.16,d,
+        0x8b9294,
+        .95
+    );
+
+    s.position.set(x,.1,z);
+    scene.add(s);
+}
+
+sidewalk(23,0,7,500);
+sidewalk(-23,0,7,500);
+sidewalk(0,23,500,7);
+sidewalk(0,-23,500,7);
+
+
+/* =========================================================
+   WATER
+========================================================= */
+
+const water=new THREE.Mesh(
+    new THREE.PlaneGeometry(420,420),
+    new THREE.MeshPhysicalMaterial({
+        color:0x168ed1,
+        roughness:.06,
+        metalness:.12,
+        transparent:true,
+        opacity:.72
+    })
+);
+
+water.rotation.x=-Math.PI/2;
+water.position.set(-250,.02,-250);
+
+scene.add(water);
+
+
+/* =========================================================
+   BUILDINGS
+========================================================= */
+
+function building(x,z,w,h,d,color){
+
+    const g=new THREE.Group();
+
+    const body=new THREE.Mesh(
+        new THREE.BoxGeometry(w,h,d),
+        physical(color,.78,.05)
+    );
+
+    body.position.y=h/2;
+    body.castShadow=true;
+    body.receiveShadow=true;
+
+    g.add(body);
+
+
+    /* roof */
+
+    const roof=cube(
+        w+.18,.18,d+.18,
+        0x26313a,
+        .75,
+        .1
+    );
+
+    roof.position.y=h+.09;
+
+    g.add(roof);
+
+
+    /* windows on front */
+
+    for(let yy=2;yy<h-.5;yy+=2.5){
+
+        for(
+            let xx=-w/2+.8;
+            xx<w/2-.2;
+            xx+=1.6
+        ){
+
+            const win=new THREE.Mesh(
+                new THREE.BoxGeometry(
+                    .65,.75,.04
+                ),
+                new THREE.MeshStandardMaterial({
+                    color:night
+                        ? 0xffd86b
+                        : 0x65c5e8,
+                    emissive:night
+                        ? 0xff8f00
+                        : 0x04151c,
+                    emissiveIntensity:
+                        night?1.2:.12
+                })
+            );
+
+            win.position.set(
+                xx,
+                yy,
+                d/2+.025
+            );
+
+            g.add(win);
+        }
+    }
+
+
+    /* side windows */
+
+    for(let yy=2;yy<h-.5;yy+=2.5){
+
+        for(
+            let zz=-d/2+.8;
+            zz<d/2-.2;
+            zz+=1.6
+        ){
+
+            const win=new THREE.Mesh(
+                new THREE.BoxGeometry(
+                    .04,.75,.65
+                ),
+                new THREE.MeshStandardMaterial({
+                    color:night
+                        ? 0xffd86b
+                        : 0x65c5e8,
+                    emissive:night
+                        ? 0xff8f00
+                        : 0x04151c,
+                    emissiveIntensity:
+                        night?1.2:.12
+                })
+            );
+
+            win.position.set(
+                w/2+.025,
+                yy,
+                zz
+            );
+
+            g.add(win);
+        }
+    }
+
+
+    g.position.set(x,0,z);
+
+    scene.add(g);
+
+    return g;
+}
+
+
+const buildingColors=[
+    0x536878,
+    0x667788,
+    0x37474f,
+    0x455a64,
+    0x78909c,
+    0x5d4037,
+    0x34495e
+];
+
+for(let i=0;i<34;i++){
+
+    let x=(Math.random()-.5)*390;
+    let z=(Math.random()-.5)*390;
+
+    if(
+        Math.abs(x)<35 ||
+        Math.abs(z)<35
+    ){
+        i--;
+        continue;
+    }
+
+    building(
+        x,
+        z,
+        8+Math.random()*13,
+        8+Math.random()*28,
+        8+Math.random()*13,
+        buildingColors[
+            Math.floor(
+                Math.random()*buildingColors.length
+            )
+        ]
+    );
+}
+
+
+/* =========================================================
+   TREES
+========================================================= */
+
+function createTree(x,z,scale=1){
+
+    const g=new THREE.Group();
+
+    const trunk=new THREE.Mesh(
+        new THREE.CylinderGeometry(
+            .25*scale,
+            .38*scale,
+            3*scale,
+            16
+        ),
+        physical(0x68442a,.88)
+    );
+
+    trunk.position.y=1.5*scale;
+    trunk.castShadow=true;
+
+    g.add(trunk);
+
+
+    const colors=[
+        0x1f7a3a,
+        0x238b45,
+        0x2d9b50,
+        0x176b32
+    ];
+
+
+    for(let i=0;i<3;i++){
+
+        const leaf=new THREE.Mesh(
+            new THREE.IcosahedronGeometry(
+                (1.4-i*.18)*scale,
+                2
+            ),
+            physical(
+                colors[
+                    Math.floor(
+                        Math.random()*colors.length
+                    )
+                ],
+                .92
+            )
+        );
+
+        leaf.position.y=
+            (3+i*.9)*scale;
+
+        leaf.position.x=
+            (Math.random()-.5)*.5*scale;
+
+        leaf.castShadow=true;
+
+        g.add(leaf);
+    }
+
+
+    g.position.set(x,0,z);
+
+    scene.add(g);
+    trees.push(g);
+
+    return g;
+}
+
+
+for(let i=0;i<170;i++){
+
+    const x=(Math.random()-.5)*700;
+    const z=(Math.random()-.5)*700;
+
+    if(
+        Math.abs(x)<220 &&
+        Math.abs(z)<220
+    ) continue;
+
+    createTree(
+        x,
+        z,
+        .8+Math.random()*.7
+    );
+}
+
+
+/* =========================================================
+   HIGH QUALITY HUMAN
+   FACE LOOKS +Z
+========================================================= */
+
+function human(
+    shirtColor,
+    skinColor=0xc98768,
+    hairColor=0x21170f
+){
+
+    const g=new THREE.Group();
+
+    const skin=physical(
+        skinColor,
+        .7
+    );
+
+    const shirt=physical(
+        shirtColor,
+        .58
+    );
+
+    const pants=physical(
+        0x17202b,
+        .82
+    );
+
+    const shoeMat=physical(
+        0x080a0d,
+        .38,
+        .2
+    );
+
+    const hairMat=physical(
+        hairColor,
+        .85
+    );
+
+
+    /* pelvis */
+
+    const pelvis=new THREE.Mesh(
+        new THREE.CapsuleGeometry(
+            .58,.48,8,18
+        ),
+        pants
+    );
+
+    pelvis.scale.set(1,.8,.72);
+    pelvis.position.y=2.05;
+    pelvis.castShadow=true;
+
+    g.add(pelvis);
+
+
+    /* torso */
+
+    const torso=new THREE.Mesh(
+        new THREE.CapsuleGeometry(
+            .73,1.05,10,20
+        ),
+        shirt
+    );
+
+    torso.scale.set(1,1,.62);
+    torso.position.y=3.05;
+    torso.castShadow=true;
+
+    g.add(torso);
+
+
+    /* neck */
+
+    const neck=new THREE.Mesh(
+        new THREE.CylinderGeometry(
+            .22,.25,.35,20
+        ),
+        skin
+    );
+
+    neck.position.y=4.0;
+    neck.castShadow=true;
+
+    g.add(neck);
+
+
+    /* head */
+
+    const head=new THREE.Mesh(
+        new THREE.SphereGeometry(
+            .64,32,24
+        ),
+        skin
+    );
+
+    head.scale.set(.95,1.08,.9);
+    head.position.y=4.65;
+    head.castShadow=true;
+
+    g.add(head);
+
+
+    /* ears */
+
+    for(const side of [-1,1]){
+
+        const ear=new THREE.Mesh(
+            new THREE.SphereGeometry(
+                .13,16,12
+            ),
+            skin
+        );
+
+        ear.position.set(
+            side*.62,
+            4.67,
+            0
+        );
+
+        g.add(ear);
+    }
+
+
+    /* hair */
+
+    const hair=new THREE.Mesh(
+        new THREE.SphereGeometry(
+            .67,
+            32,
+            20,
+            0,
+            Math.PI*2,
+            0,
+            Math.PI*.48
+        ),
+        hairMat
+    );
+
+    hair.position.y=4.88;
+    hair.castShadow=true;
+
+    g.add(hair);
+
+
+    /* =====================================================
+       FACE — +Z
+    ===================================================== */
+
+    const eyeMat=new THREE.MeshStandardMaterial({
+        color:0xffffff,
+        roughness:.2
+    });
+
+    const pupilMat=new THREE.MeshStandardMaterial({
+        color:0x111111,
+        roughness:.3
+    });
+
+
+    for(const side of [-1,1]){
+
+        const eye=new THREE.Mesh(
+            new THREE.SphereGeometry(
+                .085,20,14
+            ),
+            eyeMat
+        );
+
+        eye.position.set(
+            side*.22,
+            4.68,
+            .57
+        );
+
+        g.add(eye);
+
+
+        const pupil=new THREE.Mesh(
+            new THREE.SphereGeometry(
+                .038,12,10
+            ),
+            pupilMat
+        );
+
+        pupil.position.set(
+            side*.22,
+            4.68,
+            .642
+        );
+
+        g.add(pupil);
+    }
+
+
+    /* nose */
+
+    const nose=new THREE.Mesh(
+        new THREE.ConeGeometry(
+            .09,.22,12
+        ),
+        skin
+    );
+
+    nose.rotation.x=-Math.PI/2;
+    nose.position.set(
+        0,
+        4.57,
+        .62
+    );
+
+    g.add(nose);
+
+
+    /* mouth */
+
+    const mouth=new THREE.Mesh(
+        new THREE.BoxGeometry(
+            .20,.025,.025
+        ),
+        material(0x7a302d,.9)
+    );
+
+    mouth.position.set(
+        0,
+        4.42,
+        .605
+    );
+
+    g.add(mouth);
+
+
+    /* =====================================================
+       ARMS
+    ===================================================== */
+
+    const leftArm=new THREE.Group();
+    const rightArm=new THREE.Group();
+
+
+    function createArm(group){
+
+        const upper=new THREE.Mesh(
+            new THREE.CapsuleGeometry(
+                .19,.62,8,16
+            ),
+            shirt
+        );
+
+        upper.position.y=-.45;
+        upper.castShadow=true;
+
+        group.add(upper);
+
+
+        const elbow=new THREE.Mesh(
+            new THREE.SphereGeometry(
+                .2,16,12
+            ),
+            shirt
+        );
+
+        elbow.position.y=-1;
+        group.add(elbow);
+
+
+        const forearm=new THREE.Mesh(
+            new THREE.CapsuleGeometry(
+                .16,.62,8,16
+            ),
+            skin
+        );
+
+        forearm.scale.y=.75;
+        forearm.position.y=-1.4;
+        forearm.castShadow=true;
+
+        group.add(forearm);
+
+
+        const hand=new THREE.Mesh(
+            new THREE.SphereGeometry(
+                .21,18,14
+            ),
+            skin
+        );
+
+        hand.scale.set(.9,1.1,.8);
+        hand.position.y=-1.83;
+        hand.castShadow=true;
+
+        group.add(hand);
+    }
+
+
+    createArm(leftArm);
+    createArm(rightArm);
+
+    leftArm.position.set(
+        -.83,3.65,0
+    );
+
+    rightArm.position.set(
+        .83,3.65,0
+    );
+
+
+    /* =====================================================
+       LEGS
+    ===================================================== */
+
+    const leftLeg=new THREE.Group();
+    const rightLeg=new THREE.Group();
+
+
+    function createLeg(group){
+
+        const thigh=new THREE.Mesh(
+            new THREE.CapsuleGeometry(
+                .27,.72,8,16
+            ),
+            pants
+        );
+
+        thigh.position.y=-.55;
+        thigh.castShadow=true;
+
+        group.add(thigh);
+
+
+        const knee=new THREE.Mesh(
+            new THREE.SphereGeometry(
+                .28,16,12
+            ),
+            pants
+        );
+
+        knee.position.y=-1.1;
+        group.add(knee);
+
+
+        const calf=new THREE.Mesh(
+            new THREE.CapsuleGeometry(
+                .22,.76,8,16
+            ),
+            pants
+        );
+
+        calf.position.y=-1.62;
+        calf.castShadow=true;
+
+        group.add(calf);
+
+
+        /* shoe points toward +Z */
+
+        const shoe=new THREE.Mesh(
+            new THREE.BoxGeometry(
+                .58,.32,1.05
+            ),
+            shoeMat
+        );
+
+        shoe.position.set(
+            0,
+            -2.13,
+            .12
+        );
+
+        shoe.castShadow=true;
+
+        group.add(shoe);
+    }
+
+
+    createLeg(leftLeg);
+    createLeg(rightLeg);
+
+
+    leftLeg.position.set(
+        -.36,2,0
+    );
+
+    rightLeg.position.set(
+        .36,2,0
+    );
+
+
+    g.add(
+        leftArm,
+        rightArm,
+        leftLeg,
+        rightLeg
+    );
+
+
+    /* backpack */
+
+    const backpack=cube(
+        .72,.9,.25,
+        0x202b38,
+        .8
+    );
+
+    backpack.position.set(
+        0,
+        3.1,
+        -.55
+    );
+
+    g.add(backpack);
+
+
+    g.userData={
+        leftArm,
+        rightArm,
+        leftLeg,
+        rightLeg,
+        walk:Math.random()*10,
+        speed:0
+    };
+
+
+    return g;
+}
+
+
+/* =========================================================
+   PLAYER
+========================================================= */
+
+player=human(
+    0x1678e8,
+    0xc98768,
+    0x21170f
+);
+
+player.position.set(
+    0,0,15
+);
+
+scene.add(player);
+
+
+/* =========================================================
+   CITIZENS
+========================================================= */
+
+const citizenColors=[
+    0xe53935,
+    0xff9800,
+    0x8e44ad,
+    0x00a8a8,
+    0x1976d2,
+    0x43a047,
+    0xd81b60,
+    0x795548
+];
+
+const skinColors=[
+    0xc98768,
+    0x9b684d,
+    0xe0a07a,
+    0x7d503a
+];
+
+for(let i=0;i<35;i++){
+
+    const person=human(
+        citizenColors[
+            Math.floor(
+                Math.random()*
+                citizenColors.length
+            )
+        ],
+        skinColors[
+            Math.floor(
+                Math.random()*skinColors.length
+            )
+        ]
+    );
+
+    person.position.set(
+        (Math.random()-.5)*420,
+        0,
+        (Math.random()-.5)*420
+    );
+
+    if(
+        Math.abs(person.position.x)<30 &&
+        Math.abs(person.position.z)<30
+    ){
+        person.position.x+=50;
+    }
+
+    scene.add(person);
+
+    citizens.push({
+        object:person,
+        angle:Math.random()*Math.PI*2,
+        speed:.025+Math.random()*.035,
+        radius:10+Math.random()*45
+    });
+}
+
+
+/* =========================================================
+   ADVANCED CAR
+========================================================= */
+
+function makeCar(
+    x,
+    z,
+    color,
+    type="sedan"
+){
+
+    const g=new THREE.Group();
+
+
+    const paint=new THREE.MeshPhysicalMaterial({
+        color,
+        roughness:.20,
+        metalness:.72,
+        clearcoat:1,
+        clearcoatRoughness:.12
+    });
+
+    const dark=new THREE.MeshPhysicalMaterial({
+        color:0x080d13,
+        roughness:.15,
+        metalness:.45,
+        clearcoat:.8
+    });
+
+    const glass=new THREE.MeshPhysicalMaterial({
+        color:0x071923,
+        roughness:.05,
+        metalness:.35,
+        transparent:true,
+        opacity:.78,
+        clearcoat:1
+    });
+
+
+    /* body */
+
+    const body=new THREE.Mesh(
+        new THREE.BoxGeometry(
+            6.5,1.05,2.55
+        ),
+        paint
+    );
+
+    body.position.y=1.05;
+    body.castShadow=true;
+    body.receiveShadow=true;
+
+    g.add(body);
+
+
+    /* lower trim */
+
+    for(const side of [-1,1]){
+
+        const trim=cube(
+            5.9,.20,.10,
+            0x111820,
+            .4,.4
+        );
+
+        trim.position.set(
+            0,.68,side*1.30
+        );
+
+        g.add(trim);
+    }
+
+
+    /* hood */
+
+    const hood=new THREE.Mesh(
+        new THREE.BoxGeometry(
+            2.15,.25,2.38
+        ),
+        paint
+    );
+
+    hood.position.set(
+        2.05,1.62,0
+    );
+
+    g.add(hood);
+
+
+    /* trunk */
+
+    const trunk=new THREE.Mesh(
+        new THREE.BoxGeometry(
+            1.25,.35,2.38
+        ),
+        paint
+    );
+
+    trunk.position.set(
+        -2.45,1.55,0
+    );
+
+    g.add(trunk);
+
+
+    /* cabin */
+
+    const cabin=new THREE.Mesh(
+        new THREE.BoxGeometry(
+            3.25,1.35,2.18
+        ),
+        paint
+    );
+
+    cabin.position.set(
+        -.35,2.05,0
+    );
+
+    cabin.castShadow=true;
+
+    g.add(cabin);
+
+
+    /* windshield */
+
+    const windshield=new THREE.Mesh(
+        new THREE.BoxGeometry(
+            .95,1.02,2.03
+        ),
+        glass
+    );
+
+    windshield.position.set(
+        .75,2.14,0
+    );
+
+    windshield.rotation.z=-.48;
+
+    g.add(windshield);
+
+
+    /* rear glass */
+
+    const rearGlass=new THREE.Mesh(
+        new THREE.BoxGeometry(
+            .75,.92,2.03
+        ),
+        glass
+    );
+
+    rearGlass.position.set(
+        -1.4,2.14,0
+    );
+
+    rearGlass.rotation.z=.45;
+
+    g.add(rearGlass);
+
+
+    /* side windows */
+
+    for(const side of [-1,1]){
+
+        const sideWindow=new THREE.Mesh(
+            new THREE.BoxGeometry(
+                1.75,.78,.035
+            ),
+            glass
+        );
+
+        sideWindow.position.set(
+            -.35,2.15,side*1.105
+        );
+
+        g.add(sideWindow);
+
+
+        const frontWindow=new THREE.Mesh(
+            new THREE.BoxGeometry(
+                .82,.78,.04
+            ),
+            glass
+        );
+
+        frontWindow.position.set(
+            .75,2.15,side*1.108
+        );
+
+        g.add(frontWindow);
+    }
+
+
+    /* pillars */
+
+    for(const side of [-1,1]){
+
+        const pillar=cube(
+            .12,1.05,.12,
+            0x111820,.5,.4
+        );
+
+        pillar.position.set(
+            -.35,2.1,side*1.13
+        );
+
+        g.add(pillar);
+    }
+
+
+    /* bumpers */
+
+    const frontBumper=cube(
+        .35,.5,2.5,
+        color,.3,.5
+    );
+
+    frontBumper.position.set(
+        3.15,.88,0
+    );
+
+    g.add(frontBumper);
+
+
+    const rearBumper=cube(
+        .35,.5,2.5,
+        color,.3,.5
+    );
+
+    rearBumper.position.set(
+        -3.15,.88,0
+    );
+
+    g.add(rearBumper);
+
+
+    /* grille */
+
+    const grille=cube(
+        .07,.35,1.25,
+        0x080c10,.25,.7
+    );
+
+    grille.position.set(
+        3.34,1.05,0
+    );
+
+    g.add(grille);
+
+
+    for(let i=-2;i<=2;i++){
+
+        const bar=cube(
+            .1,.04,.18,
+            0xaab4bb,.25,.9
+        );
+
+        bar.position.set(
+            3.39,
+            1.05,
+            i*.22
+        );
+
+        g.add(bar);
+    }
+
+
+    /* headlights */
+
+    const headMat=new THREE.MeshStandardMaterial({
+        color:0xffffff,
+        emissive:0xbfefff,
+        emissiveIntensity:8,
+        roughness:.12
+    });
+
+    const tailMat=new THREE.MeshStandardMaterial({
+        color:0x550000,
+        emissive:0xff1010,
+        emissiveIntensity:4
+    });
+
+    const headlights=[];
+
+
+    for(const side of [-1,1]){
+
+        const lamp=new THREE.Mesh(
+            new THREE.BoxGeometry(
+                .18,.28,.7
+            ),
+            headMat
+        );
+
+        lamp.position.set(
+            3.36,
+            1.38,
+            side*.83
+        );
+
+        g.add(lamp);
+
+        headlights.push(lamp);
+
+
+        const light=new THREE.SpotLight(
+            0xdff8ff,
+            18,
+            38,
+            .34,
+            .45,
+            1
+        );
+
+        light.position.set(
+            3.45,
+            1.4,
+            side*.82
+        );
+
+        light.target.position.set(
+            12,
+            1.1,
+            side*.82
+        );
+
+        g.add(light);
+        g.add(light.target);
+    }
+
+
+    /* taillights */
+
+    for(const side of [-1,1]){
+
+        const lamp=new THREE.Mesh(
+            new THREE.BoxGeometry(
+                .18,.3,.65
+            ),
+            tailMat
+        );
+
+        lamp.position.set(
+            -3.34,
+            1.38,
+            side*.82
+        );
+
+        g.add(lamp);
+    }
+
+
+    /* mirrors */
+
+    for(const side of [-1,1]){
+
+        const mirror=cube(
+            .35,.18,.18,
+            0x080d13,.16,.4
+        );
+
+        mirror.position.set(
+            .72,2.18,side*1.3
+        );
+
+        g.add(mirror);
+    }
+
+
+    /* handles */
+
+    for(const side of [-1,1]){
+
+        for(const dx of [-.8,.25]){
+
+            const handle=cube(
+                .35,.05,.04,
+                0xb6c2ca,.2,.8
+            );
+
+            handle.position.set(
+                dx,1.55,side*1.12
+            );
+
+            g.add(handle);
+        }
+    }
+
+
+    /* wheels */
+
+    const wheels=[];
+
+    for(const wx of [-2.15,2.15]){
+
+        for(const wz of [-1.38,1.38]){
+
+            const wheelGroup=new THREE.Group();
+
+            wheelGroup.position.set(
+                wx,.67,wz
+            );
+
+
+            const tire=new THREE.Mesh(
+                new THREE.CylinderGeometry(
+                    .72,.72,.42,32
+                ),
+                material(
+                    0x07090b,
+                    .82
+                )
+            );
+
+            tire.rotation.x=Math.PI/2;
+            tire.castShadow=true;
+
+            wheelGroup.add(tire);
+
+
+            const rim=new THREE.Mesh(
+                new THREE.CylinderGeometry(
+                    .42,.42,.44,24
+                ),
+                material(
+                    0x9aa5ad,
+                    .18,
+                    .9
+                )
+            );
+
+            rim.rotation.x=Math.PI/2;
+
+            wheelGroup.add(rim);
+
+
+            const hub=new THREE.Mesh(
+                new THREE.CylinderGeometry(
+                    .13,.13,.46,16
+                ),
+                material(
+                    0x303941,
+                    .15,
+                    1
+                )
+            );
+
+            hub.rotation.x=Math.PI/2;
+
+            wheelGroup.add(hub);
+
+
+            g.add(wheelGroup);
+            wheels.push(wheelGroup);
+        }
+    }
+
+
+    /* underbody */
+
+    const under=cube(
+        4.7,.28,2,
+        0x101419,.9
+    );
+
+    under.position.y=.45;
+    g.add(under);
+
+
+    /* spoiler */
+
+    if(type==="sport"){
+
+        const spoiler=cube(
+            1.2,.12,2.05,
+            color,.25,.65
+        );
+
+        spoiler.position.set(
+            -2.75,2.05,0
+        );
+
+        g.add(spoiler);
+    }
+
+
+    /* plate */
+
+    const plate=cube(
+        .08,.22,.65,
+        0xf0f0f0,.7
+    );
+
+    plate.position.set(
+        3.38,.95,0
+    );
+
+    g.add(plate);
+
+
+    g.position.set(x,0,z);
+
+    scene.add(g);
+
+
+    const car={
+        object:g,
+        ai:true,
+        wheels:wheels,
+        headlights:headlights,
+        speed:.035+Math.random()*.025,
+        direction:Math.random()>.5?1:-1
+    };
+
+    cars.push(car);
+
+    return car;
+}
+
+
+/* =========================================================
+   INITIAL CARS
+========================================================= */
+
+makeCar(0,-70,0x1677d2,"sport");
+makeCar(0,75,0xf4b400,"sedan");
+makeCar(90,-100,0x2e9b55,"sport");
+makeCar(90,100,0xd72c3b,"sedan");
+makeCar(-90,-120,0x8e44ad,"sport");
+makeCar(-100,120,0xeeeeee,"sedan");
+
+
+/* =========================================================
+   WASTE
+========================================================= */
+
+function createWaste(x,z){
+
+    const g=new THREE.Group();
+
+    const bin=cube(
+        .7,.7,.7,
+        0x58636d,.8
+    );
+
+    bin.position.y=.35;
+    g.add(bin);
+
+
+    const bag=new THREE.Mesh(
+        new THREE.SphereGeometry(
+            .4,16,12
+        ),
+        material(0x20252a,.95)
+    );
+
+    bag.position.set(.2,.8,0);
+    g.add(bag);
+
+
+    g.position.set(x,0,z);
+
+    scene.add(g);
+    wastes.push(g);
+}
+
+for(let i=0;i<30;i++){
+
+    createWaste(
+        (Math.random()-.5)*380,
+        (Math.random()-.5)*380
+    );
+}
+
+
+/* =========================================================
+   LIMIT
+========================================================= */
+
+function limit(obj){
+
+    obj.position.x=
+        THREE.MathUtils.clamp(
+            obj.position.x,
+            -730,730
+        );
+
+    obj.position.z=
+        THREE.MathUtils.clamp(
+            obj.position.z,
+            -730,730
+        );
+}
+
+
+/* =========================================================
+   ANGLE HELPER
+========================================================= */
+
+function lerpAngle(a,b,t){
+
+    let d=b-a;
+
+    while(d>Math.PI)
+        d-=Math.PI*2;
+
+    while(d<-Math.PI)
+        d+=Math.PI*2;
+
+    return a+d*t;
+}
+
+
+/* =========================================================
+   PLAYER MOVEMENT — FIXED
+========================================================= */
+
+function updatePlayer(){
+
+    if(inCar){
+        drive();
+        return;
+    }
+
+
+    const speed=
+        keys.shift?.42:.20;
+
+
+    let x=0;
+    let z=0;
+
+
+    if(keys.a)x-=1;
+    if(keys.d)x+=1;
+
+    if(keys.w)z+=1;
+    if(keys.s)z-=1;
+
+
+    if(x===0 && z===0){
+
+        player.userData.speed=0;
+        return;
+    }
+
+
+    const len=Math.hypot(x,z);
+
+    x/=len;
+    z/=len;
+
+
+    /*
+       Character movement direction.
+       +Z is the front of the human.
+    */
+
+    const moveAngle=
+        yaw+
+        Math.atan2(x,z);
+
+
+    player.position.x+=
+        Math.sin(moveAngle)*speed;
+
+    player.position.z+=
+        Math.cos(moveAngle)*speed;
+
+
+    /* face exact walking direction */
+
+    player.rotation.y=
+        lerpAngle(
+            player.rotation.y,
+            moveAngle,
+            .25
+        );
+
+
+    player.userData.speed=speed;
+
+    limit(player);
+}
+
+
+/* =========================================================
+   HUMAN ANIMATION
+========================================================= */
+
+function animateHuman(p,dt){
+
+    const d=p.userData;
+
+    const moving=d.speed>.001;
+
+
+    if(moving){
+
+        d.walk+=
+            dt*
+            Math.min(
+                18,
+                7+d.speed*35
+            );
+
+    }else{
+
+        d.walk+=dt*2;
+    }
+
+
+    const wave=Math.sin(d.walk);
+
+    const swing=
+        moving
+        ?wave*.55
+        :0;
+
+
+    /* arms */
+
+    d.leftArm.rotation.x=swing;
+    d.rightArm.rotation.x=-swing;
+
+
+    /* legs */
+
+    d.leftLeg.rotation.x=
+        -swing*.75;
+
+    d.rightLeg.rotation.x=
+        swing*.75;
+
+
+    /* natural shoulder */
+
+    d.leftArm.rotation.z=
+        moving
+        ?Math.sin(d.walk*.5)*.035
+        :0;
+
+    d.rightArm.rotation.z=
+        moving
+        ?-Math.sin(d.walk*.5)*.035
+        :0;
+
+
+    /* breathing */
+
+    p.scale.y=
+        1+
+        Math.sin(d.walk*.5)*.012;
+
+
+    /* walking bounce */
+
+    if(moving){
+
+        p.position.y=
+            Math.abs(
+                Math.sin(d.walk*2)
+            )*.025;
+
+    }else{
+
+        p.position.y=0;
+    }
+}
+
+
+/* =========================================================
+   CITIZENS — FIXED DIRECTION
+========================================================= */
+
+function updateCitizens(){
+
+    for(const c of citizens){
+
+        const p=c.object;
+
+
+        c.angle+=
+            Math.sin(
+                performance.now()*.0003+
+                c.radius
+            )*.00015;
+
+
+        const dx=
+            Math.cos(c.angle)*
+            c.speed;
+
+        const dz=
+            Math.sin(c.angle)*
+            c.speed;
+
+
+        p.position.x+=dx;
+        p.position.z+=dz;
+
+
+        const targetRotation=
+            Math.atan2(dx,dz);
+
+
+        p.rotation.y=
+            lerpAngle(
+                p.rotation.y,
+                targetRotation,
+                .18
+            );
+
+
+        p.userData.speed=c.speed;
+
+
+        animateHuman(
+            p,
+            .016
+        );
+
+
+        if(p.position.x>450)
+            p.position.x=-450;
+
+        if(p.position.x<-450)
+            p.position.x=450;
+
+        if(p.position.z>450)
+            p.position.z=-450;
+
+        if(p.position.z<-450)
+            p.position.z=450;
+    }
+}
+
+
+/* =========================================================
+   TRAFFIC
+========================================================= */
+
+function updateTraffic(){
+
+    for(const c of cars){
+
+        if(
+            c===currentCar &&
+            inCar
+        ) continue;
+
+
+        const car=c.object;
+
+        car.position.x+=
+            c.speed*c.direction;
+
+
+        if(car.position.x>250)
+            car.position.x=-250;
+
+        if(car.position.x<-250)
+            car.position.x=250;
+
+
+        car.rotation.y=
+            c.direction>0
+            ?Math.PI/2
+            :-Math.PI/2;
+
+
+        for(const wheel of c.wheels){
+
+            wheel.rotation.z+=
+                c.speed*1.8;
+        }
+    }
+}
+
+
+/* =========================================================
+   DRIVE
+========================================================= */
+
+function drive(){
+
+    if(!currentCar)
+        return;
+
+
+    const car=currentCar.object;
+
+
+    if(keys.w)
+        carSpeed+=.009;
+
+    if(keys.s)
+        carSpeed-=.012;
+
+    if(!keys.w&&!keys.s)
+        carSpeed*=.94;
+
+
+    carSpeed=
+        THREE.MathUtils.clamp(
+            carSpeed,
+            -.22,
+            .65
+        );
+
+
+    if(keys.a){
+
+        car.rotation.y+=
+            .025*
+            Math.sign(
+                carSpeed||1
+            );
+    }
+
+
+    if(keys.d){
+
+        car.rotation.y-=
+            .025*
+            Math.sign(
+                carSpeed||1
+            );
+    }
+
+
+    car.position.x+=
+        Math.sin(car.rotation.y)*
+        carSpeed;
+
+    car.position.z+=
+        Math.cos(car.rotation.y)*
+        carSpeed;
+
+
+    for(const wheel of currentCar.wheels){
+
+        wheel.rotation.z+=
+            carSpeed*1.8;
+    }
+
+
+    limit(car);
+}
+
+
+/* =========================================================
+   ENTER / EXIT CAR
+========================================================= */
+
+function tryEnterCar(){
+
+    if(inCar){
+
+        inCar=false;
+
+        player.visible=true;
+
+        player.position.copy(
+            currentCar.object.position
+        );
+
+        player.position.x+=4;
+
+        document.getElementById(
+            "vehicle"
+        ).style.display="none";
+
+        currentCar=null;
+        carSpeed=0;
+
+        notify("🚶 You exited the car");
+
+        return;
+    }
+
+
+    let closest=null;
+    let dist=999;
+
+
+    for(const c of cars){
+
+        const d=
+            player.position.distanceTo(
+                c.object.position
+            );
+
+        if(d<dist){
+
+            dist=d;
+            closest=c;
+        }
+    }
+
+
+    if(
+        closest &&
+        dist<8
+    ){
+
+        currentCar=closest;
+        inCar=true;
+
+        player.visible=false;
+
+        document.getElementById(
+            "vehicle"
+        ).style.display="block";
+
+        notify("🚗 Vehicle entered");
+    }
+}
+
+
+/* =========================================================
+   CAMERA
+========================================================= */
+
+function updateCamera(){
+
+    if(inCar && currentCar){
+
+        const c=currentCar.object;
+
+        const offset=new THREE.Vector3(
+            -Math.sin(c.rotation.y)*15,
+            6.4,
+            -Math.cos(c.rotation.y)*15
+        );
+
+
+        const target=
+            c.position.clone()
+            .add(offset);
+
+
+        camera.position.lerp(
+            target,
+            .12
+        );
+
+
+        camera.lookAt(
+            c.position.x,
+            1.65,
+            c.position.z
+        );
+
+
+        camera.fov=
+            THREE.MathUtils.lerp(
+                camera.fov,
+                68+
+                Math.abs(carSpeed)*12,
+                .08
+            );
+
+        camera.updateProjectionMatrix();
+
+        return;
+    }
+
+
+    const distance=10.5;
+
+
+    const target=new THREE.Vector3(
+        player.position.x-
+        Math.sin(player.rotation.y)*
+        distance,
+
+        player.position.y+
+        5.4+
+        Math.sin(pitch)*3,
+
+        player.position.z-
+        Math.cos(player.rotation.y)*
+        distance
+    );
+
+
+    camera.position.lerp(
+        target,
+        .12
+    );
+
+
+    camera.lookAt(
+        player.position.x,
+        2.45,
+        player.position.z
+    );
+}
+
+
+/* =========================================================
+   PLANT TREE
+========================================================= */
+
+function plantTree(){
+
+    createTree(
+        player.position.x+
+        (Math.random()-.5)*10,
+
+        player.position.z+
+        (Math.random()-.5)*10,
+
+        .9+Math.random()*.5
+    );
+
+
+    forest=Math.min(
+        100,
+        forest+1.5
+    );
+
+    pollution=Math.max(
+        0,
+        pollution-.4
+    );
+
+    health=Math.min(
+        100,
+        health+.5
+    );
+
+    plantedTrees++;
+
+    updateHUD();
+
+    notify("🌳 New tree planted!");
+}
+
+
+/* =========================================================
+   CUT TREE
+========================================================= */
+
+function cutTree(){
+
+    if(trees.length===0)
+        return;
+
+
+    const tree=trees.pop();
+
+    scene.remove(tree);
+
+
+    forest=Math.max(
+        0,
+        forest-2
+    );
+
+    pollution=Math.min(
+        100,
+        pollution+1.2
+    );
+
+    health=Math.max(
+        0,
+        health-.7
+    );
+
+
+    updateHUD();
+
+    notify("🪓 Forest decreased");
+}
+
+
+/* =========================================================
+   CLEAN WASTE
+========================================================= */
+
+function cleanWaste(){
+
+    if(wastes.length===0)
+        return;
+
+
+    const w=wastes.pop();
+
+    scene.remove(w);
+
+
+    pollution=Math.max(
+        0,
+        pollution-1.2
+    );
+
+    health=Math.min(
+        100,
+        health+.8
+    );
+
+
+    updateHUD();
+
+    notify("♻ Waste cleaned!");
+}
+
+
+/* =========================================================
+   FACTORY
+========================================================= */
+
+function addPollution(){
+
+    pollution=Math.min(
+        100,
+        pollution+8
+    );
+
+    temperature+=.08;
+
+    health=Math.max(
+        0,
+        health-2
+    );
+
+    updateHUD();
+
+    notify("🏭 Pollution increased!");
+}
+
+
+/* =========================================================
+   CLEAN ENERGY
+========================================================= */
+
+function cleanEnergy(){
+
+    pollution=Math.max(
+        0,
+        pollution-5
+    );
+
+    temperature=Math.max(
+        .2,
+        temperature-.04
+    );
+
+    health=Math.min(
+        100,
+        health+2
+    );
+
+    updateHUD();
+
+    notify("⚡ Clean energy activated!");
+}
+
+
+/* =========================================================
+   RAIN
+========================================================= */
+
+function startRain(){
+
+    for(let i=0;i<500;i++){
+
+        const drop=new THREE.Mesh(
+            new THREE.CylinderGeometry(
+                .008,.008,.5,5
+            ),
+            new THREE.MeshBasicMaterial({
+                color:0x9ddfff
+            })
+        );
+
+
+        drop.position.set(
+            player.position.x+
+            (Math.random()-.5)*100,
+
+            Math.random()*50,
+
+            player.position.z+
+            (Math.random()-.5)*100
+        );
+
+
+        scene.add(drop);
+        rain.push(drop);
+    }
+
+
+    document.getElementById(
+        "weather"
+    ).textContent="🌧 Rain";
+
+    notify("🌧 Rain started");
+}
+
+
+/* =========================================================
+   RAIN UPDATE
+========================================================= */
+
+function updateRain(){
+
+    for(const d of rain){
+
+        d.position.y-=.7;
+
+
+        if(d.position.y<0){
+
+            d.position.y=
+                40+Math.random()*15;
+
+            d.position.x=
+                player.position.x+
+                (Math.random()-.5)*100;
+
+            d.position.z=
+                player.position.z+
+                (Math.random()-.5)*100;
+        }
+    }
+}
+
+
+/* =========================================================
+   STORM
+========================================================= */
+
+function startStorm(){
+
+    startRain();
+
+    scene.fog.density=.004;
+
+    scene.background=
+        new THREE.Color(0x394a5a);
+
+
+    document.getElementById(
+        "weather"
+    ).textContent="⛈ Storm";
+
+
+    pollution=Math.min(
+        100,
+        pollution+1
+    );
+
+
+    notify("⛈ Storm warning!");
+}
+
+
+/* =========================================================
+   DROUGHT
+========================================================= */
+
+function startDrought(){
+
+    rain.forEach(
+        r=>scene.remove(r)
+    );
+
+    rain=[];
+
+
+    scene.background=
+        new THREE.Color(0xf3b35d);
+
+    scene.fog.density=.0015;
+
+
+    temperature+=.2;
+
+    forest=Math.max(
+        0,
+        forest-3
+    );
+
+    health=Math.max(
+        0,
+        health-2
+    );
+
+
+    document.getElementById(
+        "weather"
+    ).textContent="☀ Drought";
+
+
+    updateHUD();
+
+    notify(
+        "☀ Drought is affecting the world"
+    );
+}
+
+
+/* =========================================================
+   FLOOD
+========================================================= */
+
+function flood(){
+
+    seaLevel=Math.min(
+        100,
+        seaLevel+12
+    );
+
+
+    water.scale.y=
+        1+seaLevel*.012;
+
+
+    water.position.y=
+        .02+seaLevel*.015;
+
+
+    health=Math.max(
+        0,
+        health-3
+    );
+
+
+    document.getElementById(
+        "weather"
+    ).textContent="🌊 Flood";
+
+
+    updateHUD();
+
+    notify("🌊 Sea level rising!");
+}
+
+
+/* =========================================================
+   SPAWN CAR
+========================================================= */
+
+function spawnCar(){
+
+    const colors=[
+        0x1677d2,
+        0xe53935,
+        0xf5c400,
+        0xeeeeee,
+        0x8e44ad,
+        0x2e9b55,
+        0x222831
+    ];
+
+
+    makeCar(
+        player.position.x+12,
+        player.position.z+12,
+        colors[
+            Math.floor(
+                Math.random()*colors.length
+            )
+        ],
+        Math.random()>.5
+            ?"sport"
+            :"sedan"
+    );
+
+
+    notify("🚗 New car spawned");
+}
+
+
+/* =========================================================
+   DAY / NIGHT
+========================================================= */
+
+function toggleNight(){
+
+    night=!night;
+
+
+    if(night){
+
+        scene.background=
+            new THREE.Color(0x020817);
+
+        scene.fog.color=
+            new THREE.Color(0x020817);
+
+        hemi.intensity=.35;
+        sun.intensity=.35;
+        fillLight.intensity=.15;
+
+
+        document.getElementById(
+            "weather"
+        ).textContent="🌙 Night";
+
+    }else{
+
+        scene.background=
+            new THREE.Color(0x83d8ff);
+
+        scene.fog.color=
+            new THREE.Color(0x83d8ff);
+
+        hemi.intensity=2.4;
+        sun.intensity=3.6;
+        fillLight.intensity=.8;
+
+
+        document.getElementById(
+            "weather"
+        ).textContent="☀️ Clear";
+    }
+
+
+    notify(
+        night
+        ?"🌙 Night mode"
+        :"☀️ Day mode"
+    );
+}
+
+
+/* =========================================================
+   HUD
+========================================================= */
+
+function updateHUD(){
+
+    health=THREE.MathUtils.clamp(
+        health,0,100
+    );
+
+    forest=THREE.MathUtils.clamp(
+        forest,0,100
+    );
+
+    pollution=THREE.MathUtils.clamp(
+        pollution,0,100
+    );
+
+    seaLevel=THREE.MathUtils.clamp(
+        seaLevel,0,100
+    );
+
+
+    document.getElementById(
+        "healthFill"
+    ).style.width=health+"%";
+
+    document.getElementById(
+        "forestFill"
+    ).style.width=forest+"%";
+
+    document.getElementById(
+        "pollutionFill"
+    ).style.width=pollution+"%";
+
+    document.getElementById(
+        "tempFill"
+    ).style.width=
+        Math.min(
+            100,
+            temperature*30
+        )+"%";
+
+    document.getElementById(
+        "waterFill"
+    ).style.width=seaLevel+"%";
+
+
+    document.getElementById(
+        "healthText"
+    ).textContent=
+        Math.round(health)+"%";
+
+    document.getElementById(
+        "forestText"
+    ).textContent=
+        Math.round(forest)+"%";
+
+    document.getElementById(
+        "pollutionText"
+    ).textContent=
+        Math.round(pollution)+"%";
+
+    document.getElementById(
+        "tempText"
+    ).textContent=
+        temperature.toFixed(1)+"°C";
+
+    document.getElementById(
+        "waterText"
+    ).textContent=
+        Math.round(seaLevel)+"%";
+}
+
+
+/* =========================================================
+   LOCATION
+========================================================= */
+
+function updateLocation(){
+
+    const x=player.position.x;
+    const z=player.position.z;
+
+    let name="Green Valley";
+
+
+    if(
+        Math.abs(x)<30 &&
+        Math.abs(z)<30
+    ){
+
+        name="Downtown City";
+
+    }else if(x>200){
+
+        name="Forest Region";
+
+    }else if(x<-200){
+
+        name="Coastal Region";
+
+    }else if(z>200){
+
+        name="Mountain Region";
+    }
+
+
+    document.getElementById(
+        "location"
+    ).textContent=
+        "📍 "+name;
+}
+
+
+/* =========================================================
+   NOTIFICATION
+========================================================= */
+
+function notify(text){
+
+    document.getElementById(
+        "missionText"
+    ).textContent=text;
+
+
+    const toast=document.getElementById(
+        "toast"
+    );
+
+    toast.textContent=text;
+    toast.style.opacity="1";
+
+
+    setTimeout(()=>{
+        toast.style.opacity="0";
+    },1600);
+
+
+    setTimeout(()=>{
+
+        document.getElementById(
+            "missionText"
+        ).textContent=
+            plantedTrees>=10
+            ?"Great! You are restoring the planet."
+            :"Plant trees and improve the city's climate.";
+
+    },2500);
+}
+
+
+/* =========================================================
+   KEYBOARD
+========================================================= */
+
+window.addEventListener(
+    "keydown",
+    e=>{
+
+        keys[
+            e.key.toLowerCase()
+        ]=true;
+
+
+        if(
+            e.key.toLowerCase()==="e"
+        ){
+
+            tryEnterCar();
+        }
+    }
+);
+
+
+window.addEventListener(
+    "keyup",
+    e=>{
+
+        keys[
+            e.key.toLowerCase()
+        ]=false;
+    }
+);
+
+
+/* =========================================================
+   MOUSE LOOK
+========================================================= */
+
+let dragging=false;
+let lastX=0;
+let lastY=0;
+
+
+renderer.domElement.addEventListener(
+    "mousedown",
+    e=>{
+
+        dragging=true;
+
+        lastX=e.clientX;
+        lastY=e.clientY;
+    }
+);
+
+
+window.addEventListener(
+    "mouseup",
+    ()=>{
+        dragging=false;
+    }
+);
+
+
+window.addEventListener(
+    "mousemove",
+    e=>{
+
+        if(!dragging)
+            return;
+
+
+        const dx=
+            e.clientX-lastX;
+
+        const dy=
+            e.clientY-lastY;
+
+
+        lastX=e.clientX;
+        lastY=e.clientY;
+
+
+        yaw-=dx*.004;
+
+        pitch-=dy*.002;
+
+
+        pitch=
+            THREE.MathUtils.clamp(
+                pitch,
+                -.7,
+                .25
+            );
+    }
+);
+
+
+/* =========================================================
+   RESIZE
+========================================================= */
+
+window.addEventListener(
+    "resize",
+    ()=>{
+
+        camera.aspect=
+            innerWidth/innerHeight;
+
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(
+            innerWidth,
+            innerHeight
+        );
+    }
+);
+
+
+/* =========================================================
+   MAIN LOOP
+========================================================= */
+
+function animate(){
+
+    requestAnimationFrame(animate);
+
+
+    const dt=
+        clock.getDelta();
+
+
+    updatePlayer();
+
+    updateCitizens();
+
+    updateTraffic();
+
+    updateRain();
+
+    updateCamera();
+
+    updateLocation();
+
+
+    if(!inCar){
+
+        animateHuman(
+            player,
+            dt
+        );
+    }
+
+
+    /* subtle water movement */
+
+    water.rotation.z+=.00012;
+
+
+    renderer.render(
+        scene,
+        camera
+    );
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+setTimeout(()=>{
+
+    document.getElementById(
+        "loading"
+    ).style.display="none";
+
+
+    updateHUD();
+
+    animate();
+
+},1800);
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,135 @@
+from pathlib import Path
+import zipfile, textwrap
+
+root = Path("/mnt/data/climate-community")
+root.mkdir(exist_ok=True)
+
+html = r'''<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Climate Community | By Abdullah</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#071b16;color:#eefdf7}
+header{padding:22px 7%;background:linear-gradient(135deg,#063b2d,#0b6b4f);position:sticky;top:0;z-index:5}
+nav{display:flex;justify-content:space-between;align-items:center;gap:20px}.logo{font-size:25px;font-weight:800}.logo span{color:#8ff5c8}
+nav a{color:white;text-decoration:none;margin-left:18px}
+.hero{padding:80px 7%;text-align:center;background:radial-gradient(circle at top,#167d5c55,transparent 55%)}
+.hero h1{font-size:clamp(38px,7vw,75px);margin:0 0 15px}.hero p{max-width:720px;margin:auto;color:#c8e8dc;font-size:18px}
+.wrap{max-width:1100px;margin:35px auto;padding:0 18px}
+.panel,.post{background:#0d2921;border:1px solid #1d4b3e;border-radius:20px;padding:22px;margin-bottom:22px;box-shadow:0 10px 30px #0004}
+h2{margin-top:0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+input,textarea,select{width:100%;padding:13px;border-radius:12px;border:1px solid #326354;background:#071b16;color:white;margin:7px 0 12px}
+textarea{min-height:120px;resize:vertical}button{border:0;border-radius:12px;padding:13px 18px;font-weight:bold;cursor:pointer;background:#76e6b7;color:#062117}
+button.secondary{background:#203f35;color:white}.danger{background:#ff7777!important;color:#250000!important}
+.feed-title{display:flex;justify-content:space-between;align-items:center}.badge{font-size:12px;padding:6px 10px;border-radius:20px;background:#173f34;color:#9df3cc}
+.user{display:flex;align-items:center;gap:12px}.avatar{width:45px;height:45px;border-radius:50%;display:grid;place-items:center;background:#76e6b7;color:#062117;font-weight:bold}
+.meta{color:#9fc8bb;font-size:13px}.post p{line-height:1.6}.media{width:100%;max-height:430px;object-fit:cover;border-radius:14px;margin-top:12px}
+.actions{display:flex;gap:10px;margin-top:15px}.actions button{padding:9px 13px}
+.hidden{display:none}.tabs{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+.empty{text-align:center;color:#9fc8bb;padding:30px}
+@media(max-width:700px){.grid{grid-template-columns:1fr}nav a{display:none}}
+</style>
+</head>
+<body>
+<header><nav><div class="logo">🌍 Climate <span>Community</span></div><div><a href="#community">Community</a><a href="#share">Share</a><a href="#admin">Admin</a></div></nav></header>
+
+<section class="hero">
+<h1>One Planet. Many Voices.</h1>
+<p>Ask climate questions, share experiences, photos and videos, and learn from people around the world.</p>
+</section>
+
+<main class="wrap">
+<section class="panel" id="share">
+<h2>🌱 Share with the Climate Community</h2>
+<div class="grid">
+<div><label>Your display name</label><input id="name" placeholder="e.g. Ali"></div>
+<div><label>Country</label><input id="country" placeholder="e.g. Pakistan"></div>
+</div>
+<label>Post type</label>
+<select id="type"><option>Question</option><option>Experience</option><option>Climate News</option><option>Idea</option></select>
+<label>Your message</label><textarea id="message" placeholder="Write your climate-related question or experience..."></textarea>
+<label>Photo or video (optional)</label><input id="media" type="file" accept="image/*,video/*">
+<button onclick="submitPost()">Submit for review</button>
+<p class="meta">Your post will appear publicly only after admin approval.</p>
+</section>
+
+<section id="community">
+<div class="feed-title"><h2>🌎 Community Feed</h2><span class="badge" id="count">0 approved</span></div>
+<div id="feed"></div>
+</section>
+
+<section class="panel" id="admin">
+<h2>🔐 Admin Dashboard</h2>
+<p class="meta">Demo admin panel — use the password below to manage submissions.</p>
+<input id="adminPass" type="password" placeholder="Admin password">
+<button onclick="login()">Open Admin</button>
+<div id="adminArea" class="hidden" style="margin-top:20px">
+<div class="tabs"><button onclick="showPending()">Pending</button><button class="secondary" onclick="clearRejected()">Clear rejected</button></div>
+<div id="pending"></div>
+</div>
+</section>
+</main>
+
+<script>
+const KEY="climateCommunityPosts";
+let posts=JSON.parse(localStorage.getItem(KEY)||"[]");
+
+function save(){localStorage.setItem(KEY,JSON.stringify(posts));render();}
+function esc(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
+function initials(n){return esc((n||"?").trim().slice(0,1).toUpperCase());}
+
+function submitPost(){
+ const name=document.getElementById("name").value.trim(), country=document.getElementById("country").value.trim();
+ const type=document.getElementById("type").value, message=document.getElementById("message").value.trim();
+ const file=document.getElementById("media").files[0];
+ if(!name||!message){alert("Please enter your display name and message.");return;}
+ const finish=(media="")=>{
+   posts.unshift({id:Date.now(),name,country,type,message,media,status:"pending",date:new Date().toLocaleString()});
+   save(); document.getElementById("message").value="";document.getElementById("media").value="";
+   alert("Submitted! It will appear after admin approval.");
+ };
+ if(file){
+   if(file.size>4*1024*1024){alert("For this demo, please use a file under 4 MB.");return;}
+   const r=new FileReader();r.onload=()=>finish(r.result);r.readAsDataURL(file);
+ }else finish();
+}
+function render(){
+ const feed=document.getElementById("feed"), approved=posts.filter(p=>p.status==="approved");
+ document.getElementById("count").textContent=approved.length+" approved";
+ if(!approved.length){feed.innerHTML='<div class="panel empty">No approved posts yet. Be the first to share!</div>';return;}
+ feed.innerHTML=approved.map(card).join("");
+}
+function card(p){
+ let media="";
+ if(p.media){
+   if(p.media.startsWith("data:video")) media=`<video class="media" src="${p.media}" controls></video>`;
+   else media=`<img class="media" src="${p.media}" alt="Climate community image">`;
+ }
+ return `<article class="post"><div class="user"><div class="avatar">${initials(p.name)}</div><div><b>${esc(p.name)}</b><div class="meta">🌍 ${esc(p.country||"World")} · ${esc(p.type)} · ${esc(p.date)}</div></div></div><p>${esc(p.message)}</p>${media}<div class="actions"><button onclick="like(${p.id})">❤️ ${p.likes||0}</button></div></article>`;
+}
+function like(id){const p=posts.find(x=>x.id===id);p.likes=(p.likes||0)+1;save();}
+function login(){
+ if(document.getElementById("adminPass").value!=="climate123"){alert("Wrong password.");return;}
+ document.getElementById("adminArea").classList.remove("hidden");showPending();
+}
+function showPending(){
+ const box=document.getElementById("pending"), pending=posts.filter(p=>p.status==="pending");
+ if(!pending.length){box.innerHTML='<div class="empty">No pending submissions.</div>';return;}
+ box.innerHTML=pending.map(p=>`<div class="post"><div class="user"><div class="avatar">${initials(p.name)}</div><div><b>${esc(p.name)}</b><div class="meta">🌍 ${esc(p.country||"World")} · ${esc(p.type)} · ${esc(p.date)}</div></div></div><p>${esc(p.message)}</p>${p.media?(p.media.startsWith("data:video")?`<video class="media" src="${p.media}" controls></video>`:`<img class="media" src="${p.media}">`):""}<div class="actions"><button onclick="approve(${p.id})">✅ Approve</button><button class="danger" onclick="reject(${p.id})">❌ Reject</button></div></div>`).join("");
+}
+function approve(id){posts.find(p=>p.id===id).status="approved";save();showPending();}
+function reject(id){posts.find(p=>p.id===id).status="rejected";save();showPending();}
+function clearRejected(){posts=posts.filter(p=>p.status!=="rejected");save();showPending();}
+render();
+</script>
+</body>
+</html>'''
+
+(root/"index.html").write_text(html,encoding="utf-8")
+
+zip_path=Path("/mnt/data/climate-community-website.zip")
+with zipfile.ZipFile(zip_path,"w",zipfile.ZIP_DEFLATED) as z:
+    z.write(root/"index.html","index.html")
+print(f"Created: {zip_path}")

@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Climate Open World</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    background: #111;
+}
+
+canvas {
+    display: block;
+    background: #7ec850;
+}
+
+/* ================= HUD ================= */
+
+#hud {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 10;
+    color: white;
+    background: rgba(0,0,0,.65);
+    padding: 15px;
+    border-radius: 15px;
+    min-width: 230px;
+    backdrop-filter: blur(8px);
+}
+
+#hud h2 {
+    margin-bottom: 8px;
+}
+
+.stat {
+    margin: 5px 0;
+}
+
+.bar {
+    width: 200px;
+    height: 10px;
+    background: #333;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#xpBar {
+    height: 100%;
+    width: 0%;
+    background: #00e676;
+}
+
+/* ================= CONTROLS ================= */
+
+#controls {
+    position: fixed;
+    bottom: 15px;
+    left: 15px;
+    z-index: 10;
+    color: white;
+    background: rgba(0,0,0,.65);
+    padding: 12px;
+    border-radius: 12px;
+}
+
+#mission {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 10;
+    color: white;
+    background: rgba(0,0,0,.65);
+    padding: 15px;
+    border-radius: 15px;
+    width: 250px;
+}
+
+button {
+    border: none;
+    padding: 9px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 7px;
+}
+
+#plantBtn {
+    background: #22c55e;
+    color: white;
+}
+
+#removeBtn {
+    background: #ef4444;
+    color: white;
+}
+
+#weatherBtn {
+    background: #3b82f6;
+    color: white;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="game"></canvas>
+
+<!-- ================= HUD ================= -->
+
+<div id="hud">
+
+    <h2>🌍 Climate World</h2>
+
+    <div class="stat">
+        ⭐ Level:
+        <span id="level">1</span>
+    </div>
+
+    <div class="stat">
+        XP:
+        <span id="xp">0</span>
+    </div>
+
+    <div class="bar">
+        <div id="xpBar"></div>
+    </div>
+
+    <div class="stat">
+        🌳 Trees:
+        <span id="treeCount">0</span>
+    </div>
+
+    <div class="stat">
+        🌤️ Weather:
+        <span id="weather">Sunny</span>
+    </div>
+
+    <div class="stat">
+        🕐 Time:
+        <span id="time">Day</span>
+    </div>
+
+    <button id="plantBtn" onclick="plantTree()">
+        🌱 Plant Tree
+    </button>
+
+    <button id="removeBtn" onclick="removeTree()">
+        🪓 Remove Tree
+    </button>
+
+    <button id="weatherBtn" onclick="changeWeather()">
+        🌦️ Change Weather
+    </button>
+
+</div>
+
+<!-- ================= MISSION ================= -->
+
+<div id="mission">
+
+    <h3>🎯 Mission</h3>
+
+    <p id="missionText">
+        Plant 5 trees
+    </p>
+
+    <p>
+        Progress:
+        <span id="missionProgress">0 / 5</span>
+    </p>
+
+</div>
+
+<!-- ================= CONTROLS ================= -->
+
+<div id="controls">
+
+    <b>🎮 Controls</b>
+
+    <br><br>
+
+    W A S D → Move
+
+    <br>
+
+    SPACE → Jump
+
+    <br>
+
+    E → Plant Tree
+
+    <br>
+
+    R → Remove Tree
+
+</div>
+
+<script>
+
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+
+/* =====================================================
+                    WORLD
+===================================================== */
+
+const world = {
+    width: 5000,
+    height: 5000
+};
+
+
+/* =====================================================
+                    PLAYER
+===================================================== */
+
+const player = {
+
+    x: 2500,
+    y: 2500,
+
+    width: 35,
+    height: 45,
+
+    speed: 5,
+
+    velocityY: 0,
+
+    jumping: false
+};
+
+
+/* =====================================================
+                    CAMERA
+===================================================== */
+
+const camera = {
+
+    x: 0,
+    y: 0
+};
+
+
+/* =====================================================
+                    TREES
+===================================================== */
+
+let trees = [];
+
+
+// Generate initial forest
+
+for(let i = 0; i < 100; i++) {
+
+    trees.push({
+
+        x: Math.random() * world.width,
+
+        y: Math.random() * world.height,
+
+        size: 30 + Math.random() * 25
+
+    });
+
+}
+
+
+/* =====================================================
+                    GAME STATE
+===================================================== */
+
+let xp = 0;
+
+let level = 1;
+
+let weather = "Sunny";
+
+let dayTime = true;
+
+let missionTrees = 0;
+
+
+/* =====================================================
+                    KEYS
+===================================================== */
+
+const keys = {};
+
+window.addEventListener("keydown", e => {
+
+    keys[e.key.toLowerCase()] = true;
+
+    if(e.code === "Space") {
+
+        jump();
+
+    }
+
+    if(e.key.toLowerCase() === "e") {
+
+        plantTree();
+
+    }
+
+    if(e.key.toLowerCase() === "r") {
+
+        removeTree();
+
+    }
+
+});
+
+
+window.addEventListener("keyup", e => {
+
+    keys[e.key.toLowerCase()] = false;
+
+});
+
+
+/* =====================================================
+                    MOVEMENT
+===================================================== */
+
+function updatePlayer() {
+
+    if(keys["w"]) {
+
+        player.y -= player.speed;
+
+    }
+
+    if(keys["s"]) {
+
+        player.y += player.speed;
+
+    }
+
+    if(keys["a"]) {
+
+        player.x -= player.speed;
+
+    }
+
+    if(keys["d"]) {
+
+        player.x += player.speed;
+
+    }
+
+
+    // World boundaries
+
+    player.x = Math.max(
+        0,
+        Math.min(world.width, player.x)
+    );
+
+    player.y = Math.max(
+        0,
+        Math.min(world.height, player.y)
+    );
+
+
+    // Jump physics
+
+    if(player.jumping) {
+
+        player.y += player.velocityY;
+
+        player.velocityY += 0.6;
+
+        if(player.y >= player.groundY) {
+
+            player.y = player.groundY;
+
+            player.jumping = false;
+
+        }
+
+    }
+
+
+    // Camera
+
+    camera.x =
+        player.x - canvas.width / 2;
+
+    camera.y =
+        player.y - canvas.height / 2;
+
+
+    camera.x =
+        Math.max(
+            0,
+            Math.min(
+                world.width - canvas.width,
+                camera.x
+            )
+        );
+
+
+    camera.y =
+        Math.max(
+            0,
+            Math.min(
+                world.height - canvas.height,
+                camera.y
+            )
+        );
+
+}
+
+
+/* =====================================================
+                    JUMP
+===================================================== */
+
+function jump() {
+
+    if(!player.jumping) {
+
+        player.groundY = player.y;
+
+        player.velocityY = -12;
+
+        player.jumping = true;
+
+    }
+
+}
+
+
+/* =====================================================
+                    PLANT TREE
+===================================================== */
+
+function plantTree() {
+
+    const tree = {
+
+        x: player.x + 60,
+
+        y: player.y + 40,
+
+        size: 35
+
+    };
+
+    trees.push(tree);
+
+    missionTrees++;
+
+    addXP(20);
+
+    updateUI();
+
+}
+
+
+/* =====================================================
+                    REMOVE TREE
+===================================================== */
+
+function removeTree() {
+
+    let nearest = -1;
+
+    let distance = 999999;
+
+
+    trees.forEach((tree, index) => {
+
+        const dx = tree.x - player.x;
+
+        const dy = tree.y - player.y;
+
+        const d = Math.sqrt(dx * dx + dy * dy);
+
+
+        if(d < distance && d < 100) {
+
+            distance = d;
+
+            nearest = index;
+
+        }
+
+    });
+
+
+    if(nearest !== -1) {
+
+        trees.splice(nearest, 1);
+
+        addXP(5);
+
+        updateUI();
+
+    }
+
+}
+
+
+/* =====================================================
+                    XP
+===================================================== */
+
+function addXP(amount) {
+
+    xp += amount;
+
+
+    if(xp >= level * 100) {
+
+        xp -= level * 100;
+
+        level++;
+
+        alert(
+            "🎉 Level Up!\nYou reached Level " +
+            level
+        );
+
+    }
+
+
+    updateUI();
+
+}
+
+
+/* =====================================================
+                    WEATHER
+===================================================== */
+
+function changeWeather() {
+
+    const weatherList = [
+
+        "Sunny",
+
+        "Cloudy",
+
+        "Rain",
+
+        "Storm"
+
+    ];
+
+
+    let current =
+        weatherList.indexOf(weather);
+
+
+    current++;
+
+    if(current >= weatherList.length) {
+
+        current = 0;
+
+    }
+
+
+    weather =
+        weatherList[current];
+
+
+    updateUI();
+
+}
+
+
+/* =====================================================
+                    DAY / NIGHT
+===================================================== */
+
+setInterval(() => {
+
+    dayTime = !dayTime;
+
+    updateUI();
+
+}, 30000);
+
+
+/* =====================================================
+                    DRAW WORLD
+===================================================== */
+
+function drawWorld() {
+
+    // Ground
+
+    ctx.fillStyle = "#78bd4d";
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    // Grass patches
+
+    for(let i = 0; i < 100; i++) {
+
+        const x =
+            (i * 137) % world.width
+            - camera.x;
+
+        const y =
+            (i * 239) % world.height
+            - camera.y;
+
+
+        if(
+            x > -100 &&
+            x < canvas.width + 100 &&
+            y > -100 &&
+            y < canvas.height + 100
+        ) {
+
+            ctx.fillStyle = "#6aaa43";
+
+            ctx.fillRect(
+                x,
+                y,
+                80,
+                30
+            );
+
+        }
+
+    }
+
+
+    // Water
+
+    ctx.fillStyle = "#39a9db";
+
+    ctx.fillRect(
+        700 - camera.x,
+        800 - camera.y,
+        700,
+        400
+    );
+
+
+    // Mountain
+
+    ctx.fillStyle = "#777";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        3000 - camera.x,
+        500 - camera.y
+    );
+
+    ctx.lineTo(
+        3500 - camera.x,
+        1300 - camera.y
+    );
+
+    ctx.lineTo(
+        2500 - camera.x,
+        1300 - camera.y
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+
+    // Trees
+
+    trees.forEach(tree => {
+
+        const x = tree.x - camera.x;
+
+        const y = tree.y - camera.y;
+
+
+        if(
+            x < -100 ||
+            x > canvas.width + 100 ||
+            y < -100 ||
+            y > canvas.height + 100
+        ) return;
+
+
+        // Shadow
+
+        ctx.fillStyle = "rgba(0,0,0,.2)";
+
+        ctx.beginPath();
+
+        ctx.ellipse(
+            x,
+            y + 25,
+            tree.size,
+            10,
+            0,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+
+
+        // Trunk
+
+        ctx.fillStyle = "#75451f";
+
+        ctx.fillRect(
+            x - 7,
+            y - 5,
+            14,
+            35
+        );
+
+
+        // Leaves
+
+        ctx.fillStyle = "#176b35";
+
+        ctx.beginPath();
+
+        ctx.arc(
+            x,
+            y - 15,
+            tree.size,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+
+
+        ctx.fillStyle = "#299447";
+
+        ctx.beginPath();
+
+        ctx.arc(
+            x - 10,
+            y - 25,
+            tree.size * .65,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+
+    });
+
+}
+
+
+/* =====================================================
+                    DRAW PLAYER
+===================================================== */
+
+function drawPlayer() {
+
+    const x =
+        player.x - camera.x;
+
+    const y =
+        player.y - camera.y;
+
+
+    // Shadow
+
+    ctx.fillStyle = "rgba(0,0,0,.25)";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        x,
+        y + 25,
+        22,
+        8,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Body
+
+    ctx.fillStyle = "#e63946";
+
+    ctx.fillRect(
+        x - 15,
+        y - 15,
+        30,
+        35
+    );
+
+
+    // Head
+
+    ctx.fillStyle = "#f4c7a1";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x,
+        y - 28,
+        13,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Backpack
+
+    ctx.fillStyle = "#333";
+
+    ctx.fillRect(
+        x - 22,
+        y - 10,
+        7,
+        25
+    );
+
+}
+
+
+/* =====================================================
+                    WEATHER EFFECT
+===================================================== */
+
+function drawWeather() {
+
+    if(weather === "Rain" ||
+       weather === "Storm") {
+
+        ctx.strokeStyle =
+            "rgba(180,220,255,.65)";
+
+        ctx.lineWidth = 2;
+
+
+        for(let i = 0; i < 120; i++) {
+
+            const x =
+                Math.random() * canvas.width;
+
+            const y =
+                Math.random() * canvas.height;
+
+
+            ctx.beginPath();
+
+            ctx.moveTo(x, y);
+
+            ctx.lineTo(
+                x - 5,
+                y + 15
+            );
+
+            ctx.stroke();
+
+        }
+
+    }
+
+
+    if(weather === "Storm") {
+
+        ctx.fillStyle =
+            "rgba(40,40,60,.25)";
+
+        ctx.fillRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+    }
+
+
+    if(!dayTime) {
+
+        ctx.fillStyle =
+            "rgba(0,10,40,.45)";
+
+        ctx.fillRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+                    UPDATE UI
+===================================================== */
+
+function updateUI() {
+
+    document.getElementById("level")
+        .innerText = level;
+
+    document.getElementById("xp")
+        .innerText = xp;
+
+    document.getElementById("treeCount")
+        .innerText = trees.length;
+
+    document.getElementById("weather")
+        .innerText = weather;
+
+    document.getElementById("time")
+        .innerText =
+        dayTime ? "Day ☀️" : "Night 🌙";
+
+
+    const percentage =
+        (xp / (level * 100)) * 100;
+
+    document.getElementById("xpBar")
+        .style.width =
+        percentage + "%";
+
+
+    document.getElementById("missionProgress")
+        .innerText =
+        missionTrees + " / 5";
+
+
+    if(missionTrees >= 5) {
+
+        document.getElementById("missionText")
+            .innerText =
+            "✅ Mission Complete!";
+
+    }
+
+}
+
+
+/* =====================================================
+                    GAME LOOP
+===================================================== */
+
+function gameLoop() {
+
+    updatePlayer();
+
+    drawWorld();
+
+    drawPlayer();
+
+    drawWeather();
+
+    requestAnimationFrame(gameLoop);
+
+}
+
+
+updateUI();
+
+gameLoop();
+
+
+/* =====================================================
+                    RESIZE
+===================================================== */
+
+window.addEventListener("resize", () => {
+
+    canvas.width =
+        window.innerWidth;
+
+    canvas.height =
+        window.innerHeight;
+
+});
+
+</script>
+
+</body>
+</html>

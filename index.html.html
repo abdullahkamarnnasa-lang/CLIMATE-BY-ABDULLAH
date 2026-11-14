@@ -1,0 +1,1255 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Abdullah | Frontend Developer</title>
+
+<meta name="description"
+content="Abdullah is a frontend developer creating responsive websites, interactive experiences, dashboards, 3D websites and creative web projects.">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+rel="stylesheet">
+
+<style>
+
+:root{
+    --bg:#050811;
+    --bg2:#0c1220;
+    --card:rgba(255,255,255,.055);
+    --border:rgba(255,255,255,.10);
+    --text:#f5f7ff;
+    --muted:#9ba6ba;
+    --primary:#6c63ff;
+    --secondary:#00d4ff;
+    --green:#20e3b2;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:"Inter",sans-serif;
+    background:
+    radial-gradient(circle at 10% 10%,rgba(108,99,255,.16),transparent 28%),
+    radial-gradient(circle at 90% 15%,rgba(0,212,255,.12),transparent 25%),
+    var(--bg);
+    color:var(--text);
+    overflow-x:hidden;
+}
+
+a{
+    text-decoration:none;
+}
+
+/* NAVBAR */
+
+.navbar{
+    background:rgba(5,8,17,.78);
+    backdrop-filter:blur(18px);
+    border-bottom:1px solid var(--border);
+}
+
+.navbar-brand{
+    font-weight:900;
+    color:white!important;
+}
+
+.brand-dot{
+    color:var(--secondary);
+}
+
+.nav-link{
+    color:#b8c0d1!important;
+    font-weight:600;
+    margin-left:15px;
+    transition:.3s;
+}
+
+.nav-link:hover{
+    color:white!important;
+}
+
+.nav-btn{
+    background:linear-gradient(135deg,var(--primary),var(--secondary));
+    color:white!important;
+    padding:10px 18px!important;
+    border-radius:12px;
+}
+
+/* HERO */
+
+.hero{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    position:relative;
+    padding-top:90px;
+}
+
+.hero-grid{
+    position:absolute;
+    inset:0;
+    opacity:.15;
+    background-image:
+    linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);
+    background-size:55px 55px;
+    mask-image:linear-gradient(to bottom,black,transparent);
+}
+
+.hero-content{
+    position:relative;
+    z-index:2;
+}
+
+.hero-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:9px 14px;
+    border:1px solid var(--border);
+    background:rgba(255,255,255,.04);
+    border-radius:100px;
+    color:#c8d0df;
+    font-size:14px;
+    margin-bottom:25px;
+}
+
+.status{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:#21e6a7;
+    box-shadow:0 0 15px #21e6a7;
+}
+
+.hero h1{
+    font-size:clamp(3rem,7vw,6.5rem);
+    line-height:.95;
+    font-weight:900;
+    letter-spacing:-5px;
+    margin-bottom:25px;
+}
+
+.gradient-text{
+    background:linear-gradient(100deg,#fff,#9e98ff,#00d4ff);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.hero p{
+    color:var(--muted);
+    max-width:650px;
+    font-size:18px;
+    line-height:1.8;
+}
+
+.hero-buttons{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+    margin-top:30px;
+}
+
+.btn-main{
+    border:none;
+    padding:14px 23px;
+    border-radius:13px;
+    background:linear-gradient(135deg,var(--primary),var(--secondary));
+    color:white;
+    font-weight:700;
+    transition:.3s;
+}
+.contact-email-box{ max-width:650px; margin:25px auto 0; padding:22px; display:flex; align-items:center; justify-content:center; gap:18px; border:1px solid var(--border); border-radius:18px; background:rgba(255,255,255,.045); } .contact-email-box > i{ width:50px; height:50px; display:flex; align-items:center; justify-content:center; border-radius:14px; background:rgba(0,212,255,.10); color:var(--secondary); font-size:21px; } .contact-email-box small{ display:block; color:var(--muted); margin-bottom:4px; } @media(max-width:576px){ .contact-email-box{ flex-direction:column; text-align:center; } }
+
+.btn-main:hover{
+    transform:translateY(-3px);
+    color:white;
+    box-shadow:0 15px 40px rgba(0,212,255,.18);
+}
+
+.btn-outline-custom{
+    padding:13px 23px;
+    border-radius:13px;
+    border:1px solid var(--border);
+    color:white;
+    background:rgba(255,255,255,.03);
+    font-weight:700;
+    transition:.3s;
+}
+
+.btn-outline-custom:hover{
+    background:rgba(255,255,255,.09);
+    color:white;
+    transform:translateY(-3px);
+}
+
+/* DEVELOPER CARD */
+
+.developer-card{
+    max-width:430px;
+    margin:auto;
+    padding:35px;
+    border:1px solid var(--border);
+    background:linear-gradient(145deg,
+    rgba(255,255,255,.10),
+    rgba(255,255,255,.025));
+    border-radius:30px;
+    box-shadow:0 30px 80px rgba(0,0,0,.35);
+}
+
+.avatar{
+    width:105px;
+    height:105px;
+    margin-bottom:25px;
+    border-radius:28px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:38px;
+    font-weight:900;
+    background:linear-gradient(135deg,var(--primary),var(--secondary));
+}
+
+.code-window{
+    background:#050811;
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:20px;
+    font-family:monospace;
+    color:#b8c5db;
+    font-size:13px;
+    line-height:1.9;
+}
+
+.code-purple{color:#a99cff}
+.code-blue{color:#62d9ff}
+.code-green{color:#53e6b0}
+
+/* SECTIONS */
+
+section{
+    padding:100px 0;
+}
+
+.section-label{
+    color:var(--secondary);
+    text-transform:uppercase;
+    letter-spacing:3px;
+    font-size:12px;
+    font-weight:800;
+    margin-bottom:12px;
+}
+
+.section-title{
+    font-size:clamp(2.2rem,5vw,4rem);
+    font-weight:900;
+    letter-spacing:-2px;
+    margin-bottom:15px;
+}
+
+.section-description{
+    color:var(--muted);
+    max-width:700px;
+    line-height:1.8;
+}
+
+/* ABOUT */
+
+.about-box{
+    border:1px solid var(--border);
+    background:var(--card);
+    border-radius:25px;
+    padding:35px;
+    height:100%;
+}
+
+.about-box h3{
+    font-weight:800;
+    margin-bottom:18px;
+}
+
+.about-box p{
+    color:var(--muted);
+    line-height:1.9;
+}
+
+.stat{
+    padding:20px;
+    border-radius:18px;
+    background:rgba(255,255,255,.04);
+    border:1px solid var(--border);
+}
+
+.stat h3{
+    font-size:30px;
+    margin:0;
+}
+
+.stat span{
+    color:var(--muted);
+    font-size:13px;
+}
+
+/* SKILLS */
+
+.skill-card{
+    padding:28px;
+    border:1px solid var(--border);
+    border-radius:22px;
+    background:var(--card);
+    height:100%;
+    transition:.3s;
+}
+
+.skill-card:hover{
+    transform:translateY(-7px);
+    border-color:rgba(0,212,255,.35);
+}
+
+.skill-icon{
+    width:55px;
+    height:55px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:16px;
+    background:rgba(108,99,255,.14);
+    color:#9f98ff;
+    font-size:23px;
+    margin-bottom:20px;
+}
+
+.skill-card h4{
+    font-weight:800;
+}
+
+.skill-card p{
+    color:var(--muted);
+    line-height:1.7;
+    font-size:14px;
+}
+
+/* WEBSITE TYPES */
+
+.website-card{
+    position:relative;
+    padding:28px;
+    min-height:245px;
+    border-radius:24px;
+    border:1px solid var(--border);
+    background:
+    linear-gradient(145deg,
+    rgba(255,255,255,.07),
+    rgba(255,255,255,.025));
+    overflow:hidden;
+    transition:.35s;
+}
+
+.website-card::before{
+    content:"";
+    position:absolute;
+    width:130px;
+    height:130px;
+    right:-45px;
+    top:-45px;
+    background:var(--secondary);
+    opacity:.08;
+    border-radius:50%;
+    transition:.35s;
+}
+
+.website-card:hover{
+    transform:translateY(-9px);
+    border-color:rgba(0,212,255,.4);
+    box-shadow:0 25px 60px rgba(0,0,0,.3);
+}
+
+.website-card:hover::before{
+    transform:scale(2);
+}
+
+.website-icon{
+    width:58px;
+    height:58px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:17px;
+    background:rgba(0,212,255,.10);
+    color:var(--secondary);
+    font-size:24px;
+    margin-bottom:20px;
+}
+
+.website-card h4{
+    font-weight:800;
+    margin-bottom:10px;
+}
+
+.website-card p{
+    color:var(--muted);
+    font-size:14px;
+    line-height:1.7;
+    margin-bottom:0;
+}
+
+.website-number{
+    position:absolute;
+    right:20px;
+    bottom:15px;
+    font-size:45px;
+    font-weight:900;
+    color:rgba(255,255,255,.035);
+}
+
+/* PROJECTS */
+
+.project-card{
+    overflow:hidden;
+    border-radius:25px;
+    border:1px solid var(--border);
+    background:var(--card);
+    height:100%;
+    transition:.35s;
+}
+
+.project-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 25px 60px rgba(0,0,0,.3);
+}
+
+.project-image{
+    height:220px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+}
+
+.project-image i{
+    font-size:70px;
+}
+
+.climate-bg{
+    background:
+    radial-gradient(circle at 70% 30%,#26d9b0,transparent 20%),
+    linear-gradient(135deg,#073c39,#08131c);
+}
+
+.space-bg{
+    background:
+    radial-gradient(circle,#4538b7,transparent 30%),
+    linear-gradient(135deg,#05051b,#151c40);
+}
+
+.game-bg{
+    background:
+    radial-gradient(circle at 70% 20%,#ff9d3c,transparent 20%),
+    linear-gradient(135deg,#35170b,#0c111a);
+}
+
+.house-bg{
+    background:
+    radial-gradient(circle at 70% 20%,#48b7ff,transparent 25%),
+    linear-gradient(135deg,#12233b,#07101c);
+}
+
+.ai-bg{
+    background:
+    radial-gradient(circle at 50% 40%,#b35cff,transparent 25%),
+    linear-gradient(135deg,#1b102e,#070812);
+}
+
+.map-bg{
+    background:
+    radial-gradient(circle at 50% 50%,#20e3b2,transparent 25%),
+    linear-gradient(135deg,#092f32,#071018);
+}
+
+.project-content{
+    padding:25px;
+}
+
+.project-content h4{
+    font-weight:800;
+}
+
+.project-content p{
+    color:var(--muted);
+    font-size:14px;
+    line-height:1.7;
+}
+
+.tag{
+    display:inline-block;
+    padding:6px 10px;
+    margin:3px;
+    border-radius:8px;
+    font-size:11px;
+    background:rgba(255,255,255,.06);
+    color:#c8d0df;
+}
+
+/* SERVICES */
+
+.service{
+    padding:30px;
+    border-radius:22px;
+    border:1px solid var(--border);
+    background:linear-gradient(145deg,
+    rgba(255,255,255,.06),
+    rgba(255,255,255,.02));
+    height:100%;
+}
+
+.service i{
+    color:var(--secondary);
+    font-size:28px;
+    margin-bottom:20px;
+}
+
+.service h4{
+    font-weight:800;
+}
+
+.service p{
+    color:var(--muted);
+    line-height:1.7;
+    font-size:14px;
+}
+
+/* CONTACT */
+
+.contact-box{
+    padding:55px;
+    border-radius:30px;
+    border:1px solid var(--border);
+    background:
+    radial-gradient(circle at 90% 10%,rgba(0,212,255,.12),transparent 25%),
+    radial-gradient(circle at 10% 90%,rgba(108,99,255,.13),transparent 30%),
+    rgba(255,255,255,.035);
+}
+
+.email-link{
+    color:white;
+    font-size:clamp(1.1rem,3vw,2rem);
+    font-weight:800;
+    word-break:break-word;
+}
+
+.email-link:hover{
+    color:var(--secondary);
+}
+
+/* FOOTER */
+
+footer{
+    border-top:1px solid var(--border);
+    padding:35px 0;
+    color:var(--muted);
+}
+
+.social-link{
+    width:42px;
+    height:42px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid var(--border);
+    border-radius:12px;
+    color:white;
+    margin-left:7px;
+    transition:.3s;
+}
+
+.social-link:hover{
+    background:rgba(255,255,255,.08);
+    transform:translateY(-3px);
+    color:white;
+}
+
+/* TOP */
+
+#topBtn{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    width:45px;
+    height:45px;
+    border:none;
+    border-radius:13px;
+    background:linear-gradient(135deg,var(--primary),var(--secondary));
+    color:white;
+    display:none;
+    z-index:1000;
+}
+
+/* MOBILE */
+
+@media(max-width:991px){
+
+    .hero{
+        text-align:center;
+    }
+
+    .hero p{
+        margin:auto;
+    }
+
+    .hero-buttons{
+        justify-content:center;
+    }
+
+    .developer-card{
+        margin-top:50px;
+    }
+
+    .nav-btn{
+        display:inline-block;
+        margin-top:10px;
+        width:fit-content;
+    }
+}
+
+@media(max-width:576px){
+
+    section{
+        padding:75px 0;
+    }
+
+    .hero h1{
+        letter-spacing:-3px;
+    }
+
+    .contact-box{
+        padding:30px 20px;
+    }
+
+    .developer-card{
+        padding:25px;
+    }
+
+    .website-card{
+        min-height:220px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+
+<div class="container">
+
+<a class="navbar-brand" href="#home">
+Abdullah<span class="brand-dot">.</span>
+</a>
+
+<button class="navbar-toggler"
+type="button"
+data-bs-toggle="collapse"
+data-bs-target="#navbarMenu">
+
+<span class="navbar-toggler-icon"></span>
+
+</button>
+
+<div class="collapse navbar-collapse" id="navbarMenu">
+
+<ul class="navbar-nav ms-auto align-items-lg-center">
+
+<li class="nav-item">
+<a class="nav-link" href="#about">About</a>
+</li>
+
+<li class="nav-item">
+<a class="nav-link" href="#skills">Skills</a>
+</li>
+
+<li class="nav-item">
+<a class="nav-link" href="#websites">Websites</a>
+</li>
+
+<li class="nav-item">
+<a class="nav-link" href="climate.html">Projects</a>
+</li>
+
+<li class="nav-item">
+<a class="nav-link" href="#services">Services</a>
+</li>
+
+<li class="nav-item">
+<a class="nav-link nav-btn" href="#contact">
+Contact
+</a>
+</li>
+
+</ul>
+
+</div>
+</div>
+</nav>
+<!-- CONTACT --> <section id="contact"> <div class="container"> <div class="contact-box text-center"> <div class="section-label"> 06 — Contact </div> <h2 class="section-title"> Want to work with me? </h2> <p class="section-description mx-auto mb-4"> If you have a website idea, project, business website, 3D experience or any other web project, feel free to contact me. </p> <div class="contact-email-box"> <i class="fa-solid fa-envelope"></i> <div> <small>Contact me at</small> <a href="mailto:abdullahkamranta@gmail.com" class="email-link"> abdullahkamranta@gmail.com </a> </div> </div> <div class="mt-4"> <a href="mailto:abdullahkamranta@gmail.com" class="btn-main"> <i class="fa-solid fa-paper-plane"></i> Contact Abdullah </a> </div> </div> </div> </section>
+<br>
+
+<!-- HERO -->
+
+<header class="hero" id="home">
+
+<div class="hero-grid"></div>
+
+<div class="container">
+
+<div class="row align-items-center g-5">
+
+<div class="col-lg-7 hero-content">
+
+<div class="hero-badge">
+<span class="status"></span>
+Frontend Developer
+</div>
+
+<h1>
+I build
+<span class="gradient-text">modern</span>
+web experiences.
+</h1>
+
+<p>
+Hi, I'm Abdullah. I create responsive websites,
+interactive interfaces, dashboards, maps, 3D experiences
+and creative browser-based projects.
+</p>
+
+<div class="hero-buttons">
+
+<a href="#websites" class="btn-main">
+<i class="fa-solid fa-layer-group"></i>
+What Can I Build?
+</a>
+
+<a href="#contact" class="btn-outline-custom">
+Let's Work Together
+</a>
+
+</div>
+
+</div>
+
+
+<div class="col-lg-5">
+
+<div class="developer-card">
+
+<div class="avatar">
+AK
+</div>
+
+<h3 class="fw-bold">
+Abdullah
+</h3>
+
+<p class="text-secondary mb-4">
+Frontend Developer
+</p>
+
+<div class="code-window">
+
+<div>
+<span class="code-purple">&lt;developer</span>
+<span class="code-blue">&gt;</span>
+</div>
+
+<div>
+&nbsp;&nbsp;name =
+<span class="code-green">"Abdullah"</span>
+</div>
+
+<div>
+&nbsp;&nbsp;role =
+<span class="code-green">"Frontend Developer"</span>
+</div>
+
+<div>
+&nbsp;&nbsp;responsive =
+<span class="code-green">true</span>
+</div>
+
+<div>
+&nbsp;&nbsp;creative =
+<span class="code-green">true</span>
+</div>
+
+<div>
+&nbsp;&nbsp;3D =
+<span class="code-green">true</span>
+</div>
+
+<div>
+<span class="code-purple">&lt;/developer</span>
+<span class="code-blue">&gt;</span>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+</div>
+</header>
+
+
+<!-- ABOUT -->
+
+<section id="about">
+
+<div class="container">
+
+<div class="section-label">
+01 — About Me
+</div>
+
+<h2 class="section-title">
+Turning ideas into websites.
+</h2>
+
+<p class="section-description mb-5">
+I enjoy building websites that look modern, work smoothly
+and feel great on desktop, tablet and mobile devices.
+</p>
+
+<div class="row g-4">
+
+<div class="col-lg-7">
+
+<div class="about-box">
+
+<h3>Who I Am</h3>
+
+<p>
+I'm Abdullah, a frontend developer focused on creating
+modern and responsive web experiences.
+</p>
+
+<p>
+I like experimenting with creative designs,
+interactive interfaces, maps, calculators,
+3D experiences and browser-based projects.
+</p>
+
+<p class="mb-0">
+My goal is simple: take an idea and turn it into
+a clean, useful and visually impressive website.
+</p>
+
+</div>
+
+</div>
+
+<div class="col-lg-5">
+
+<div class="row g-3">
+
+<div class="col-6">
+<div class="stat">
+<h3>100%</h3>
+<span>Responsive Focus</span>
+</div>
+</div>
+
+<div class="col-6">
+<div class="stat">
+<h3>Web</h3>
+<span>Creative Projects</span>
+</div>
+</div>
+
+<div class="col-6">
+<div class="stat">
+<h3>3D</h3>
+<span>Interactive Experiences</span>
+</div>
+</div>
+
+<div class="col-6">
+<div class="stat">
+<h3>UI</h3>
+<span>Modern Interfaces</span>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+</div>
+</section>
+
+
+<!-- SKILLS -->
+
+<section id="skills">
+
+<div class="container">
+
+<div class="section-label">
+02 — Skills
+</div>
+
+<h2 class="section-title">
+What I work with.
+</h2>
+
+<p class="section-description mb-5">
+Technologies and tools I use to create frontend projects.
+</p>
+
+<div class="row g-4">
+
+<div class="col-md-6 col-lg-4">
+<div class="skill-card">
+
+<div class="skill-icon">
+<i class="fa-brands fa-html5"></i>
+</div>
+
+<h4>HTML5</h4>
+
+<p>
+Semantic and structured web pages with
+clean HTML architecture.
+</p>
+
+</div>
+</div>
+
+
+<div class="col-md-6 col-lg-4">
+<div class="skill-card">
+
+<div class="skill-icon">
+<i class="fa-brands fa-css3-alt"></i>
+</div>
+
+<h4>CSS</h4>
+
+<p>
+Modern layouts, animations, responsive
+designs and polished interfaces.
+</p>
+
+</div>
+</div>
+
+
+<div class="col-md-6 col-lg-4">
+<div class="skill-card">
+
+<div class="skill-icon">
+<i class="fa-brands fa-js"></i>
+</div>
+
+<h4>JavaScript</h4>
+
+<p>
+Interactive components, calculators,
+maps and dynamic web experiences.
+</p>
+
+</div>
+</div>
+
+
+<div class="col-md-6 col-lg-4">
+<div class="skill-card">
+
+<div class="skill-icon">
+<i class="fa-brands fa-bootstrap"></i>
+</div>
+
+<h4>Bootstrap</h4>
+
+<p>
+Fast responsive layouts and mobile-first
+interfaces.
+</p>
+
+</div>
+</div>
+
+
+<div class="col-md-6 col-lg-4">
+<div class="skill-card">
+
+<div class="skill-icon">
+<i class="fa-solid fa-cube"></i>
+</div>
+
+<h4>Three.js</h4>
+
+<p>
+3D scenes, planets, interactive environments
+and browser experiences.
+</p>
+
+</div>
+</div>
+
+
+<div class="col-md-6 col-lg-4">
+<div class="skill-card">
+
+<div class="skill-icon">
+<i class="fa-solid fa-mobile-screen"></i>
+</div>
+
+<h4>Responsive Design</h4>
+
+<p>
+Websites designed for phones, tablets,
+laptops and large screens.
+</p>
+
+</div>
+</div>
+
+</div>
+</div>
+</section>
+
+
+<!-- WEBSITE TYPES -->
+
+<section id="websites">
+
+<div class="container">
+
+<div class="section-label">
+03 — What I Can Build
+</div>
+
+<h2 class="section-title">
+What kind of websites can I build?
+</h2>
+
+<p class="section-description mb-5">
+I can turn different ideas into modern, responsive
+and interactive frontend experiences.
+</p>
+
+<div class="row g-4">
+
+
+<!-- 01 -->
+
+<div class="col-md-6 col-lg-4">
+
+<div class="website-card">
+
+<div class="website-icon">
+<i class="fa-solid fa-building"></i>
+</div>
+
+<h4>Business Websites</h4>
+
+<p>
+Modern websites for companies, startups,
+agencies and small businesses.
+</p>
+
+<div class="website-number">01</div>
+
+</div>
+
+</div>
+
+
+<!-- 02 -->
+
+<div class="col-md-6 col-lg-4">
+
+<div class="website-card">
+
+<div class="website-icon">
+<i class="fa-solid fa-house"></i>
+</div>
+
+<h4>Real Estate Websites</h4>
+
+<p>
+Property listings, house showcases,
+real-estate landing pages and house design projects.
+</p>
+
+<div class="website-number">02</div>
+
+</div>
+
+</div>
+
+
+<!-- 03 -->
+
+<div class="col-md-6 col-lg-4">
+
+<div class="website-card">
+
+<div class="website-icon">
+<i class="fa-solid fa-earth-americas"></i>
+</div>
+
+<h4>Climate Websites</h4>
+
+<p>
+Climate dashboards, environmental tools,
+maps, calculators and educational platforms.
+</p>
+
+<div class="website-number">03</div>
+
+</div>
+
+</div>
+
+
+<!-- 04 -->
+
+<div class="col-md-6 col-lg-4">
+
+<div class="website-card">
+
+<div class="website-icon">
+<i class="fa-solid fa-rocket"></i>
+</div>
+
+<h4>Space Websites</h4>
+
+<p>
+Solar-system explorers, planet pages,
+satellite information and interactive space experiences.
+</p>
+
+<div class="website-number">04</div>
+
+</div>
+
+</div>
+
+
+<!-- 05 -->
+
+<div class="col-md-6 col-lg-4">
+
+<div class="website-card">
+
+<div class="website-icon">
+<i class="fa-solid fa-gamepad"></i>
+</div>
+
+<h4>Gaming Websites</h4>
+
+<p>
+Game landing pages, gaming dashboards,
+interactive game interfaces and browser games.
+</p>
+
+<div class="website-number">05</div>
+
+</div>
+
+</div>
+
+
+<!-- 06 -->
+
+<div class="col-md-6 col-lg-4">
+
+<div class="website-card">
+
+<div class="website-icon">
+<i class="fa-solid fa-cube"></i>
+</div>
+
+<h4>3D Websites</h4>
+
+<p>
+Interactive 3D objects, planets, environments
+and WebGL experiences using Three.js.
+</p>
+
+<div class="website-number">06</div>
+
+</div>
+
+</div>
+
+
+<!-- 07 -->
+
+<div class="col-md-6 col-lg-4">
+
+<div class="website-card">
+
+<div class="website-icon">
+<i class="fa-solid fa-chart-line"></i>
+</div>
+
+<h4>Dashboards</h4>
+
+<p>
+Statistics, charts, analytics panels,
+data visualizations and admin-style interfaces.
+</p>
+
+<div class="website-number">07</div>
+
+</div>
+
+</div>
+
+
+<!-- 08 -->
+
+<div class="col-md-6 col-lg-4">
+
+<div class="website-card">
+
+<div class="website-icon">
+<i class="fa-solid fa-map-location-dot"></i>
+</div>
+
+<h4>Interactive Maps</h4>
+
+<p>
+Location-based interfaces, map dashboards,
+markers, climate maps and geographic tools.
+</p>
+
+<div class="website-number">08</div>
+
+</div>
+
+</div>
+
+
+<!-- 0
+```

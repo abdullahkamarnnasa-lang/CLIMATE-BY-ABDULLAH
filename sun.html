@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Sun | Planet Explorer</title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #080300;
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        .navbar {
+            background: rgba(20, 7, 0, 0.92);
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar-brand {
+            color: #ffbd4a !important;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .nav-link {
+            color: white !important;
+            transition: 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #ffca6a !important;
+        }
+
+        /* ================= DROPDOWN ================= */
+
+        .dropdown-menu {
+            background: rgba(30, 10, 0, 0.98);
+            border: 1px solid rgba(255, 180, 50, 0.3);
+            border-radius: 15px;
+            padding: 8px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.5);
+        }
+
+        .dropdown-item {
+            color: #ffe0a3;
+            border-radius: 10px;
+            padding: 10px 15px;
+            transition: 0.3s;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(255, 160, 30, 0.2);
+            color: white;
+            transform: translateX(4px);
+        }
+
+        /* ================= STARS ================= */
+
+        .stars,
+        .stars2,
+        .stars3 {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        .stars {
+            background-image:
+                radial-gradient(white 1px, transparent 1px);
+            background-size: 75px 75px;
+            opacity: 0.35;
+            animation: starsMove 35s linear infinite;
+        }
+
+        .stars2 {
+            background-image:
+                radial-gradient(#ffd36a 1px, transparent 1px);
+            background-size: 130px 130px;
+            opacity: 0.18;
+            animation: starsMove 50s linear infinite reverse;
+        }
+
+        .stars3 {
+            background-image:
+                radial-gradient(white 1px, transparent 1px);
+            background-size: 190px 190px;
+            opacity: 0.2;
+        }
+
+        @keyframes starsMove {
+
+            from {
+                transform: translateY(0);
+            }
+
+            to {
+                transform: translateY(160px);
+            }
+
+        }
+
+        /* ================= HERO ================= */
+
+        .hero {
+            min-height: 100vh;
+            padding-top: 80px;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-title {
+            font-size: clamp(50px, 8vw, 100px);
+            font-weight: 900;
+            color: #ffbd3f;
+
+            text-shadow:
+                0 0 20px rgba(255, 180, 40, 0.9),
+                0 0 50px rgba(255, 100, 0, 0.5);
+        }
+
+        .hero-text {
+            color: #f1dcc2;
+            font-size: 20px;
+            line-height: 1.8;
+        }
+
+        /* ================= SUN AREA ================= */
+
+        .sun-area {
+            height: 560px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            position: relative;
+        }
+
+        /* SUN */
+
+        .sun {
+            width: 350px;
+            height: 350px;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle at 35% 28%,
+                    #fff7b0 0%,
+                    #ffd447 22%,
+                    #ff9f1c 48%,
+                    #ff5b00 76%,
+                    #a91d00 100%
+                );
+
+            box-shadow:
+                0 0 25px #ffd54d,
+                0 0 60px #ff9b1f,
+                0 0 120px rgba(255, 105, 0, 0.65),
+                0 0 190px rgba(255, 80, 0, 0.25);
+
+            position: relative;
+
+            animation:
+                sunPulse 3s ease-in-out infinite,
+                sunRotate 20s linear infinite;
+        }
+
+        /* Sun surface */
+
+        .sun::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 120px;
+            height: 70px;
+
+            top: 65px;
+            left: 75px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(255, 247, 180, 0.4);
+
+            box-shadow:
+
+                95px 65px 0 15px rgba(255, 190, 45, 0.25),
+
+                -35px 120px 0 8px rgba(255, 225, 80, 0.25),
+
+                85px 165px 0 12px rgba(255, 125, 20, 0.3);
+        }
+
+        /* Solar flare effect */
+
+        .sun::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 430px;
+            height: 430px;
+
+            left: -40px;
+            top: -40px;
+
+            border-radius: 50%;
+
+            border:
+                3px solid rgba(255, 185, 70, 0.24);
+
+            box-shadow:
+                0 0 25px rgba(255, 160, 50, 0.2),
+                inset 0 0 25px rgba(255, 170, 40, 0.18);
+        }
+
+        @keyframes sunPulse {
+
+            0%, 100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.035);
+            }
+
+        }
+
+        @keyframes sunRotate {
+
+            from {
+                filter: brightness(1);
+            }
+
+            50% {
+                filter: brightness(1.12);
+            }
+
+            to {
+                filter: brightness(1);
+            }
+
+        }
+
+        /* ================= SECTION ================= */
+
+        .section-title {
+
+            color: #ffc34d;
+
+            font-weight: bold;
+
+            margin-bottom: 40px;
+
+        }
+
+        /* ================= CARDS ================= */
+
+        .info-card {
+
+            height: 100%;
+
+            padding: 30px;
+
+            background:
+                rgba(75, 35, 5, 0.62);
+
+            border:
+                1px solid rgba(255, 190, 70, 0.22);
+
+            border-radius: 20px;
+
+            transition: 0.3s;
+
+        }
+
+        .info-card:hover {
+
+            transform: translateY(-8px);
+
+            box-shadow:
+                0 0 30px rgba(255, 175, 50, 0.2);
+
+            border-color:
+                rgba(255, 200, 80, 0.55);
+
+        }
+
+        .info-card i {
+
+            font-size: 36px;
+
+            color: #ffc24b;
+
+            margin-bottom: 20px;
+
+        }
+
+        .info-card h4 {
+
+            color: #ffd77f;
+
+        }
+
+        .info-card p {
+
+            color: #eadac4;
+
+            line-height: 1.7;
+
+        }
+
+        /* ================= FACTS ================= */
+
+        .fact-box {
+
+            background:
+                rgba(48, 23, 3, 0.86);
+
+            border-radius: 20px;
+
+            overflow: hidden;
+
+            border:
+                1px solid rgba(255, 190, 60, 0.22);
+
+        }
+
+        .fact-row {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            padding: 18px 25px;
+
+            border-bottom:
+                1px solid rgba(255,255,255,0.08);
+
+        }
+
+        .fact-row:last-child {
+            border-bottom: none;
+        }
+
+        .fact-name {
+
+            color: #ffc96b;
+
+        }
+
+        .fact-value {
+
+            font-weight: bold;
+
+        }
+
+        /* ================= SPECIAL BOX ================= */
+
+        .solar-box {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(120, 48, 5, 0.45),
+                    rgba(25, 9, 0, 0.95)
+                );
+
+            border-radius: 25px;
+
+            padding: 50px;
+
+            border:
+                1px solid rgba(255, 190, 60, 0.2);
+
+        }
+
+        .btn-sun {
+
+            background: #ffbd3f;
+
+            color: #3a1a00;
+
+            font-weight: bold;
+
+            border: none;
+
+            padding: 12px 25px;
+
+            border-radius: 30px;
+
+            transition: 0.3s;
+
+        }
+
+        .btn-sun:hover {
+
+            background: white;
+
+            color: #441f00;
+
+            transform: scale(1.05);
+
+        }
+
+        /* ================= FOOTER ================= */
+
+        footer {
+
+            margin-top: 80px;
+
+            padding: 30px;
+
+            text-align: center;
+
+            background: #050200;
+
+            color: #ad9a7d;
+
+        }
+
+        /* ================= TOP BUTTON ================= */
+
+        #topBtn {
+
+            position: fixed;
+
+            right: 25px;
+
+            bottom: 25px;
+
+            width: 48px;
+
+            height: 48px;
+
+            border: none;
+
+            border-radius: 50%;
+
+            background: #ffbd3f;
+
+            color: #351900;
+
+            display: none;
+
+            z-index: 1000;
+
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 768px) {
+
+            .sun-area {
+                height: 400px;
+            }
+
+            .sun {
+
+                width: 250px;
+                height: 250px;
+
+            }
+
+            .sun::after {
+
+                width: 310px;
+                height: 310px;
+
+                left: -30px;
+                top: -30px;
+
+            }
+
+            .solar-box {
+
+                padding: 30px 20px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- STARS -->
+
+    <div class="stars"></div>
+
+    <div class="stars2"></div>
+
+    <div class="stars3"></div>
+
+
+    <!-- ================= NAVBAR ================= -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+
+        <div class="container">
+
+            <a
+                class="navbar-brand"
+                href="index.html">
+
+                <i class="fa-solid fa-sun"></i>
+
+                Planet Explorer
+
+            </a>
+
+
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#menu">
+
+                <span class="navbar-toggler-icon"></span>
+
+            </button>
+
+
+            <div
+                class="collapse navbar-collapse"
+                id="menu">
+
+                <ul class="navbar-nav ms-auto">
+
+                    <li class="nav-item">
+
+                        <a
+                            class="nav-link"
+                            href="index.html">
+
+                            Home
+
+                        </a>
+
+                    </li>
+
+
+                    <!-- SOLAR SYSTEM -->
+
+                    <li class="nav-item dropdown">
+
+                        <a
+                            class="nav-link dropdown-toggle"
+                            href="#"
+                            role="button"
+                            data-bs-toggle="dropdown">
+
+                            <i class="fa-solid fa-solar-panel"></i>
+
+                            Solar System
+
+                        </a>
+
+
+                        <ul class="dropdown-menu dropdown-menu-dark">
+
+                            <li>
+                                <a
+                                    class="dropdown-item"
+                                    href="sun.html">
+
+                                    ☀️ Sun
+
+                                </a>
+                            </li>
+
+                            <li>
+                                <a
+                                    class="dropdown-item"
+                                    href="mercury.html">
+
+                                    ☿ Mercury
+
+                                </a>
+                            </li>
+
+                            <li>
+                                <a
+                                    class="dropdown-item"
+                                    href="venus.html">
+
+                                    ♀ Venus
+
+                                </a>
+                            </li>
+
+                            <li>
+                                <a
+                                    class="dropdown-item"
+                                    href="earth.html">
+
+                                    🌍 Earth
+
+                                </a>
+                            </li>
+
+                            <li>
+                                <a
+                                    class="dropdown-item"
+                                    href="mars.html">
+
+                                    🔴 Mars
+
+                                </a>
+                            </li>
+
+                            <li>
+                                <a
+                                    class="dropdown-item"
+                                    href="jupiter.html">
+
+                                    🟠 Jupiter
+
+                                </a>
+                            </li>
+
+                            <li>
+                                <a
+                                    class="dropdown-item"
+                                    href="saturn.html">
+
+                                    🪐 Saturn
+
+                                </a>
+                            </li>
+
+                            <li>
+                                <a
+                                    class="dropdown-item"
+                                    href="uranus.html">
+
+                                    🔵 Uranus
+
+                                </a>
+                            </li>
+
+                            <li>
+                                <a
+                                    class="dropdown-item"
+                                    href="neptune.html">
+
+                                    🔵 Neptune
+
+                                </a>
+                            </li>
+
+                        </ul>
+
+                    </li>
+
+
+                    <li class="nav-item">
+
+                        <a
+                            class="nav-link"
+                            href="#about">
+
+                            About
+
+                        </a>
+
+                    </li>
+
+
+                    <li class="nav-item">
+
+                        <a
+                            class="nav-link"
+                            href="#facts">
+
+                            Facts
+
+                        </a>
+
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+    <!-- ================= HERO ================= -->
+
+    <section class="hero">
+
+        <div class="container">
+
+            <div class="row align-items-center">
+
+                <div class="col-lg-6">
+
+                    <p class="text-warning">
+
+                        <i class="fa-solid fa-star"></i>
+
+                        THE CENTER OF OUR SOLAR SYSTEM
+
+                    </p>
+
+
+                    <h1 class="hero-title">
+
+                        THE SUN
+
+                    </h1>
+
+
+                    <p class="hero-text">
+
+                        The Sun is the star at the center of our
+                        Solar System. Its energy provides the light
+                        and heat that make life possible on Earth.
+
+                    </p>
+
+
+                    <a
+                        href="#facts"
+                        class="btn btn-sun">
+
+                        Explore the Sun
+
+                        <i class="fa-solid fa-arrow-down"></i>
+
+                    </a>
+
+                </div>
+
+
+                <!-- SUN -->
+
+                <div class="col-lg-6">
+
+                    <div class="sun-area">
+
+                        <div class="sun"></div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= ABOUT ================= -->
+
+    <section
+        id="about"
+        class="py-5">
+
+        <div class="container">
+
+            <h2 class="text-center section-title">
+
+                <i class="fa-solid fa-circle-info"></i>
+
+                About the Sun
+
+            </h2>
+
+
+            <div class="row g-4">
+
+
+                <div class="col-md-4">
+
+                    <div class="info-card">
+
+                        <i class="fa-solid fa-star"></i>
+
+                        <h4>A Star</h4>
+
+                        <p>
+
+                            The Sun is a star made primarily of
+                            extremely hot plasma, mostly hydrogen
+                            and helium.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <div class="info-card">
+
+                        <i class="fa-solid fa-bolt"></i>
+
+                        <h4>Produces Energy</h4>
+
+                        <p>
+
+                            Nuclear fusion in the Sun's core releases
+                            enormous amounts of energy that eventually
+                            reaches the planets as sunlight.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <div class="info-card">
+
+                        <i class="fa-solid fa-earth-americas"></i>
+
+                        <h4>Essential for Earth</h4>
+
+                        <p>
+
+                            Solar energy drives Earth's climate,
+                            weather and many biological processes.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= FACTS ================= -->
+
+    <section
+        id="facts"
+        class="py-5">
+
+        <div class="container">
+
+            <h2 class="text-center section-title">
+
+                <i class="fa-solid fa-chart-simple"></i>
+
+                Sun Facts
+
+            </h2>
+
+
+            <div class="fact-box">
+
+
+                <div class="fact-row">
+
+                    <span class="fact-name">
+                        Type
+                    </span>
+
+                    <span class="fact-value">
+                        Star
+                    </span>
+
+                </div>
+
+
+                <div class="fact-row">
+
+                    <span class="fact-name">
+                        Star Class
+                    </span>
+
+                    <span class="fact-value">
+                        G-type Main-Sequence Star
+                    </span>
+
+                </div>
+
+
+                <div class="fact-row">
+
+                    <span class="fact-name">
+                        Diameter
+                    </span>
+
+                    <span class="fact-value">
+                        About 1.39 million km
+                    </span>
+
+                </div>
+
+
+                <div class="fact-row">
+
+                    <span class="fact-name">
+                        Age
+                    </span>
+
+                    <span class="fact-value">
+                        About 4.6 billion years
+                    </span>
+
+                </div>
+
+
+                <div class="fact-row">
+
+                    <span class="fact-name">
+                        Distance from Earth
+                    </span>
+
+                    <span class="fact-value">
+                        About 150 million km
+                    </span>
+
+                </div>
+
+
+                <div class="fact-row">
+
+                    <span class="fact-name">
+                        Main Elements
+                    </span>
+
+                    <span class="fact-value">
+                        Hydrogen & Helium
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= SOLAR ACTIVITY ================= -->
+
+    <section class="py-5">
+
+        <div class="container">
+
+            <div class="row g-4">
+
+
+                <div class="col-lg-6">
+
+                    <div class="info-card">
+
+                        <i class="fa-solid fa-fire-flame-curved"></i>
+
+                        <h4>Solar Flares</h4>
+
+                        <p>
+
+                            The Sun can release powerful bursts of
+                            energy called solar flares. Solar activity
+                            can also affect the space environment
+                            around Earth.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-lg-6">
+
+                    <div class="info-card">
+
+                        <i class="fa-solid fa-wind"></i>
+
+                        <h4>Solar Wind</h4>
+
+                        <p>
+
+                            The Sun continuously releases a flow of
+                            charged particles called the solar wind,
+                            which travels throughout the Solar System.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= EXPLORE ================= -->
+
+    <section class="py-5">
+
+        <div class="container">
+
+            <div class="solar-box text-center">
+
+                <h2 class="section-title">
+
+                    Explore the Solar System
+
+                </h2>
+
+                <p class="lead mb-4">
+
+                    Visit the planets surrounding our star.
+
+                </p>
+
+
+                <a
+                    href="index.html"
+                    class="btn btn-sun">
+
+                    <i class="fa-solid fa-house"></i>
+
+                    Back Home
+
+                </a>
+
+
+                <a
+                    href="mercury.html"
+                    class="btn btn-outline-light ms-2">
+
+                    Mercury
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <p class="mb-0">
+
+            ☀️ Planet Explorer |
+            Our Solar System
+
+        </p>
+
+    </footer>
+
+
+    <!-- ================= TOP BUTTON ================= -->
+
+    <button id="topBtn">
+
+        <i class="fa-solid fa-arrow-up"></i>
+
+    </button>
+
+
+    <!-- ================= BOOTSTRAP JS ================= -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script>
+
+        const topBtn =
+            document.getElementById("topBtn");
+
+
+        window.addEventListener(
+            "scroll",
+            function () {
+
+                if (window.scrollY > 400) {
+
+                    topBtn.style.display = "block";
+
+                } else {
+
+                    topBtn.style.display = "none";
+
+                }
+
+            }
+        );
+
+
+        topBtn.addEventListener(
+            "click",
+            function () {
+
+                window.scrollTo({
+
+                    top: 0,
+
+                    behavior: "smooth"
+
+                });
+
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>

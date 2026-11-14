@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>APEX Star Gamer - Minecraft Recipes</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #0b0b0b;
+            color: white;
+        }
+
+        /* HEADER */
+
+        header {
+            background: linear-gradient(90deg, #111, #168000, #111);
+            padding: 25px 15px;
+            text-align: center;
+            box-shadow: 0 0 20px #18ff00;
+        }
+
+        header h1 {
+            font-size: 38px;
+            text-shadow: 0 0 10px #18ff00;
+        }
+
+        header p {
+            margin-top: 8px;
+            color: #ddd;
+        }
+
+        /* SEARCH */
+
+        .search-box {
+            width: 90%;
+            max-width: 700px;
+            margin: 35px auto;
+            display: flex;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 17px;
+            border: 2px solid #18a800;
+            border-radius: 12px 0 0 12px;
+            background: #171717;
+            color: white;
+            outline: none;
+            font-size: 17px;
+        }
+
+        .search-box button {
+            padding: 0 25px;
+            border: none;
+            background: #168000;
+            color: white;
+            font-size: 17px;
+            border-radius: 0 12px 12px 0;
+            cursor: pointer;
+        }
+
+        .search-box button:hover {
+            background: #20b000;
+        }
+
+        /* CATEGORIES */
+
+        .categories {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .categories button {
+            padding: 10px 18px;
+            margin: 5px;
+            border: 1px solid #168000;
+            border-radius: 20px;
+            background: #151515;
+            color: white;
+            cursor: pointer;
+        }
+
+        .categories button:hover,
+        .categories button.active {
+            background: #168000;
+        }
+
+        /* CONTAINER */
+
+        .container {
+            width: 92%;
+            max-width: 1250px;
+            margin: auto;
+        }
+
+        /* GRID */
+
+        .grid {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            padding-bottom: 50px;
+        }
+
+        /* CARD */
+
+        .card {
+            background: #151515;
+            border: 1px solid #333;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-7px);
+            border-color: #20c000;
+            box-shadow: 0 0 18px rgba(24, 255, 0, 0.35);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: #222;
+        }
+
+        .card-content {
+            padding: 18px;
+        }
+
+        .card h2 {
+            color: #35d51b;
+            margin-bottom: 8px;
+        }
+
+        .card p {
+            color: #bbb;
+            margin-bottom: 8px;
+        }
+
+        .edition {
+            display: inline-block;
+            background: #222;
+            color: #70ff5c;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        /* RECIPE */
+
+        .recipe-title {
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .recipe {
+            width: 180px;
+            margin: 15px auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+        }
+
+        .slot {
+            height: 50px;
+            background: #292929;
+            border: 1px solid #555;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            text-align: center;
+            padding: 3px;
+            color: #ddd;
+        }
+
+        .slot.item {
+            background: #193019;
+            border-color: #329b2b;
+            color: #8cff7b;
+        }
+
+        .result {
+            margin-top: 15px;
+            background: #050505;
+            border: 1px dashed #20c000;
+            padding: 12px;
+            border-radius: 8px;
+            color: #00ff88;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .materials {
+            margin-top: 15px;
+            background: #101010;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .materials strong {
+            color: #35d51b;
+        }
+
+        .copy-btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            border: none;
+            background: #168000;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .copy-btn:hover {
+            background: #20b000;
+        }
+
+        /* NO RESULT */
+
+        #noResult {
+            display: none;
+            text-align: center;
+            padding: 50px;
+            color: #ff4444;
+            font-size: 22px;
+        }
+
+        /* FOOTER */
+
+        footer {
+            background: #111;
+            text-align: center;
+            padding: 25px;
+            border-top: 1px solid #333;
+        }
+
+        footer span {
+            color: #20c000;
+            font-weight: bold;
+        }
+
+        /* MOBILE */
+
+        @media(max-width:600px) {
+
+            header h1 {
+                font-size: 28px;
+            }
+
+            .search-box {
+                width: 94%;
+            }
+
+            .card-image {
+                height: 160px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+    <!-- HEADER -->
+
+    <header>
+
+        <h1>APEX STAR GAMER</h1>
+
+        <p>
+            Minecraft Crafting Recipes - Java & Bedrock Edition
+        </p>
+
+    </header>
+
+
+    <!-- SEARCH -->
+
+    <div class="search-box">
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search Minecraft recipe..."
+            onkeyup="searchRecipes()"
+        >
+
+        <button onclick="searchRecipes()">
+            Search
+        </button>
+
+    </div>
+
+
+    <!-- CATEGORIES -->
+
+    <div class="categories">
+
+        <button
+            class="active"
+            onclick="filterCategory('all', this)">
+            All
+        </button>
+
+        <button
+            onclick="filterCategory('tools', this)">
+            Tools
+        </button>
+
+        <button
+            onclick="filterCategory('weapons', this)">
+            Weapons
+        </button>
+
+        <button
+            onclick="filterCategory('armor', this)">
+            Armor
+        </button>
+
+        <button
+            onclick="filterCategory('blocks', this)">
+            Blocks
+        </button>
+
+        <button
+            onclick="filterCategory('food', this)">
+            Food
+        </button>
+
+        <button
+            onclick="filterCategory('redstone', this)">
+            Redstone
+        </button>
+
+        <button
+            onclick="filterCategory('utility', this)">
+            Utility
+        </button>
+
+    </div>
+
+
+    <!-- CONTENT -->
+
+    <div class="container">
+
+        <div
+            class="grid"
+            id="recipeGrid">
+        </div>
+
+        <div id="noResult">
+            No recipe found.
+        </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+           <a> © 2026
+            <span>APEX STAR GAMER</span>
+            | Minecraft Recipes
+        </p></a>
+
+    </footer>
+
+
+<script>
+
+
+    let currentCategory = "all";
+
+
+    /*
+    ==========================================
+    MINECRAFT RECIPE DATABASE
+    ==========================================
+    */
+
+    const recipes = [
+
+        /* ================= TOOLS ================= */
+
+        {
+            name: "Crafting Table",
+            category: "utility",
+            edition: "Java & Bedrock",
+            result: "1 Crafting Table",
+            materials: "4 Oak Planks",
+            image:
+            "https://minecraft.wiki/images/Crafting_Table_JE4.png",
+            grid: [
+                "Oak Plank",
+                "Oak Plank",
+                "",
+                "Oak Plank",
+                "Oak Plank",
+                "",
+                "",
+                "",
+                ""
+            ]
+        },
+
+
+        {
+            name: "Wooden Pickaxe",
+            category: "tools",
+            edition: "Java & Bedrock",
+            result: "1 Wooden Pickaxe",
+            materials: "3 Wooden Planks + 2 Sticks",
+            image:
+            "https://minecraft.wiki/images/Wooden_Pickaxe_JE3.png",
+            grid: [
+                "Plank",
+                "Plank",
+                "Plank",
+                "",
+                "Stick",
+                "",
+                "",
+                "Stick",
+                ""
+            ]
+        },
+
+
+        {
+            name: "Stone Pickaxe",
+            category: "tools",
+            edition: "Java & Bedrock",
+            result: "1 Stone Pickaxe",
+            materials: "3 Cobblestone + 2 Sticks",
+            image:
+            "https://minecraft.wiki/images/Stone_Pickaxe_JE3.png",
+            grid: [
+                "Cobble",
+                "Cobble",
+                "Cobble",
+                "",
+                "Stick",
+                "",
+                "",
+                "Stick",
+                ""
+            ]
+        },
+
+
+        {
+            name: "Iron Pickaxe",
+            category: "tools",
+            edition: "Java & Bedrock",
+            result: "1 Iron Pickaxe",
+            materials: "3 Iron Ingots + 2 Sticks",
+            image:
+            "https://minecraft.wiki/images/Iron_Pickaxe_JE3.png",
+            grid: [
+                "Iron",
+                "Iron",
+                "Iron",
+                "",
+                "Stick",
+                "",
+                "",
+                "Stick",
+                ""
+            ]
+        },
+
+
+        {
+            name: "Diamond Pickaxe",
+            category: "tools",
+            edition: "Java & Bedrock",
+            result: "1 Diamond Pickaxe",
+            materials: "3 Diamonds + 2 Sticks",
+            image:
+            "https://minecraft.wiki/images/Diamond_Pickaxe_JE3.png",
+            grid: [
+                "Diamond",
+                "Diamond",
+                "Diamond",
+                "",
+                "Stick",
+                "",
+                "",
+                "Stick",
+                ""
+            ]
+        },
+
+
+        {
+            name: "Golden Pickaxe",
+            category: "tools",
+            edition: "Java & Bedrock",
+            result: "1 Golden Pickaxe",
+            materials: "3 Gold Ingots + 2 Sticks",
+            image:
+            "https://minecraft.wiki/images/Golden_Pickaxe_JE3.png",
+            grid: [
+                "Gold",
+                "Gold",
+                "Gold",
+                "",
+                "Stick",
+                "",
+                "",
+                "Stick",
+                ""
+            ]
+        },
+
+
+        /* ================= WEAPONS ================= */
+
+        {
+            name: "Wooden Sword",
+            category: "weapons",
+            edition: "Java & Bedrock",
+            result: "1 Wooden Sword",
+            materials: "2 Wooden Planks + 1 Stick",
+            image:
+            "https://minecraft.wiki/images/Wooden_Sword_JE3.png",
+            grid: [
+                "",
+                "Plank",
+                "",
+                "",
+                "Plank",
+                "",
+                "",
+                "Stick",
+                ""
+            ]
+        },
+
+
+        {
+            name: "Stone Sword",
+            category: "weapons",
+            edition: "Java & Bedrock",
+            result: "1 Stone Sword",
+            materials: "2 Cobblestone + 1 Stick",
+            image:
+            "https://minecraft.wiki/images/Stone_Sword_JE3.png",
+            grid: [
+                "",
+                "Cobble",
+                "",
+                "",
+                "Cobble",
+                "",
+                "",
+                "Stick",
+                ""
+            ]
+        },
+
+
+        {
+            name: "Iron Sword",
+            category: "weapons",
+            edition: "Java & Bedrock",
+            result: "1 Iron Sword",
+            materials: "2 Iron Ingots + 1 Stick",
+            image:
+            "https://minecraft.wiki/images/Iron_Sword_JE3.png",
+            grid: [
+                "",
+                "Iron",
+                "",
+                "",
+                "Iron",
+                "",
+                "",
+                "Stick",
+                ""
+            ]
+        },
+
+
+        {
+            name: "Diamond Sword",
+            category: "weapons",
+            edition: "Java & Bedrock",
+            result: "1 Diamond Sword",
+            materials: "2 Diamonds + 1 Stick",
+            image:
+            "https://minecraft.wiki/images/Diamond_Sword_JE3.png",
+            grid: [
+                "",
+                "Diamond",
+                "",
+                "",
+                "Diamond",
+                "",
+                "",
+                "Stick",
+                ""
+            ]
+        },
+
+
+        {
+            name: "Shield",
+            category: "weapons",
+            edition: "Java & Bedrock",
+            result: "1 Shield",
+            materials: "6 Planks + 1 Iron Ingot",
+            image:
+            "https://minecraft.wiki/images/Shield_JE2_BE1.png",
+            grid: [
+                "Plank",
+                "Iron",
+                "Plank",
+                "Plank",
+                "Plank",
+                "Plank",
+                "",
+                "Plank",
+                ""
+            ]
+        },
+
+
+        /* ================= ARMOR ================= */
+
+        {
+            name: "Iron Helmet",
+            category: "armor",
+            edition: "Java & Bedrock",
+            result: "1 Iron Helmet",
+            materials: "5 Iron Ingots",
+            image:
+            "https://minecraft.wiki/images/Iron_Helmet_JE2_BE2.png",
+            grid: [
+                "Iron",
+                "Iron",
+                "Iron",
+                "Iron",
+                "",
+                "Iron",
+                "",
+                "",
+                ""
+            ]
+        },
+
+
+        {
+            name: "Iron Chestplate",
+            category: "armor",
+            edition: "Java & Bedrock",
+            result: "1 Iron Chestplate",
+            materials: "8 Iron Ingots",
+            image:
+            "https://minecraft.wiki/images/Iron_Chestplate_JE2_BE2.png",
+            grid: [
+                "Iron",
+                "",
+                "Iron",
+                "Iron",
+                "Iron",
+                "Iron",
+                "Iron",
+                "Iron",
+                "Iron"
+            ]
+        },
+
+
+        {
+            name: "Diamond Helmet",
+            category: "armor",
+            edition: "Java & Bedrock",
+            result: "1 Diamond Helmet",
+            materials: "5 Diamonds",
+            image:
+            "https://minecraft.wiki/images/Diamond_Helmet_JE2_BE2.png",
+            grid: [
+                "Diamond",
+                "Diamond",
+                "Diamond",
+                "Diamond",
+                "",
+                "Diamond",
+                "",
+                "",
+                ""
+            ]
+        },
+
+
+        {
+            name: "Diamond Chestplate",
+            category: "armor",
+            edition: "Java & Bedrock",
+            result: "1 Diamond Chestplate",
+            materials: "8 Diamonds",
+            image:
+            "https://minecraft.wiki/images/Diamond_Chestplate_JE2_BE2.png",
+            grid: [
+                "Diamond",
+                "",
+                "Diamond",
+                "Diamond",
+                "Diamond",
+                "Diamond",
+                "Diamond",
+                "Diamond",
+                "Diamond"
+            ]
+        },
+
+
+        /* ================= BLOCKS ================= */
+
+        {
+            name: "Furnace",
+            category: "blocks",
+            edition: "Java & Bedrock",
+            result: "1 Furnace",
+            materials: "8 Cobblestone",
+            image:
+            "https://minecraft.wiki/images/Furnace_JE4.png",
+            grid: [
+                "Cobble",
+                "Cobble",
+                "Cobble",
+                "Cobble",
+                "",
+                "Cobble",
+                "Cobble",
+                "Cobble",
+                "Cobble"
+            ]
+        },
+
+
+        {
+            name: "Chest",
+            category: "blocks",
+            edition: "Java & Bedrock",
+            result: "1 Chest",
+            materials: "8 Wooden Planks",
+            image:
+            "https://minecraft.wiki/images/Chest_JE2_BE2.png",
+            grid: [
+                "Plank",
+                "Plank",
+                "Plank",
+                "Plank",
+                "",
+                "Plank",
+                "Plank",
+                "Plank",
+                "Plank"
+            ]
+        },
+
+
+        {
+            name: "Torch",
+            category: "blocks",
+            edition: "Java & Bedrock",
+            result: "4 Torches",
+            materials: "1 Coal + 1 Stick",
+            image:
+            "https://minecraft.wiki/images/Torch_JE4.png",
+            grid: [
+                "",
+                "Coal",
+                "",
+                "",
+                "Stick",
+                "",
+                "",
+                "",
+                ""
+            ]
+        },
+
+
+        {
+            name: "Glass",
+            category: "blocks",
+            edition: "Java & Bedrock",
+            result: "1 Glass",
+            materials: "Smelt Sand in Furnace",
+            image:
+            "https://minecraft.wiki/images/Glass_JE2_BE2.png",
+            grid: [
+                "Sand",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+            ]
+        },
+
+
+        /* ================= FOOD ================= */
+
+        {
+            name: "Bread",
+            category: "food",
+            edition: "Java & Bedrock",
+            result: "1 Bread",
+            materials: "3 Wheat",
+            image:
+            "https://minecraft.wiki/images/Bread_JE3_BE2.png",
+            grid: [
+                "",
+                "",
+                "",
+                "Wheat",
+                "Wheat",
+                "Wheat",
+                "",
+                "",
+                ""
+            ]
+        },
+
+
+        {
+            name: "Cake",
+            category: "food",
+            edition: "Java & Bedrock",
+            result: "1 Cake",
+            materials: "3 Milk + 3 Wheat + 2 Sugar + 1 Egg",
+            image:
+            "https://minecraft.wiki/images/Cake_JE2_BE2.png",
+            grid: [
+                "Milk",
+                "Milk",
+                "Milk",
+                "Sugar",
+                "Egg",
+                "Sugar",
+                "Wheat",
+                "Wheat",
+                "Wheat"
+            ]
+        },
+
+
+        {
+            name: "Cookie",
+            category: "food",
+            edition: "Java & Bedrock",
+            result: "8 Cookies",
+            materials: "2 Wheat + 1 Cocoa Beans",
+            image:
+            "https://minecraft.wiki/images/Cookie_JE2_BE2.png",
+            grid: [
+                "",
+                "Wheat",
+                "",
+                "",
+                "Cocoa",
+                "",
+                "",
+                "Wheat",
+                ""
+            ]
+        },
+
+
+        /* ================= REDSTONE ================= */
+
+        {
+            name: "Redstone Torch",
+            category: "redstone",
+            edition: "Java & Bedrock",
+            result: "1 Redstone Torch",
+            materials: "1 Redstone Dust + 1 Stick",
+            image:
+            "https://minecraft.wiki/images/Redstone_Torch_JE2_BE2.png",
+            grid: [
+                "",
+                "Redstone",
+                "",
+                "",
+                "Stick",
+                "",
+                "",
+                "",
+                ""
+            ]
+        },
+
+
+        {
+            name: "Piston",
+            category: "redstone",
+            edition: "Java & Bedrock",
+            result: "1 Piston",
+            materials: "3 Planks + 4 Cobblestone + 1 Iron + 1 Redstone",
+            image:
+            "https://minecraft.wiki/images/Piston_JE2_BE2.png",
+            grid: [
+                "Plank",
+                "Plank",
+                "Plank",
+                "Cobble",
+                "Iron",
+                "Cobble",
+                "Cobble",
+                "Redstone",
+                "Cobble"
+            ]
+        },
+
+
+        {
+            name: "Dispenser",
+            category: "redstone",
+            edition: "Java & Bedrock",
+            result: "1 Dispenser",
+            materials: "7 Cobblestone + 1 Bow + 1 Redstone",
+            image:
+            "https://minecraft.wiki/images/Dispenser_JE2_BE2.png",
+            grid: [
+                "Cobble",
+                "Cobble",
+                "Cobble",
+                "Cobble",
+                "Bow",
+                "Cobble",
+                "Cobble",
+                "Redstone",
+                "Cobble"
+            ]
+        },
+
+
+        /* ================= UTILITY ================= */
+
+        {
+            name: "Crafting Table",
+            category: "utility",
+            edition: "Java & Bedrock",
+            result: "1 Crafting Table",
+            materials: "4 Wooden Planks",
+            image:
+            "https://minecraft.wiki/images/Crafting_Table_JE4.png",
+            grid: [
+                "Plank",
+                "Plank",
+                "",
+                "Plank",
+                "Plank",
+                "",
+                "",
+                "",
+                ""
+            ]
+        },
+
+
+        {
+            name: "Anvil",
+            category: "utility",
+            edition: "Java & Bedrock",
+            result: "1 Anvil",
+            materials: "3 Iron Blocks + 4 Iron Ingots",
+            image:
+            "https://minecraft.wiki/images/Anvil_JE2_BE2.png",
+            grid: [
+                "Iron Block",
+                "Iron Block",
+                "Iron Block",
+                "",
+                "Iron Ingot",
+                "Iron Ingot",
+                "Iron Ingot",
+                "Iron Ingot",
+                ""
+            ]
+        },
+
+
+        {
+            name: "Enchanting Table",
+            category: "utility",
+            edition: "Java & Bedrock",
+            result: "1 Enchanting Table",
+            materials: "4 Obsidian + 2 Diamonds + 1 Book",
+            image:
+            "https://minecraft.wiki/images/Enchanting_Table_JE2_BE1.png",
+            grid: [
+                "",
+                "Book",
+                "",
+                "Diamond",
+                "Obsidian",
+                "Diamond",
+                "Obsidian",
+                "Obsidian",
+                "Obsidian"
+            ]
+        },
+
+
+        {
+            name: "Bucket",
+            category: "utility",
+            edition: "Java & Bedrock",
+            result: "1 Bucket",
+            materials: "3 Iron Ingots",
+            image:
+            "https://minecraft.wiki/images/Bucket_JE2_BE2.png",
+            grid: [
+                "Iron",
+                "",
+                "Iron",
+                "",
+                "Iron",
+                "",
+                "",
+                "",
+                ""
+            ]
+        },
+
+
+        {
+            name: "Ladder",
+            category: "utility",
+            edition: "Java & Bedrock",
+            result: "3 Ladders",
+            materials: "7 Sticks",
+            image:
+            "https://minecraft.wiki/images/Ladder_JE2_BE2.png",
+            grid: [
+                "Stick",
+                "",
+                "Stick",
+                "Stick",
+                "Stick",
+                "Stick",
+                "Stick",
+                "",
+                "Stick"
+            ]
+        }
+
+    ];
+
+
+    /*
+    ==========================================
+    CREATE RECIPE CARDS
+    ==========================================
+    */
+
+    function loadRecipes() {
+
+        const grid = document.getElementById("recipeGrid");
+
+        grid.innerHTML = "";
+
+        recipes.forEach(function(item, index) {
+
+            const card = document.createElement("div");
+
+            card.className = "card";
+
+            card.dataset.category = item.category;
+            card.dataset.name = item.name.toLowerCase();
+            card.dataset.materials = item.materials.toLowerCase();
+
+            let recipeHTML = "";
+
+            item.grid.forEach(function(slot) {
+
+                if (slot === "") {
+
+                    recipeHTML += `
+                        <div class="slot"></div>
+                    `;
+
+                } else {
+
+                    recipeHTML += `
+                        <div class="slot item">
+                            ${slot}
+                        </div>
+                    `;
+
+                }
+
+            });
+
+
+            card.innerHTML = `
+
+                <img
+                    class="card-image"
+                    src="${item.image}"
+                    alt="${item.name}"
+                >
+
+                <div class="card-content">
+
+                    <h2>${item.name}</h2>
+
+                    <p>
+                        Category: ${item.category}
+                    </p>
+
+                    <span class="edition">
+                        ${item.edition}
+                    </span>
+
+                    <h3 class="recipe-title">
+                        Crafting Recipe
+                    </h3>
+
+                    <div class="recipe">
+                        ${recipeHTML}
+                    </div>
+
+                    <div class="result">
+                        Result: ${item.result}
+                    </div>
+
+                    <div class="materials">
+                        <strong>Materials:</strong><br>
+                        ${item.materials}
+                    </div>
+
+                    <button
+                        class="copy-btn"
+                        onclick="copyRecipe(${index})"
+                    >
+                        Copy Recipe
+                    </button>
+
+                </div>
+
+            `;
+
+            grid.appendChild(card);
+
+        });
+
+    }
+
+
+    /*
+    ==========================================
+    SEARCH
+    ==========================================
+    */
+
+    function searchRecipes() {
+
+        let input = document
+            .getElementById("searchInput")
+            .value
+            .toLowerCase()
+            .trim();
+
+        let cards = document.querySelectorAll(".card");
+
+        let found = 0;
+
+
+        cards.forEach(function(card) {
+
+            let name = card.dataset.name;
+            let materials = card.dataset.materials;
+            let category = card.dataset.category;
+
+
+            let searchMatch =
+                name.includes(input) ||
+                materials.includes(input);
+
+
+            let categoryMatch =
+                currentCategory === "all" ||
+                category === currentCategory;
+
+
+            if (searchMatch && categoryMatch) {
+
+                card.style.display = "block";
+
+                found++;
+
+            } else {
+
+                card.style.display = "none";
+
+            }
+
+        });
+
+
+        if (found === 0) {
+
+            document.getElementById("noResult").style.display =
+                "block";
+
+        } else {
+
+            document.getElementById("noResult").style.display =
+                "none";
+
+        }
+
+    }
+
+
+    /*
+    ==========================================
+    CATEGORY FILTER
+    ==========================================
+    */
+
+    function filterCategory(category, button) {
+
+        currentCategory = category;
+
+
+        document
+            .querySelectorAll(".categories button")
+            .forEach(function(btn) {
+
+                btn.classList.remove("active");
+
+            });
+
+
+        button.classList.add("active");
+
+        searchRecipes();
+
+    }
+
+
+    /*
+    ==========================================
+    COPY RECIPE
+    ==========================================
+    */
+
+    function copyRecipe(index) {
+
+        const item = recipes[index];
+
+        const text =
+`Minecraft Recipe
+
+Item: ${item.name}
+
+Edition: ${item.edition}
+
+Result: ${item.result}
+
+Materials:
+${item.materials}`;
+
+
+        navigator.clipboard.writeText(text)
+            .then(function() {
+
+                alert(
+                    item.name +
+                    " recipe copied!"
+                );
+
+            })
+            .catch(function() {
+
+                alert(text);
+
+            });
+
+    }
+
+
+    /*
+    ==========================================
+    START WEBSITE
+    ==========================================
+    */
+
+    loadRecipes();
+
+</script>
+
+</body>
+</html>

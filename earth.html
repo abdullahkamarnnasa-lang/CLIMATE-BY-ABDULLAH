@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Earth — Our Living Planet</title>
+<style>
+:root{
+  --bg:#06111a; --panel:#0d1d28; --panel2:#102936; --text:#eef8ff;
+  --muted:#a9c0cc; --green:#45e58a; --blue:#35b9ff; --cyan:#65e6ff;
+  --gold:#ffd166; --red:#ff6b6b; --border:rgba(255,255,255,.1);
+}
+*{box-sizing:border-box;scroll-behavior:smooth}
+body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(4,14,22,.82);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.navin{max-width:1180px;margin:auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-weight:800;font-size:20px}.logo span{color:var(--green)}
+nav a{color:#dcecf3;text-decoration:none;margin-left:20px;font-size:14px}
+nav a:hover{color:var(--cyan)}
+.hero{min-height:100vh;display:grid;place-items:center;text-align:center;padding:110px 20px 60px;
+background:
+radial-gradient(circle at 50% 42%,rgba(38,178,255,.22),transparent 25%),
+radial-gradient(circle at 50% 45%,rgba(69,229,138,.13),transparent 42%),
+linear-gradient(180deg,#061321,#071b23 65%,#06111a)}
+.earth{width:250px;height:250px;border-radius:50%;margin:0 auto 30px;
+background:
+radial-gradient(circle at 35% 30%,rgba(255,255,255,.45),transparent 4%),
+radial-gradient(circle at 38% 42%,#4fc3f7 0 13%,transparent 14%),
+radial-gradient(circle at 62% 35%,#36c878 0 10%,transparent 11%),
+radial-gradient(circle at 55% 65%,#248e5c 0 13%,transparent 14%),
+radial-gradient(circle at 25% 65%,#35a86b 0 8%,transparent 9%),
+radial-gradient(circle at 50% 50%,#147fc0 0 58%,#075a91 72%,#042f58 100%);
+box-shadow:0 0 45px rgba(53,185,255,.55),0 0 110px rgba(53,185,255,.22);
+animation:spin 22s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hero h1{font-size:clamp(44px,8vw,82px);line-height:1;margin:0 0 18px}
+.hero h1 span{color:var(--green)}
+.hero p{max-width:760px;margin:auto;color:var(--muted);font-size:18px}
+.btn{display:inline-block;margin-top:28px;padding:13px 22px;border-radius:30px;background:var(--green);color:#052015;text-decoration:none;font-weight:800}
+section{max-width:1180px;margin:auto;padding:90px 20px}
+.title{text-align:center;margin-bottom:45px}
+.title h2{font-size:38px;margin:0 0 8px}.title p{color:var(--muted);margin:0}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{background:linear-gradient(145deg,var(--panel),#091720);border:1px solid var(--border);border-radius:20px;padding:24px;transition:.25s}
+.card:hover{transform:translateY(-5px);border-color:rgba(101,230,255,.35)}
+.icon{font-size:34px}.card h3{margin:12px 0 8px}.card p{color:var(--muted);font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:25px}
+.stat{padding:24px;border-radius:18px;background:var(--panel);border:1px solid var(--border);text-align:center}
+.stat b{display:block;font-size:32px;color:var(--cyan)}.stat span{color:var(--muted);font-size:13px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.fact{background:var(--panel);border-radius:20px;padding:28px;border:1px solid var(--border)}
+.fact h3{margin-top:0;color:var(--green)}
+.barrow{margin:18px 0}.barlabel{display:flex;justify-content:space-between;font-size:14px}
+.bar{height:11px;background:#1a303b;border-radius:20px;overflow:hidden;margin-top:7px}.fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--blue),var(--green))}
+.timeline{border-left:2px solid #21404d;margin:20px 0;padding-left:25px}
+.event{margin:0 0 25px;position:relative}.event:before{content:"";position:absolute;left:-34px;top:7px;width:14px;height:14px;border-radius:50%;background:var(--green)}
+.event b{color:var(--gold)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.tab{border:1px solid var(--border);background:var(--panel);color:white;padding:10px 16px;border-radius:22px;cursor:pointer}.tab.active,.tab:hover{background:#14553c}
+.tabcontent{display:none;background:var(--panel);padding:28px;border-radius:20px;border:1px solid var(--border)}.tabcontent.active{display:block}
+.quiz{max-width:760px;margin:auto}.q{background:var(--panel);padding:25px;border-radius:20px;border:1px solid var(--border)}
+.options{display:grid;gap:10px;margin-top:18px}.options button{text-align:left;background:#132b37;border:1px solid var(--border);color:white;padding:13px;border-radius:12px;cursor:pointer}.options button:hover{background:#1a4655}
+#result{margin-top:15px;font-weight:700}
+footer{text-align:center;padding:40px 20px;border-top:1px solid var(--border);color:var(--muted)}
+@media(max-width:800px){.grid,.two{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}nav .links{display:none}}
+@media(max-width:500px){.stats{grid-template-columns:1fr}.earth{width:190px;height:190px}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="navin">
+    <div class="logo">🌍 <span>Earth</span> Alive</div>
+    <div class="links">
+      <a href="#overview">Overview</a><a href="#systems">Systems</a><a href="#climate">Climate</a>
+      <a href="#life">Life</a><a href="#protect">Protect</a><a href="#quiz">Quiz</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div>
+    <div class="earth"></div>
+    <h1>Our <span>Living</span> Planet</h1>
+    <p>Explore Earth's atmosphere, oceans, land, climate, ecosystems and the remarkable systems that make life possible.</p>
+    <a class="btn" href="#overview">Explore Earth ↓</a>
+  </div>
+</header>
+
+<section id="overview">
+  <div class="title"><h2>Earth at a Glance</h2><p>A quick tour of our home planet.</p></div>
+  <div class="stats">
+    <div class="stat"><b>4.54B</b><span>approx. age of Earth</span></div>
+    <div class="stat"><b>71%</b><span>surface covered by ocean</span></div>
+    <div class="stat"><b>1</b><span>known planet with life</span></div>
+    <div class="stat"><b>1</b><span>natural satellite: the Moon</span></div>
+  </div>
+  <div class="grid" style="margin-top:22px">
+    <article class="card"><div class="icon">🌎</div><h3>Shape & Structure</h3><p>Earth is an oblate spheroid: slightly wider around the equator than from pole to pole. Beneath the surface are the crust, mantle, outer core and inner core.</p></article>
+    <article class="card"><div class="icon">🌊</div><h3>Water World</h3><p>Liquid water covers most of the surface. Water constantly moves through evaporation, condensation, precipitation, runoff, groundwater and ocean circulation.</p></article>
+    <article class="card"><div class="icon">🌬️</div><h3>Protective Atmosphere</h3><p>The atmosphere provides gases needed by life, helps regulate temperature, creates weather and shields the surface from much harmful radiation.</p></article>
+  </div>
+</section>
+
+<section id="systems">
+  <div class="title"><h2>Earth's Major Systems</h2><p>Four connected parts work together like one giant system.</p></div>
+  <div class="grid">
+    <article class="card"><div class="icon">🪨</div><h3>Geosphere</h3><p>Rocks, minerals, soil, mountains and Earth's interior. Plate tectonics continuously reshape continents and ocean basins.</p></article>
+    <article class="card"><div class="icon">💧</div><h3>Hydrosphere</h3><p>All of Earth's water: oceans, rivers, lakes, glaciers, groundwater, soil moisture and water vapor.</p></article>
+    <article class="card"><div class="icon">☁️</div><h3>Atmosphere</h3><p>The envelope of gases surrounding Earth. It drives weather and climate and interacts with oceans and land.</p></article>
+    <article class="card"><div class="icon">🌿</div><h3>Biosphere</h3><p>All living organisms and the ecosystems where they interact with air, water, rocks and each other.</p></article>
+    <article class="card"><div class="icon">🔥</div><h3>Energy Balance</h3><p>Earth receives energy from the Sun and sends energy back to space. Greenhouse gases affect how efficiently heat escapes.</p></article>
+    <article class="card"><div class="icon">🔄</div><h3>Connected Cycles</h3><p>The carbon, water, nitrogen and rock cycles move materials around the planet and connect distant ecosystems.</p></article>
+  </div>
+</section>
+
+<section id="climate">
+  <div class="title"><h2>Climate & Atmosphere</h2><p>Climate is the long-term pattern of weather.</p></div>
+  <div class="two">
+    <div class="fact">
+      <h3>What is the greenhouse effect?</h3>
+      <p>Sunlight warms Earth's surface. The surface releases infrared energy, and greenhouse gases absorb and re-emit some of that energy. This natural process keeps Earth much warmer than it would otherwise be.</p>
+      <div class="barrow"><div class="barlabel"><span>Water vapor</span><span>major natural greenhouse gas</span></div><div class="bar"><div class="fill" style="width:82%"></div></div></div>
+      <div class="barrow"><div class="barlabel"><span>Carbon dioxide</span><span>important long-lived gas</span></div><div class="bar"><div class="fill" style="width:58%"></div></div></div>
+      <div class="barrow"><div class="barlabel"><span>Methane</span><span>powerful but less abundant</span></div><div class="bar"><div class="fill" style="width:25%"></div></div></div>
+    </div>
+    <div class="fact">
+      <h3>Why climate matters</h3>
+      <p>Climate influences where ecosystems can thrive, water availability, agriculture, sea level, extreme heat and many other parts of human and natural systems.</p>
+      <p><b>Weather</b> describes conditions over short periods. <b>Climate</b> describes patterns over much longer periods.</p>
+      <p>Human activities that add greenhouse gases to the atmosphere are changing Earth's energy balance and warming the planet.</p>
+    </div>
+  </div>
+</section>
+
+<section id="life">
+  <div class="title"><h2>Life on Earth</h2><p>From microscopic organisms to enormous ecosystems.</p></div>
+  <div class="grid">
+    <article class="card"><div class="icon">🌳</div><h3>Forests</h3><p>Forests store carbon, support biodiversity, influence rainfall and provide food, materials and habitat.</p></article>
+    <article class="card"><div class="icon">🪸</div><h3>Oceans</h3><p>Marine ecosystems contain extraordinary biodiversity. Oceans also store large amounts of heat and carbon.</p></article>
+    <article class="card"><div class="icon">🐝</div><h3>Pollinators</h3><p>Bees, butterflies, birds, bats and other animals help many plants reproduce, supporting food webs and agriculture.</p></article>
+    <article class="card"><div class="icon">🦠</div><h3>Microbial Life</h3><p>Microorganisms drive decomposition and nutrient cycles and live in nearly every environment on Earth.</p></article>
+    <article class="card"><div class="icon">🧬</div><h3>Biodiversity</h3><p>Biodiversity includes genetic diversity, species diversity and the variety of ecosystems.</p></article>
+    <article class="card"><div class="icon">🌱</div><h3>Photosynthesis</h3><p>Plants, algae and some microorganisms use light energy to make organic matter, releasing oxygen in the process.</p></article>
+  </div>
+</section>
+
+<section>
+  <div class="title"><h2>Earth's Deep History</h2><p>A tiny timeline of a very old world.</p></div>
+  <div class="fact">
+    <div class="timeline">
+      <div class="event"><b>~4.54 billion years ago</b><br>Earth forms from material orbiting the young Sun.</div>
+      <div class="event"><b>~4.4 billion years ago</b><br>Evidence suggests an early crust and liquid water existed surprisingly early.</div>
+      <div class="event"><b>~3.5+ billion years ago</b><br>Strong evidence for ancient life appears in the geological record.</div>
+      <div class="event"><b>~540 million years ago</b><br>The Cambrian Period begins, followed by a major diversification of complex life.</div>
+      <div class="event"><b>~66 million years ago</b><br>A mass extinction ends the non-avian dinosaurs' dominance and reshapes ecosystems.</div>
+      <div class="event"><b>Today</b><br>Humans are a geological force capable of changing climate, ecosystems and landscapes.</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="title"><h2>Explore Interactively</h2><p>Click a topic to reveal more.</p></div>
+  <div class="tabs">
+    <button class="tab active" onclick="openTab('water',this)">💧 Water Cycle</button>
+    <button class="tab" onclick="openTab('carbon',this)">🌳 Carbon Cycle</button>
+    <button class="tab" onclick="openTab('tectonics',this)">🌋 Plate Tectonics</button>
+    <button class="tab" onclick="openTab('magnet',this)">🧲 Magnetic Field</button>
+  </div>
+  <div id="water" class="tabcontent active"><h3>💧 The Water Cycle</h3><p>Water continuously circulates between ocean, atmosphere, land and living things. Solar energy drives evaporation; cooling causes condensation; precipitation returns water to the surface.</p></div>
+  <div id="carbon" class="tabcontent"><h3>🌳 The Carbon Cycle</h3><p>Carbon moves among the atmosphere, oceans, rocks, soils and living organisms. Photosynthesis removes carbon dioxide from the atmosphere, while respiration, decomposition, fires and volcanic activity return carbon.</p></div>
+  <div id="tectonics" class="tabcontent"><h3>🌋 Plate Tectonics</h3><p>Earth's rigid outer shell is divided into moving plates. Their interactions build mountains, create ocean crust, cause earthquakes and power much volcanic activity.</p></div>
+  <div id="magnet" class="tabcontent"><h3>🧲 Earth's Magnetic Field</h3><p>Motion of electrically conducting material in the outer core generates Earth's magnetic field. It extends into space and helps deflect charged particles from the solar wind.</p></div>
+</section>
+
+<section id="protect">
+  <div class="title"><h2>How Can We Protect Earth?</h2><p>Small choices and large systems both matter.</p></div>
+  <div class="grid">
+    <article class="card"><div class="icon">🌱</div><h3>Restore Nature</h3><p>Protect forests, wetlands, grasslands, mangroves and other habitats. Restoration can improve biodiversity and ecosystem services.</p></article>
+    <article class="card"><div class="icon">⚡</div><h3>Use Cleaner Energy</h3><p>Improving energy efficiency and shifting toward low-carbon energy can reduce greenhouse-gas emissions.</p></article>
+    <article class="card"><div class="icon">♻️</div><h3>Reduce Waste</h3><p>Use resources efficiently, reuse products when possible and recycle materials through effective local systems.</p></article>
+    <article class="card"><div class="icon">🚲</div><h3>Smarter Transport</h3><p>Walking, cycling, public transportation and efficient vehicles can reduce pollution and energy use.</p></article>
+    <article class="card"><div class="icon">💧</div><h3>Save Water</h3><p>Fix leaks, use water efficiently and protect watersheds, rivers, groundwater and wetlands.</p></article>
+    <article class="card"><div class="icon">📚</div><h3>Learn & Share</h3><p>Understanding Earth systems helps people make better decisions and distinguish evidence from misinformation.</p></article>
+  </div>
+</section>
+
+<section id="quiz">
+  <div class="title"><h2>🌍 Earth Quiz</h2><p>Test what you learned.</p></div>
+  <div class="quiz">
+    <div class="q">
+      <h3>Which gas is the most abundant in Earth's dry atmosphere?</h3>
+      <div class="options">
+        <button onclick="answer(this,false)">Oxygen</button>
+        <button onclick="answer(this,true)">Nitrogen</button>
+        <button onclick="answer(this,false)">Carbon dioxide</button>
+        <button onclick="answer(this,false)">Methane</button>
+      </div>
+      <div id="result"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div style="font-size:25px">🌍</div>
+  <b>Earth Alive</b>
+  <p>A learning webpage about our home planet.</p>
+</footer>
+
+<script>
+function openTab(id,btn){
+  document.querySelectorAll('.tabcontent').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.getElementById(id).classList.add('active'); btn.classList.add('active');
+}
+function answer(btn,correct){
+  const result=document.getElementById('result');
+  document.querySelectorAll('.options button').forEach(x=>x.disabled=true);
+  if(correct){result.textContent='✅ Correct! Nitrogen makes up most of Earth’s dry atmosphere.'}
+  else{result.textContent='❌ Not quite. The correct answer is Nitrogen.'}
+}
+</script>
+</body>
+</html>

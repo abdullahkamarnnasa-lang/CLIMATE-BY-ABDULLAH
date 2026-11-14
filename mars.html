@@ -1,0 +1,1049 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MARS | Explore the Red Planet</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: #090505;
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* NAVBAR */
+
+        .navbar {
+            background: rgba(8, 4, 4, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .navbar-brand {
+            font-size: 25px;
+            font-weight: bold;
+            color: #ff7043 !important;
+        }
+
+        .nav-link {
+            color: #ddd !important;
+            margin-left: 15px;
+            transition: 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #ff7043 !important;
+        }
+
+        /* HERO */
+
+        .hero {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+
+            background:
+                radial-gradient(circle at 70% 50%, rgba(180,55,20,0.25), transparent 35%),
+                linear-gradient(120deg, #090505, #1a0906, #080303);
+        }
+
+        .stars {
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(white 1px, transparent 1px),
+                radial-gradient(white 1px, transparent 1px);
+            background-size: 90px 90px, 140px 140px;
+            background-position: 0 0, 40px 70px;
+            opacity: 0.35;
+            animation: starsMove 30s linear infinite;
+        }
+
+        @keyframes starsMove {
+            from {
+                transform: translateY(0);
+            }
+
+            to {
+                transform: translateY(-100px);
+            }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: clamp(70px, 13vw, 170px);
+            font-weight: 900;
+            letter-spacing: 15px;
+            color: #ff7043;
+            text-shadow:
+                0 0 20px rgba(255,80,30,0.5),
+                0 0 60px rgba(255,60,20,0.25);
+        }
+
+        .hero p {
+            color: #ddd;
+            font-size: 20px;
+            max-width: 700px;
+            margin: auto;
+        }
+
+        .explore-btn {
+            margin-top: 30px;
+            padding: 14px 35px;
+            border: none;
+            border-radius: 50px;
+            background: #e64a19;
+            color: white;
+            font-weight: bold;
+            transition: 0.3s;
+            box-shadow: 0 0 25px rgba(230,74,25,0.3);
+        }
+
+        .explore-btn:hover {
+            transform: translateY(-5px) scale(1.03);
+            background: #ff5722;
+            box-shadow: 0 0 40px rgba(255,87,34,0.6);
+        }
+
+        /* MARS */
+
+        .mars {
+            width: 330px;
+            height: 330px;
+            border-radius: 50%;
+            margin: 50px auto 0;
+
+            background:
+                radial-gradient(circle at 30% 30%, #e88a65, #a83d25 40%, #5b1c13 75%, #260b08);
+
+            box-shadow:
+                inset -45px -30px 70px rgba(0,0,0,0.7),
+                0 0 70px rgba(190,60,25,0.35);
+
+            animation: rotateMars 25s linear infinite;
+            position: relative;
+        }
+
+        .mars::before {
+            content: "";
+            position: absolute;
+            width: 55px;
+            height: 30px;
+            background: rgba(70,20,12,0.5);
+            border-radius: 50%;
+            top: 80px;
+            left: 80px;
+            box-shadow:
+                100px 60px 0 rgba(70,20,12,0.45),
+                30px 150px 0 rgba(70,20,12,0.5),
+                160px 170px 0 rgba(70,20,12,0.4),
+                190px 30px 0 rgba(70,20,12,0.35);
+        }
+
+        @keyframes rotateMars {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* SECTION */
+
+        section {
+            padding: 100px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title h2 {
+            font-size: 45px;
+            font-weight: 800;
+            color: #ff7043;
+        }
+
+        .section-title p {
+            color: #aaa;
+        }
+
+        /* STAT CARDS */
+
+        .stat-card {
+            background: linear-gradient(145deg, #1b0b08, #0e0605);
+            border: 1px solid rgba(255,112,67,0.2);
+            border-radius: 20px;
+            padding: 30px;
+            height: 100%;
+            transition: 0.4s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            border-color: #ff7043;
+            box-shadow: 0 15px 40px rgba(255,70,30,0.15);
+        }
+
+        .stat-card i {
+            font-size: 35px;
+            color: #ff7043;
+            margin-bottom: 20px;
+        }
+
+        .stat-card h3 {
+            font-size: 30px;
+        }
+
+        .stat-card p {
+            color: #999;
+            margin: 0;
+        }
+
+        /* INFORMATION */
+
+        .info-box {
+            background: #120806;
+            border-radius: 25px;
+            padding: 45px;
+            border: 1px solid rgba(255,112,67,0.15);
+            height: 100%;
+        }
+
+        .info-box h3 {
+            color: #ff7043;
+            margin-bottom: 20px;
+        }
+
+        .info-box p {
+            color: #bbb;
+            line-height: 1.8;
+        }
+
+        /* ATMOSPHERE */
+
+        .bar-container {
+            margin-bottom: 25px;
+        }
+
+        .bar-title {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .bar {
+            width: 100%;
+            height: 13px;
+            background: #29100b;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 20px;
+            background: linear-gradient(90deg, #9e2d18, #ff7043);
+        }
+
+        /* TEMPERATURE */
+
+        .temperature-box {
+            text-align: center;
+            background:
+                radial-gradient(circle at center, #35140d, #0c0504);
+            border: 1px solid rgba(255,112,67,0.25);
+            border-radius: 30px;
+            padding: 50px 25px;
+        }
+
+        #temperature {
+            font-size: 80px;
+            font-weight: 900;
+            color: #ff7043;
+        }
+
+        .temp-slider {
+            width: 80%;
+            margin: 30px auto;
+        }
+
+        .temp-slider input {
+            width: 100%;
+            accent-color: #ff7043;
+        }
+
+        .temp-message {
+            color: #aaa;
+            font-size: 18px;
+        }
+
+        /* EXPLORE */
+
+        .explore-card {
+            position: relative;
+            overflow: hidden;
+            background: #150806;
+            border-radius: 22px;
+            padding: 35px;
+            min-height: 260px;
+            border: 1px solid rgba(255,112,67,0.15);
+            transition: 0.4s;
+        }
+
+        .explore-card:hover {
+            transform: scale(1.03);
+            border-color: #ff7043;
+        }
+
+        .explore-card i {
+            font-size: 45px;
+            color: #ff7043;
+            margin-bottom: 25px;
+        }
+
+        .explore-card h4 {
+            margin-bottom: 15px;
+        }
+
+        .explore-card p {
+            color: #999;
+        }
+
+        /* FOOTER */
+
+        footer {
+            padding: 50px 0;
+            text-align: center;
+            background: #050202;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+
+        footer h3 {
+            color: #ff7043;
+        }
+
+        footer p {
+            color: #777;
+        }
+
+        /* SCROLL BUTTON */
+
+        .top-btn {
+            position: fixed;
+            right: 25px;
+            bottom: 25px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background: #e64a19;
+            color: white;
+            z-index: 99;
+            display: none;
+        }
+
+        /* RESPONSIVE */
+
+        @media(max-width: 768px) {
+
+            .mars {
+                width: 250px;
+                height: 250px;
+            }
+
+            .hero h1 {
+                letter-spacing: 7px;
+            }
+
+            #temperature {
+                font-size: 60px;
+            }
+
+            .info-box {
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+
+        <div class="container">
+
+            <a class="navbar-brand" href="#">
+                <i class="fa-solid fa-meteor"></i>
+                MARS
+            </a>
+
+            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="menu">
+
+                <ul class="navbar-nav ms-auto">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#facts">Facts</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#atmosphere">Atmosphere</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#temperature-section">Temperature</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#explore">Explore</a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+    <!-- HERO -->
+
+    <header class="hero">
+
+        <div class="stars"></div>
+
+        <div class="container hero-content">
+
+            <h1>MARS</h1>
+
+            <p>
+                Welcome to the Red Planet — a cold, dusty world with giant
+                volcanoes, deep canyons and a fascinating history.
+            </p>
+
+            <a href="#about">
+                <button class="explore-btn">
+                    EXPLORE MARS
+                    <i class="fa-solid fa-arrow-down ms-2"></i>
+                </button>
+            </a>
+
+            <div class="mars"></div>
+
+        </div>
+
+    </header>
+
+
+    <!-- ABOUT -->
+
+    <section id="about">
+
+        <div class="container">
+
+            <div class="section-title">
+
+                <h2>The Red Planet</h2>
+
+                <p>
+                    Discover what makes Mars one of the most interesting planets
+                    in our Solar System.
+                </p>
+
+            </div>
+
+            <div class="row g-4">
+
+                <div class="col-lg-6">
+
+                    <div class="info-box">
+
+                        <h3>
+                            <i class="fa-solid fa-globe"></i>
+                            About Mars
+                        </h3>
+
+                        <p>
+                            Mars is the fourth planet from the Sun. It is often
+                            called the Red Planet because iron minerals in its
+                            soil oxidize and create a reddish appearance.
+                        </p>
+
+                        <p>
+                            Mars has enormous volcanoes, deep valleys, polar
+                            ice caps and evidence that liquid water existed on
+                            its surface billions of years ago.
+                        </p>
+
+                        <p>
+                            Scientists study Mars to understand its past,
+                            present environment and whether it could have once
+                            supported microbial life.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="col-lg-6">
+
+                    <div class="info-box">
+
+                        <h3>
+                            <i class="fa-solid fa-satellite"></i>
+                            Mars Exploration
+                        </h3>
+
+                        <p>
+                            Robotic spacecraft, orbiters, landers and rovers
+                            have explored Mars and sent valuable information
+                            back to Earth.
+                        </p>
+
+                        <p>
+                            Rovers can investigate rocks and soil, take
+                            photographs and analyze the environment.
+                        </p>
+
+                        <p>
+                            Future missions may help scientists understand
+                            whether humans could safely explore Mars for
+                            longer periods.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FACTS -->
+
+    <section id="facts">
+
+        <div class="container">
+
+            <div class="section-title">
+
+                <h2>Quick Mars Facts</h2>
+
+                <p>Some important numbers about our neighboring planet.</p>
+
+            </div>
+
+            <div class="row g-4">
+
+                <div class="col-md-6 col-lg-3">
+
+                    <div class="stat-card text-center">
+
+                        <i class="fa-solid fa-weight-hanging"></i>
+
+                        <h3>3.71 m/s²</h3>
+
+                        <p>Surface Gravity</p>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-6 col-lg-3">
+
+                    <div class="stat-card text-center">
+
+                        <i class="fa-solid fa-clock"></i>
+
+                        <h3>24.6 h</h3>
+
+                        <p>Length of a Martian Day</p>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-6 col-lg-3">
+
+                    <div class="stat-card text-center">
+
+                        <i class="fa-solid fa-calendar-days"></i>
+
+                        <h3>687 Days</h3>
+
+                        <p>Mars Year</p>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-6 col-lg-3">
+
+                    <div class="stat-card text-center">
+
+                        <i class="fa-solid fa-ruler-horizontal"></i>
+
+                        <h3>6,779 km</h3>
+
+                        <p>Approx. Diameter</p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ATMOSPHERE -->
+
+    <section id="atmosphere">
+
+        <div class="container">
+
+            <div class="section-title">
+
+                <h2>Mars Atmosphere</h2>
+
+                <p>
+                    Mars has a very thin atmosphere compared with Earth.
+                </p>
+
+            </div>
+
+            <div class="row justify-content-center">
+
+                <div class="col-lg-9">
+
+                    <div class="info-box">
+
+                        <div class="bar-container">
+
+                            <div class="bar-title">
+                                <span>Carbon Dioxide</span>
+                                <span>~95%</span>
+                            </div>
+
+                            <div class="bar">
+                                <div class="bar-fill" style="width:95%"></div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="bar-container">
+
+                            <div class="bar-title">
+                                <span>Nitrogen</span>
+                                <span>~2.7%</span>
+                            </div>
+
+                            <div class="bar">
+                                <div class="bar-fill" style="width:35%"></div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="bar-container">
+
+                            <div class="bar-title">
+                                <span>Argon</span>
+                                <span>~1.6%</span>
+                            </div>
+
+                            <div class="bar">
+                                <div class="bar-fill" style="width:22%"></div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="bar-container">
+
+                            <div class="bar-title">
+                                <span>Other gases</span>
+                                <span>Small amounts</span>
+                            </div>
+
+                            <div class="bar">
+                                <div class="bar-fill" style="width:10%"></div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- TEMPERATURE -->
+
+    <section id="temperature-section">
+
+        <div class="container">
+
+            <div class="section-title">
+
+                <h2>Mars Temperature Simulator</h2>
+
+                <p>
+                    Move the slider and see how the Martian temperature changes.
+                </p>
+
+            </div>
+
+            <div class="row justify-content-center">
+
+                <div class="col-lg-8">
+
+                    <div class="temperature-box">
+
+                        <h4>Current Simulated Temperature</h4>
+
+                        <div id="temperature">-63°C</div>
+
+                        <div class="temp-slider">
+
+                            <input
+                                type="range"
+                                id="tempRange"
+                                min="-120"
+                                max="20"
+                                value="-63">
+
+                        </div>
+
+                        <div class="temp-message" id="tempMessage">
+                            Typical cold Martian conditions
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- EXPLORE -->
+
+    <section id="explore">
+
+        <div class="container">
+
+            <div class="section-title">
+
+                <h2>Explore Mars</h2>
+
+                <p>Choose a topic and learn more.</p>
+
+            </div>
+
+            <div class="row g-4">
+
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="explore-card">
+
+                        <i class="fa-solid fa-mountain"></i>
+
+                        <h4>Olympus Mons</h4>
+
+                        <p>
+                            Olympus Mons is a gigantic shield volcano and one
+                            of the largest volcanoes known in the Solar System.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="explore-card">
+
+                        <i class="fa-solid fa-water"></i>
+
+                        <h4>Ancient Water</h4>
+
+                        <p>
+                            Geological evidence shows that Mars once had
+                            environments where liquid water was present.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="explore-card">
+
+                        <i class="fa-solid fa-wind"></i>
+
+                        <h4>Dust Storms</h4>
+
+                        <p>
+                            Mars can experience powerful dust storms that
+                            sometimes spread across enormous areas of the planet.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="explore-card">
+
+                        <i class="fa-solid fa-robot"></i>
+
+                        <h4>Mars Rovers</h4>
+
+                        <p>
+                            Robotic rovers explore the surface and investigate
+                            rocks, soil and the Martian environment.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="explore-card">
+
+                        <i class="fa-solid fa-icicles"></i>
+
+                        <h4>Polar Ice</h4>
+
+                        <p>
+                            Mars has polar caps containing water ice and
+                            seasonal carbon-dioxide frost.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="explore-card">
+
+                        <i class="fa-solid fa-user-astronaut"></i>
+
+                        <h4>Future Missions</h4>
+
+                        <p>
+                            Future exploration could reveal more about Mars
+                            and help prepare for possible human missions.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <div class="container">
+
+            <h3>
+                <i class="fa-solid fa-meteor"></i>
+                MARS
+            </h3>
+
+            <p>
+                Explore. Discover. Understand the Red Planet.
+            </p>
+
+            <p>
+                © 2026 Mars Exploration Project
+            </p>
+
+        </div>
+
+    </footer>
+
+
+    <!-- TOP BUTTON -->
+
+    <button class="top-btn" id="topBtn">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+
+    <!-- JAVASCRIPT -->
+
+    <script>
+
+        // Temperature Simulator
+
+        const tempRange = document.getElementById("tempRange");
+        const temperature = document.getElementById("temperature");
+        const tempMessage = document.getElementById("tempMessage");
+
+        tempRange.addEventListener("input", function () {
+
+            let value = Number(this.value);
+
+            temperature.textContent = value + "°C";
+
+            if (value <= -90) {
+
+                tempMessage.textContent =
+                    "Extremely cold Martian conditions";
+
+            } else if (value <= -50) {
+
+                tempMessage.textContent =
+                    "Typical cold Martian conditions";
+
+            } else if (value <= -10) {
+
+                tempMessage.textContent =
+                    "Relatively warmer for Mars";
+
+            } else {
+
+                tempMessage.textContent =
+                    "Very unusual warm conditions for Mars";
+
+            }
+
+        });
+
+
+        // Scroll To Top
+
+        const topBtn = document.getElementById("topBtn");
+
+        window.addEventListener("scroll", function () {
+
+            if (window.scrollY > 500) {
+
+                topBtn.style.display = "block";
+
+            } else {
+
+                topBtn.style.display = "none";
+
+            }
+
+        });
+
+
+        topBtn.addEventListener("click", function () {
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        });
+
+
+        // Navbar background while scrolling
+
+        window.addEventListener("scroll", function () {
+
+            const navbar = document.querySelector(".navbar");
+
+            if (window.scrollY > 50) {
+
+                navbar.style.background =
+                    "rgba(5,2,2,0.97)";
+
+            } else {
+
+                navbar.style.background =
+                    "rgba(8,4,4,0.9)";
+
+            }
+
+        });
+
+    </script>
+
+
+    <!-- Bootstrap JS -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
+

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Climate | By Abdullah</title>
+    <!-- Font Awesome v4.7 -->
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <!-- Live Production Bootstrap v5.0.2 CDN -->
+    <link href="https://jsdelivr.net" rel="stylesheet" crossorigin="anonymous">
+    <!-- Your External CSS Sheet Backup -->
+    <link rel="stylesheet" href="mysheet.css">
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://jsdelivr.net" crossorigin="anonymous"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://jsdelivr.net"></script>
+    
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            background: #f4f8fb;
+            color: #15202b;
+            transition: background 0.3s, color 0.3s;
+        }
+        body.dark-mode {
+            background: #08131c;
+            color: #e9f4f8;
+        }
+        body.dark-mode .light-card,
+        body.dark-mode .info-card,
+        body.dark-mode .climate-section,
+        body.dark-mode .calculator-box,
+        body.dark-mode .dashboard-card,
+        body.dark-mode .structure-panel {
+            background: #10232f !important;
+            color: #e9f4f8;
+            border-color: #234352 !important;
+        }
+        body.dark-mode .text-dark-override {
+            color: #e9f4f8 !important;
+        }
+        body.dark-mode .text-muted {
+            color: #aac0c9 !important;
+        }
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 9999;
+            background: rgba(10, 25, 35, 0.96);
+            backdrop-filter: blur(10px);
+        }
+        .nav-brand {
+            color: white;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-decoration: none;
+            font-size: 22px;
+        }
+        .nav-brand:hover {
+            color: #66e0a3;
+            text-decoration: none;
+        }
+        .hero {
+            min-height: 620px;
+            background: linear-gradient(rgba(0, 16, 25, 0.52), rgba(0, 16, 25, 0.72)), url("baa.webp") center/cover;
+            display: flex;
+            align-items: center;
+            color: white;
+        }
+        .hero-content {
+            max-width: 850px;
+            padding: 70px 25px;
+        }
+        .hero-title {
+            font-size: clamp(44px, 7vw, 82px);
+            font-weight: 900;
+            line-height: 0.95;
+        }
+        .hero-title span {
+            color: #70e39e;
+        }
+        .hero-text {
+            font-size: 20px;
+            line-height: 1.8;
+            color: #e6f5f1;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 18px;
+            padding: 20px;
+            backdrop-filter: blur(12px);
+        }
+        .section-title {
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+        .section-subtitle {
+            color: #667780;
+            line-height: 1.7;
+        }
+        .dark-mode .section-subtitle {
+            color: #abc0c8;
+        }
+        .dashboard-card,
+        .info-card,
+        .light-card,
+        .calculator-box {
+            background: white;
+            border-radius: 18px;
+            border: 1px solid #dce8ed;
+            box-shadow: 0 10px 30px rgba(20, 50, 70, 0.08);
+            transition: transform .25s, box-shadow .25s;
+        }
+        .dashboard-card:hover,
+        .info-card:hover,
+        .light-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 16px 38px rgba(20, 50, 70, 0.14);
+        }
+        .metric {
+            font-size: 36px;
+            font-weight: 900;
+            color: #087a58;
+        }
+        .metric-label {
+            color: #657882;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .pulse {
+            width: 10px;
+            height: 10px;
+            display: inline-block;
+            border-radius: 50%;
+            background: #30c878;
+            box-shadow: 0 0 0 rgba(48, 200, 120, .6);
+            animation: pulse 1.8s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(48, 200, 120, .6); }
+            70% { box-shadow: 0 0 0 12px rgba(48, 200, 120, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(48, 200, 120, 0); }
+        }
+        .climate-btn {
+            cursor: pointer;
+            padding: 14px;
+            border-radius: 14px;
+            transition: .2s;
+            background: #087a58;
+            color: white;
+            border: none;
+        }
+        .climate-btn:hover {
+            background: #0b7556;
+            color: white;
+        }
+        .climate-section {
+            background: white;
+            border-radius: 20px;
+            padding: 28px;
+            border: 1px solid #dde8ed;
+        }
+        .chart-box {
+            position: relative;
+            height: 320px;
+        }
+        .big-result {
+            font-size: 34px;
+            font-weight: 900;
+        }
+        .footer {
+            background: #071119;
+            color: #dceaf0;
+            padding: 40px 0;
+        }
+        .back-top {
+            position: fixed;
+            bottom: 22px;
+            right: 22px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background: #087a58;
+            color: white;
+            display: none;
+            z-index: 5000;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, .25);
+        }
+        .badge-soft {
+            border-radius: 999px;
+            padding: 7px 11px;
+            background: #eaf7f3;
+            color: #087a58;
+            font-weight: 700;
+        }
+        .impact-meter {
+            height: 14px;
+            background: #dfe8ed;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+        .impact-meter span {
+            display: block;
+            height: 100%;
+            background: linear-gradient(90deg, #53c878, #efb22f, #e45c4a);
+            border-radius: inherit;
+            width: 0%;
+            transition: width .6s ease;
+        }
+        .small-note {
+            font-size: 13px;
+            color: #71828a;
+        }
+        @media (max-width: 768px) {
+            .hero { min-height: 540px; }
+        }
+
+        /* ================= ADVANCED CLIMATE LAB ================= */
+        .advanced-lab {
+            background: linear-gradient(135deg, #071c17, #0b3025);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            border-radius: 24px;
+            padding: 40px;
+        }
+        .advanced-lab:before {
+            content: "";
+            position: absolute;
+            width: 420px; height: 420px;
+            border-radius: 50%;
+            background: rgba(66, 230, 165, .08);
+            top: -180px; right: -100px;
+            filter: blur(8px);
+        }
+        .lab-header, .lab-grid { position: relative; z-index: 1; }
+        .lab-header {
+            margin-bottom: 30px;
+        }
+        .lab-kicker {
+            display: inline-block;
+            font-size: 12px; font-weight: 900; letter-spacing: 1.5px;
+            color: #70e39e; text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sticky Navigation Topbar -->
+    <div class="topbar p-3 d-flex justify-content-between align-items-center">
+        <a href="#" class="nav-brand">Climate <span style="color:#70e39e;">| By Abdullah</span></a>
+        <button class="btn btn-outline-light btn-sm" onclick="toggleDarkMode()">
+            <i class="fa fa-adjust"></i> Toggle Mode
+        </button>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="container">
+            <div class="hero-content glass">
+                <h1 class="hero-title">Protecting Our <span>Biosphere</span></h1>
+                <p class="hero-text mt-3">An ongoing engineering sandbox cataloging tracking metrics, dynamic global metrics forecasting models, and climatic analysis metrics managed by Abdullah.</p>
+                <a href="#lab" class="climate-btn mt-3 btn text-white d-inline-block">Explore Advanced Lab</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dynamic Metrics Dashboard -->
+    <div class="container my-5">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="dashboard-card p-4 text-center">
+                    <div class="metric-label"><span class="pulse me-2"></span>Atmospheric CO₂</div>
+                    <div class="metric mt-2">424.1 <span class="fs-6 text-muted">ppm</span></div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="dashboard-card p-4 text-center">
+                    <div class="metric-label">Global Warming Baseline</div>
+                    <div class="metric mt-2 text-danger">+1.28 <span class="fs-6 text-muted">°C</span></div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="dashboard-card p-4 text-center">
+                    <div class="metric-label">Arctic Ice Shrinkage</div>
+                    <div class="metric mt-2 text-warning">-12.2 <span class="fs-6 text-muted">% / decade</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= CLIMATE FACTS GRID ================= -->
+    <div class="container my-5" id="lab">
+        <div class="advanced-lab">
+            <div class="lab-header">
+                <span class="lab-kicker">Data Sandbox Engine</span>

@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>3D Asteroid Belt | Climate by Abdullah</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#000;
+    font-family:Arial,Helvetica,sans-serif;
+    color:white;
+}
+
+#space{
+    position:fixed;
+    inset:0;
+    background:
+        radial-gradient(circle at center,#111 0%,#050505 35%,#000 75%);
+}
+
+canvas{
+    display:block;
+    width:100%;
+    height:100%;
+}
+
+.ui{
+    position:fixed;
+    z-index:10;
+    pointer-events:none;
+}
+
+.top{
+    top:22px;
+    left:25px;
+}
+
+.title{
+    font-size:28px;
+    font-weight:800;
+    letter-spacing:1px;
+}
+
+.title span{
+    color:#67e8f9;
+}
+
+.subtitle{
+    margin-top:6px;
+    color:#aaa;
+    font-size:13px;
+}
+
+.info{
+    right:20px;
+    top:20px;
+    width:270px;
+    padding:18px;
+    border:1px solid #ffffff20;
+    border-radius:18px;
+    background:#080808cc;
+    backdrop-filter:blur(12px);
+    box-shadow:0 10px 40px #000;
+}
+
+.info h2{
+    margin:0 0 10px;
+    color:#67e8f9;
+    font-size:18px;
+}
+
+.info p{
+    color:#bbb;
+    line-height:1.5;
+    font-size:13px;
+    margin:6px 0;
+}
+
+.controls{
+    position:fixed;
+    left:20px;
+    bottom:20px;
+    z-index:20;
+    padding:13px 16px;
+    border-radius:14px;
+    background:#080808cc;
+    border:1px solid #ffffff18;
+    color:#aaa;
+    font-size:12px;
+}
+
+.speed{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    z-index:20;
+    display:flex;
+    gap:8px;
+}
+
+button{
+    pointer-events:auto;
+    border:1px solid #ffffff20;
+    background:#101010dd;
+    color:white;
+    padding:10px 15px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#67e8f9;
+    color:#001;
+}
+
+#selected{
+    display:none;
+    position:fixed;
+    left:50%;
+    bottom:30px;
+    transform:translateX(-50%);
+    padding:12px 20px;
+    border-radius:30px;
+    background:#071015dd;
+    border:1px solid #67e8f955;
+    color:#fff;
+    z-index:30;
+}
+</style>
+</head>
+
+<body>
+
+<div id="space"></div>
+
+<div class="ui top">
+    <div class="title">☀️ ASTEROID <span>BELT</span></div>
+    <div class="subtitle">Interactive 3D Solar System Explorer</div>
+</div>
+
+<div class="info">
+    <h2>🪨 Asteroid Belt</h2>
+    <p>
+        Explore a simplified 3D model of the asteroid belt
+        between Mars and Jupiter.
+    </p>
+    <p>
+        🖱️ Drag — rotate view<br>
+        🔍 Scroll — zoom<br>
+        🪨 Click — select asteroid
+    </p>
+</div>
+
+<div class="controls">
+    🖱️ Drag to rotate &nbsp; • &nbsp;
+    Wheel to zoom
+</div>
+
+<div class="speed">
+    <button onclick="changeSpeed(-0.5)">− Speed</button>
+    <button onclick="changeSpeed(0.5)">+ Speed</button>
+</div>
+
+<div id="selected">
+    🪨 Asteroid selected
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script>
+
+/* =========================
+   SCENE
+========================= */
+
+const scene = new THREE.Scene();
+
+const camera = new THREE.PerspectiveCamera(
+    60,
+    window.innerWidth/window.innerHeight,
+    0.1,
+    5000
+);
+
+camera.position.set(0,55,125);
+
+const renderer = new THREE.WebGLRenderer({
+    antialias:true
+});
+
+renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio,2)
+);
+
+renderer.setSize(
+    window.innerWidth,
+    window.innerHeight
+);
+
+document.getElementById("space").appendChild(renderer.domElement);
+
+
+/* =========================
+   LIGHT
+========================= */
+
+const ambient = new THREE.AmbientLight(
+    0xffffff,
+    0.18
+);
+
+scene.add(ambient);
+
+
+/* =========================
+   SUN
+========================= */
+
+const sunLight = new THREE.PointLight(
+    0xffdd99,
+    5,
+    1000
+);
+
+scene.add(sunLight);
+
+const sun = new THREE.Mesh(
+    new THREE.SphereGeometry(12,48,48),
+    new THREE.MeshBasicMaterial({
+        color:0xffa31a
+    })
+);
+
+scene.add(sun);
+
+
+/* SUN GLOW */
+
+const glow = new THREE.Mesh(
+    new THREE.SphereGeometry(16,32,32),
+    new THREE.MeshBasicMaterial({
+        color:0xff8800,
+        transparent:true,
+        opacity:.12,
+        side:THREE.BackSide
+    })
+);
+
+scene.add(glow);
+
+
+/* =========================
+   STARS
+========================= */
+
+const starGeometry = new THREE.BufferGeometry();
+
+const starCount = 5000;
+
+const starPositions = [];
+
+for(let i=0;i<starCount;i++){
+
+    const radius =
+        500 + Math.random()*1500;
+
+    const theta =
+        Math.random()*Math.PI*2;
+
+    const phi =
+        Math.acos(
+            2*Math.random()-1
+        );
+
+    starPositions.push(
+        radius*Math.sin(phi)*Math.cos(theta),
+        radius*Math.sin(phi)*Math.sin(theta),
+        radius*Math.cos(phi)
+    );
+}
+
+starGeometry.setAttribute(
+    "position",
+    new THREE.Float32BufferAttribute(
+        starPositions,3
+    )
+);
+
+const starMaterial =
+    new THREE.PointsMaterial({
+        color:0xffffff,
+        size:1.5,
+        sizeAttenuation:true
+    });
+
+const stars =
+    new THREE.Points(
+        starGeometry,
+        starMaterial
+    );
+
+scene.add(stars);
+
+
+/* =========================
+   ASTEROIDS
+========================= */
+
+const asteroidGroup =
+    new THREE.Group();
+
+scene.add(asteroidGroup);
+
+const asteroidData = [];
+
+const asteroidCount = 650;
+
+for(let i=0;i<asteroidCount;i++){
+
+    const angle =
+        Math.random()*Math.PI*2;
+
+    /*
+      Belt radius:
+      roughly between Mars and Jupiter
+    */
+
+    const radius =
+        38 + Math.random()*28;
+
+    const height =
+        (Math.random()-.5)*8;
+
+    const size =
+        .18 + Math.random()*.65;
+
+    const geometry =
+        new THREE.IcosahedronGeometry(
+            size,
+            Math.random()>.7 ? 1 : 0
+        );
+
+    const material =
+        new THREE.MeshStandardMaterial({
+            color:
+                new THREE.Color(
+                    0.20 +
+                    Math.random()*.25,
+                    0.20 +
+                    Math.random()*.22,
+                    0.20 +
+                    Math.random()*.18
+                ),
+            roughness:1,
+            metalness:.05
+        });
+
+    const asteroid =
+        new THREE.Mesh(
+            geometry,
+            material
+        );
+
+    asteroid.position.set(
+        Math.cos(angle)*radius,
+        height,
+        Math.sin(angle)*radius
+    );
+
+    asteroid.rotation.set(
+        Math.random()*Math.PI,
+        Math.random()*Math.PI,
+        Math.random()*Math.PI
+    );
+
+    asteroid.userData.angle = angle;
+    asteroid.userData.radius = radius;
+    asteroid.userData.speed =
+        0.0005 + Math.random()*.001;
+    asteroid.userData.baseY = height;
+
+    asteroidGroup.add(asteroid);
+    asteroidData.push(asteroid);
+}
+
+
+/* =========================
+   ORBIT RING
+========================= */
+
+const orbitCurve =
+    new THREE.RingGeometry(
+        37,
+        66,
+        128
+    );
+
+const orbitMaterial =
+    new THREE.MeshBasicMaterial({
+        color:0x7aa2b8,
+        transparent:true,
+        opacity:.055,
+        side:THREE.DoubleSide
+    });
+
+const orbit =
+    new THREE.Mesh(
+        orbitCurve,
+        orbitMaterial
+    );
+
+orbit.rotation.x =
+    Math.PI/2;
+
+scene.add(orbit);
+
+
+/* =========================
+   MOUSE ROTATION
+========================= */
+
+let isDragging = false;
+
+let previousX = 0;
+let previousY = 0;
+
+let rotX = 0;
+let rotY = 0;
+
+renderer.domElement.addEventListener(
+    "pointerdown",
+    e=>{
+        isDragging=true;
+        previousX=e.clientX;
+        previousY=e.clientY;
+    }
+);
+
+window.addEventListener(
+    "pointerup",
+    ()=>{
+        isDragging=false;
+    }
+);
+
+window.addEventListener(
+    "pointermove",
+    e=>{
+
+        if(!isDragging) return;
+
+        const dx =
+            e.clientX-previousX;
+
+        const dy =
+            e.clientY-previousY;
+
+        rotY += dx*.005;
+        rotX += dy*.005;
+
+        rotX =
+            Math.max(
+                -1.3,
+                Math.min(1.3,rotX)
+            );
+
+        previousX=e.clientX;
+        previousY=e.clientY;
+    }
+);
+
+
+/* =========================
+   ZOOM
+========================= */
+
+renderer.domElement.addEventListener(
+    "wheel",
+    e=>{
+
+        camera.position.z +=
+            e.deltaY*.08;
+
+        camera.position.z =
+            Math.max(
+                45,
+                Math.min(250,camera.position.z)
+            );
+    }
+);
+
+
+/* =========================
+   SPEED
+========================= */
+
+let speedMultiplier = 1;
+
+function changeSpeed(value){
+
+    speedMultiplier += value;
+
+    speedMultiplier =
+        Math.max(
+            .1,
+            Math.min(5,speedMultiplier)
+        );
+}
+
+
+/* =========================
+   CLICK ASTEROID
+========================= */
+
+const raycaster =
+    new THREE.Raycaster();
+
+const mouse =
+    new THREE.Vector2();
+
+renderer.domElement.addEventListener(
+    "click",
+    e=>{
+
+        mouse.x =
+            (e.clientX/
+            window.innerWidth)*2-1;
+
+        mouse.y =
+            -(e.clientY/
+            window.innerHeight)*2+1;
+
+        raycaster.setFromCamera(
+            mouse,
+            camera
+        );
+
+        const hits =
+            raycaster.intersectObjects(
+                asteroidGroup.children
+            );
+
+        if(hits.length){
+
+            const selected =
+                hits[0].object;
+
+            selected.scale.set(
+                2,2,2
+            );
+
+            setTimeout(()=>{
+                selected.scale.set(
+                    1,1,1
+                );
+            },600);
+
+            const box =
+                document.getElementById(
+                    "selected"
+                );
+
+            box.style.display="block";
+
+            box.textContent =
+                "🪨 Asteroid selected • Diameter: " +
+                (selected.geometry.parameters.radius*2).toFixed(2) +
+                " units";
+
+            setTimeout(()=>{
+                box.style.display="none";
+            },2500);
+        }
+    }
+);
+
+
+/* =========================
+   ANIMATION
+========================= */
+
+let time = 0;
+
+function animate(){
+
+    requestAnimationFrame(
+        animate
+    );
+
+    time += 0.01;
+
+    /*
+      Rotate asteroid belt
+    */
+
+    asteroidGroup.rotation.y +=
+        0.0007 * speedMultiplier;
+
+    /*
+      Rotate Sun
+    */
+
+    sun.rotation.y += .002;
+
+    /*
+      Star movement
+    */
+
+    stars.rotation.y += .00003;
+
+    /*
+      Camera orbit based on
+      mouse dragging
+    */
+
+    const distance =
+        camera.position.z;
+
+    camera.position.x =
+        Math.sin(rotY)*distance;
+
+    camera.position.y =
+        55 +
+        Math.sin(rotX)*35;
+
+    camera.lookAt(
+        0,0,0
+    );
+
+    renderer.render(
+        scene,
+        camera
+    );
+}
+
+animate();
+
+
+/* =========================
+   RESIZE
+========================= */
+
+window.addEventListener(
+    "resize",
+    ()=>{
+
+        camera.aspect =
+            window.innerWidth/
+            window.innerHeight;
+
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(
+            window.innerWidth,
+            window.innerHeight
+        );
+    }
+);
+
+</script>
+
+</body>
+</html>
